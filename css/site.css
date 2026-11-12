@@ -1,0 +1,19 @@
+/* Starlane standalone site: the launch screen (the game itself uses css/app.css) */
+body.sl-site{margin:0;min-height:100vh;background:#02040c radial-gradient(ellipse at 50% 20%,#14306a 0,#050a1c 55%,#02040c 100%);color:#e8ecfa;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.sl-launch{max-width:760px;margin:0 auto;padding:48px 20px 40px;text-align:center}
+.sl-launch h1{font-size:clamp(34px,7vw,64px);letter-spacing:.06em;margin:0;color:#ffe45e;text-shadow:0 0 24px rgba(255,228,94,.35)}
+.sl-tag{font-size:clamp(16px,3vw,22px);color:#bff4ff;margin:.4em 0 1.2em}
+.sl-about{line-height:1.6;color:#c8d0ff;max-width:600px;margin:0 auto 26px}
+.sl-play{font-size:22px;font-weight:800;padding:16px 48px;border-radius:14px;border:2px solid #7fe9ff;background:linear-gradient(#1b6f8f,#0d3c5c);color:#fff;cursor:pointer;box-shadow:0 0 30px rgba(63,224,255,.35)}
+.sl-play:hover{filter:brightness(1.15)}
+.sl-watch{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 30px}
+.sl-watch button,.sl-pilot button{padding:9px 16px;border-radius:10px;border:1px solid #3b4a8f;background:#0b1328;color:#e8ecfa;cursor:pointer;font-size:14px}
+.sl-pilot{background:rgba(8,14,32,.85);border:1px solid #26305a;border-radius:14px;padding:16px 18px;text-align:left;display:grid;gap:10px;max-width:460px;margin:0 auto}
+.sl-pilot h2{margin:0;font-size:17px;color:#ffe45e}.sl-hello{margin:0;color:#9aa6cc;font-size:14px}
+.sl-pilot label{display:grid;gap:4px;font-size:13px;color:#aeb8d8}.sl-pilot input,.sl-pilot select{padding:9px 10px;border-radius:8px;border:1px solid #3b4a8f;background:#050a1c;color:#fff;font-size:15px}
+.sl-small{color:#7f8bb5;font-size:12px;margin-top:22px}
+#slToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0b1328;border:1px solid #3fe0ff;color:#fff;padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .3s;z-index:100000;pointer-events:none}#slToast.on{opacity:1}
+#slCode{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:100001}#slCode.on{display:flex}
+.sl-code-card{background:#0b1328;border:2px solid #ffe45e;border-radius:14px;padding:18px 22px;min-width:260px;text-align:center;color:#fff}.sl-code-card h3{margin:0 0 6px;color:#ffe45e}
+.sl-code-card input{font-size:22px;letter-spacing:.2em;text-align:center;width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #3b4a8f;background:#050a1c;color:#fff}
+.sl-code-btns{display:flex;gap:8px;justify-content:center;margin-top:12px}.sl-code-btns button{padding:8px 18px;border-radius:8px;border:1px solid #3fe0ff;background:#123a55;color:#fff;cursor:pointer}.sl-code-card .msg{color:#ff8a8a;min-height:1em;font-size:13px}

@@ -1,0 +1,24 @@
+{
+ "name": "Starlane Trader",
+ "short_name": "Starlane",
+ "description": "Fly, trade, explore\u2026 and learn.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "fullscreen",
+ "orientation": "any",
+ "background_color": "#02040c",
+ "theme_color": "#03050f",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
