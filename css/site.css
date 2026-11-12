@@ -17,3 +17,8 @@ body.sl-site{margin:0;min-height:100vh;background:#02040c radial-gradient(ellips
 .sl-code-card{background:#0b1328;border:2px solid #ffe45e;border-radius:14px;padding:18px 22px;min-width:260px;text-align:center;color:#fff}.sl-code-card h3{margin:0 0 6px;color:#ffe45e}
 .sl-code-card input{font-size:22px;letter-spacing:.2em;text-align:center;width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #3b4a8f;background:#050a1c;color:#fff}
 .sl-code-btns{display:flex;gap:8px;justify-content:center;margin-top:12px}.sl-code-btns button{padding:8px 18px;border-radius:8px;border:1px solid #3fe0ff;background:#123a55;color:#fff;cursor:pointer}.sl-code-card .msg{color:#ff8a8a;min-height:1em;font-size:13px}
+
+/* go straight into the game: no arcade menu or title bar on this site */
+#arcade .lk-head{display:none}
+#arcade.sl-booting .arc-body{visibility:hidden}
+#arcade.sl-booting{background:#000}

@@ -36,11 +36,17 @@ function launchUI(){const p=window.stats.pilot;get('pilotName').value=p?p.name:'
  get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';}
 function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value};window.save();launchUI();}
 let watching=0;
-function play(opts={}){savePilot();if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';Arcade.open({admin:true});
- const go=()=>{const b=document.querySelector('[data-arc="start"]');if(!b){setTimeout(go,60);return;}b.click();setTimeout(()=>{const f=document.querySelector('[data-arc=full]');if(f&&!get('arcade').classList.contains('arc-full'))f.click();
-   const g=Arcade._game&&Arcade._game();try{const d=g&&g._dbg;if(d){d.C.opt.advAge=BANDS[bandIndex()][2];d.C.introSeen=d.C.introSeen||false;}}catch(e){}
-   if(opts.show&&g&&g._dbg)setTimeout(()=>{try{g._dbg.startShow(opts.show);}catch(e){}},700);},350);};go();
- clearInterval(watching);watching=setInterval(()=>{const s=Arcade.status&&Arcade.status();if(!get('arcade').open||(s&&s.view!=='game')){clearInterval(watching);try{if(get('arcade').open)Arcade.close();}catch(e){}launchUI();}},500);}
+function backToLaunch(){clearInterval(watching);const d=get('arcade');try{if(d.open)Arcade.close();}catch(e){}d.classList.remove('sl-booting');launchUI();}
+function play(opts={}){savePilot();if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';const dlgEl=get('arcade');dlgEl.classList.add('sl-booting');Arcade.open({admin:true});
+ let started=false,showOn=false,tries=0;
+ const go=()=>{const b=document.querySelector('[data-arc="start"]');if(!b){if(++tries<80)setTimeout(go,50);return;}b.click();
+  const f=document.querySelector('[data-arc=full]');if(f&&!dlgEl.classList.contains('arc-full'))f.click();};go();
+ clearInterval(watching);watching=setInterval(()=>{const s=Arcade.status&&Arcade.status(),g=Arcade._game&&Arcade._game(),d=g&&g._dbg;
+  if(!started){if(s&&s.view==='game'&&d){started=true;dlgEl.classList.remove('sl-booting');try{d.C.opt.advAge=BANDS[bandIndex()][2];}catch(e){}
+     if(opts.show){try{if(g.intro&&typeof g.tap==='function')g.tap();}catch(e){}setTimeout(()=>{try{d.startShow(opts.show);showOn=true;}catch(e){}},500);}}
+   else if(!dlgEl.open)backToLaunch();return;}
+  if(!dlgEl.open||(s&&s.view!=='game')){backToLaunch();return;}
+  if(opts.show&&showOn&&d&&!d.show)backToLaunch();},300);}
 
 /* ---------- test mode: Ctrl+Shift+G or triple-tap the score, then the code ---------- */
 const CHECK='6f8f905c';
