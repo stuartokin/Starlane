@@ -42,8 +42,8 @@ function play(opts={}){savePilot();if(typeof Arcade==='undefined')return;window.
  const go=()=>{const b=document.querySelector('[data-arc="start"]');if(!b){if(++tries<80)setTimeout(go,50);return;}b.click();
   const f=document.querySelector('[data-arc=full]');if(f&&!dlgEl.classList.contains('arc-full'))f.click();};go();
  clearInterval(watching);watching=setInterval(()=>{const s=Arcade.status&&Arcade.status(),g=Arcade._game&&Arcade._game(),d=g&&g._dbg;
-  if(!started){if(s&&s.view==='game'&&d){started=true;dlgEl.classList.remove('sl-booting');try{d.C.opt.advAge=BANDS[bandIndex()][2];}catch(e){}
-     if(opts.show){try{if(g.intro&&typeof g.tap==='function')g.tap();}catch(e){}setTimeout(()=>{try{d.startShow(opts.show);showOn=true;}catch(e){}},500);}}
+  if(!started){if(s&&s.view==='game'&&d){started=true;try{d.C.opt.advAge=BANDS[bandIndex()][2];}catch(e){}
+     if(opts.show){try{if(g.intro&&typeof g.tap==='function')g.tap();d.startShow(opts.show);showOn=true;}catch(e){}setTimeout(()=>dlgEl.classList.remove('sl-booting'),120);}else dlgEl.classList.remove('sl-booting');}
    else if(!dlgEl.open)backToLaunch();return;}
   if(!dlgEl.open||(s&&s.view!=='game')){backToLaunch();return;}
   if(opts.show&&showOn&&d&&!d.show)backToLaunch();},300);}
