@@ -5,12 +5,16 @@
    in both repos. */
 (function(){
 const KEY='starlane-standalone-v1';
+// Running inside ApolloMaths? (same site, so the two pages can call each other directly)
+const HOST=(()=>{try{if(window.parent!==window&&/[?&]host=apollo/.test(location.search)&&window.parent.StarlaneHost&&window.parent.StarlaneHost.version>=1)return window.parent.StarlaneHost;}catch(e){}return null;})();
+window.StarlaneSite={ready:false,hosted:!!HOST,forceExit:()=>{try{if(typeof Arcade!=='undefined'&&get('arcade').open)Arcade.close();}catch(e){}}};
 const fresh=()=>({arcade:{bank:{secs:0,day:''},crt:false,game:'starlane',high:{},lastEnd:0,mute:false,plays:[],saves:{},settings:{carry:0,earnPer:0},tables:{},theme:'player',twoP:{on:false,p:0},used:{}},avatar:{},pilot:null});
 let st;try{st=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){st=null;}
 if(!st||!st.arcade)st=fresh();
 const A=st.arcade;for(const[k,v]of Object.entries(fresh().arcade))if(A[k]===undefined)A[k]=v;
+if(HOST){st=fresh();try{st.arcade.saves.starlane=HOST.loadSave()||undefined;st.arcade.high.starlane=HOST.high()||0;const pr=HOST.profile()||{};st.pilot={name:pr.name||'Commander',band:pr.band||'11-12'};}catch(e){}}
 window.stats=st;
-window.save=function(){try{localStorage.setItem(KEY,JSON.stringify(window.stats));}catch(e){}};
+window.save=function(){if(HOST){try{HOST.saveSave(window.stats.arcade.saves.starlane);}catch(e){}return;}try{localStorage.setItem(KEY,JSON.stringify(window.stats));}catch(e){}};
 window.get=id=>document.getElementById(id);
 window.esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 window.toast=function(m){let t=document.getElementById('slToast');if(!t){t=document.createElement('div');t.id='slToast';document.body.appendChild(t);}t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600);};
@@ -30,14 +34,16 @@ window.STARLANE_LEVEL=bandIndex;
 // The host decides where maths questions come from. Here: the built-in pack for the chosen age band,
 // mixed with the game's own themed questions. ApolloMaths can later answer the same socket from its exam banks.
 window.StarlaneQuestions={themedShare:.5,get:null};
+if(HOST){try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneQuestions.themedShare=.9;
+ if(typeof HOST.question==='function')window.StarlaneQuestions.get=(kind,ctx)=>{try{return HOST.question(kind,ctx);}catch(e){return null;}};}
 
 /* ---------- the launch screen ---------- */
 function launchUI(){const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';
  get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';}
 function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value};window.save();launchUI();}
 let watching=0;
-function backToLaunch(){clearInterval(watching);const d=get('arcade');try{if(d.open)Arcade.close();}catch(e){}d.classList.remove('sl-booting');launchUI();}
-function play(opts={}){savePilot();if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';const dlgEl=get('arcade');dlgEl.classList.add('sl-booting');Arcade.open({admin:true});
+function backToLaunch(){clearInterval(watching);const d=get('arcade');if(HOST){let sc=0;try{sc=(Arcade.status&&Arcade.status().score)||0;}catch(e){}try{if(d.open)Arcade.close();}catch(e){}try{HOST.exit({score:sc});}catch(e){}return;}try{if(d.open)Arcade.close();}catch(e){}d.classList.remove('sl-booting');launchUI();}
+function play(opts={}){if(!HOST)savePilot();if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';const dlgEl=get('arcade');dlgEl.classList.add('sl-booting');Arcade.open({admin:true});
  let started=false,showOn=false,tries=0;
  const go=()=>{const b=document.querySelector('[data-arc="start"]');if(!b){if(++tries<80)setTimeout(go,50);return;}b.click();
   const f=document.querySelector('[data-arc=full]');if(f&&!dlgEl.classList.contains('arc-full'))f.click();};go();
@@ -52,7 +58,7 @@ function play(opts={}){savePilot();if(typeof Arcade==='undefined')return;window.
 const CHECK='6f8f905c';
 const fnv=s=>{let h=0x811c9dc5;for(const ch of new TextEncoder().encode('starlane|'+s)){h^=ch;h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');};
 function gameNow(){const g=typeof Arcade!=='undefined'&&Arcade._game&&Arcade._game();return g&&typeof g.testMode==='function'&&get('arcCanvas')&&get('arcCanvas').offsetParent?g:null;}
-function askCode(){const g=gameNow();if(!g)return;if(g.inTest&&g.inTest()){g.testMode();return;}
+function askCode(){const g=gameNow();if(!g)return;if(g.inTest&&g.inTest()){g.testMode();return;}if(HOST){try{HOST.requestTest(()=>{const g2=gameNow();if(g2&&!(g2.inTest&&g2.inTest()))g2.testMode();});}catch(e){}return;}
  let box=get('slCode');if(!box){box=document.createElement('div');box.id='slCode';box.innerHTML=`<div class="sl-code-card"><h3>🧪 Test mode</h3><p>Enter the test code</p><input id="slCodeIn" type="password" inputmode="numeric" autocomplete="off" maxlength="16"><div class="sl-code-btns"><button id="slCodeOk" type="button">Open</button><button id="slCodeNo" type="button" class="ghost">Cancel</button></div><p id="slCodeMsg" class="msg"></p></div>`;
   get('arcade').appendChild(box);get('slCodeNo').onclick=()=>box.classList.remove('on');
   const ok=()=>{if(fnv(get('slCodeIn').value.trim())===CHECK){box.classList.remove('on');const g2=gameNow();if(g2)g2.testMode();}else{get('slCodeMsg').textContent='Not quite — try again.';get('slCodeIn').select();}};
@@ -62,6 +68,6 @@ document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&(e.key==='G'||
 let taps=[];document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#arcHud'))return;const now=Date.now();taps=taps.filter(t=>now-t<900);taps.push(now);if(taps.length>=3){taps=[];askCode();}},true);
 
 /* ---------- start-up ---------- */
-window.addEventListener('DOMContentLoaded',()=>{launchUI();get('playBtn').onclick=()=>play();get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
+window.addEventListener('DOMContentLoaded',()=>{if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});});
 })();
