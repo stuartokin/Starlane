@@ -35,7 +35,11 @@ window.STARLANE_LEVEL=bandIndex;
 // mixed with the game's own themed questions. ApolloMaths can later answer the same socket from its exam banks.
 window.StarlaneQuestions={themedShare:.5,get:null};
 if(HOST){try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneQuestions.themedShare=.9;
- if(typeof HOST.question==='function')window.StarlaneQuestions.get=(kind,ctx)=>{try{return HOST.question(kind,ctx);}catch(e){return null;}};}
+ if(typeof HOST.question==='function')window.StarlaneQuestions.get=(kind,ctx)=>{try{return HOST.question(kind,ctx);}catch(e){return null;}};
+ window.StarlaneQuestions.report=rec=>{try{if(HOST.report)HOST.report(rec);}catch(e){}};}
+const PROBE=!!HOST&&/[?&]probe=1/.test(location.search);
+// the parent page's check: report what this connection would deliver, without starting the game
+window.StarlaneSite.probe=n=>{const SQ=window.StarlaneQuestions,out=[],kinds=['fuel','trade','hyper','repair','dock'];for(let i=0;i<n*20&&out.length<n;i++){const q=SQ&&typeof SQ.get==='function'?SQ.get(kinds[i%kinds.length],{}):null;if(q)out.push({q:q.q,ans:q.ans,u:q.u||'',exam:q.exam||null,topic:q.topic||null});}return{hosted:!!HOST,socket:!!(SQ&&typeof SQ.get==='function'),questions:out};};
 
 /* ---------- the launch screen ---------- */
 function launchUI(){const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';
@@ -68,6 +72,6 @@ document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&(e.key==='G'||
 let taps=[];document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#arcHud'))return;const now=Date.now();taps=taps.filter(t=>now-t<900);taps.push(now);if(taps.length>=3){taps=[];askCode();}},true);
 
 /* ---------- start-up ---------- */
-window.addEventListener('DOMContentLoaded',()=>{if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
+window.addEventListener('DOMContentLoaded',()=>{if(PROBE){document.body.classList.add('sl-hosted');window.StarlaneSite.ready=true;return;}if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});});
 })();
