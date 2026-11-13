@@ -12,8 +12,10 @@ requirements in `ROADMAP.md`; the test rig in `tests/README.md`.
 ## 1. What Starlane is, and who it is for
 
 A space trading game in the spirit of *Elite* (1984): you start with 100 credits and a small ship docked at a
-station, buy and sell cargo between star systems, fight pirates, take missions and explore a galaxy of 256
-systems. It was built for Stuart's son Apollo (aged 11 in 2026) and is designed to teach while it entertains:
+station, buy and sell cargo between star systems, fight pirates, take missions and explore a procedurally
+generated galaxy (160 systems, seed 20261108; every system reachable within 7 light years). The classic
+mechanics are recreated from published research (Mark Moxon's annotated source at bbcelite.com); names, ships,
+systems and text are original. It was built for Stuart's son Apollo (aged 11 in 2026) and is designed to teach while it entertains:
 
 - **Maths is woven in.** Trading, fuel, hyperspace and repairs pose short maths questions (multiple choice,
   with a worked explanation). A wrong answer costs a little; a right one earns a bonus.
@@ -76,7 +78,7 @@ game picture on wide screens. Adventures draw in a compact panel over the live v
 effects (fog, storms, globes, sun, galaxy) across the full wide view (`advWide()`).
 
 ### 3.3 Economy, galaxy and politics
-256 systems per galaxy with government, economy and tech level; markets with prices that move; news ticker
+160 systems with government, economy and tech level; markets with prices that move; news ticker
 (gluts, strikes, border wars, technology fairs); systems can change government after the player helps
 ("Dictatorship replaced by a Corporate Guild after help from Commander …"). Fuel is bought per light year;
 the tank holds 7 LY. Shipyard tabs: Equipment (Essentials, Weapons, Defence, Systems, Personal), Ships,
