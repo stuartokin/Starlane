@@ -30,3 +30,9 @@ Press **Ctrl+Shift+G** during play (or triple-tap the score at the top on a touc
 - `js/arcade.js`, `js/retro.js`, `js/games.js`, `js/speech.js`, `js/voices.js` — the game host and audio/voice (shared with the host maths app)
 - `js/vendor/three-bundle.js` — 3D library (see `three-LICENSE.txt`)
 - `sw.js`, `manifest.webmanifest`, `icons/` — offline support and install
+
+## For developers (and AI assistants)
+
+Start with **`CLAUDE.md`**, then `docs/KNOWLEDGE.md` (how everything works, including access from the maths
+app), `docs/LESSONS.md` (lessons learned) and `docs/ROADMAP.md` (future requirements). The automated test rig
+is in `tests/` — see `tests/README.md`; run `python tests/run_all.py` before and after any change.
