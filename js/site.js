@@ -28,9 +28,16 @@ window.dayKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padSt
 try{if(typeof Storage!=='undefined'&&!Storage.profiles)Storage.profiles=()=>[];}catch(e){}
 
 /* ---------- training level and the question socket ---------- */
-const BANDS=[['7-8','Ages 7–8','young'],['9-10','Ages 9–10','young'],['11-12','Ages 11–12','mid'],['13-14','Ages 13–14','older']];
+const BANDS=[['7-8','Ages 7–8','young'],['9-10','Ages 9–10','young'],['11-12','Ages 11–12','mid'],['13-14','Ages 13–14','older'],
+ ['x-tiffin1','Exam practice: Tiffin Stage 1','mid'],['x-tiffin2','Exam practice: Tiffin Stage 2','mid'],['x-grammar11','Exam practice: 11+ grammar','mid'],['x-iseb','Exam practice: ISEB Pre-Test (Eton, Harrow…)','mid'],['x-ce13','Exam practice: 13+ Common Entrance','older'],
+ ['adult','Adult — tough (really test yourself!)','older']];
 const bandIndex=()=>{const b=window.stats.pilot&&window.stats.pilot.band;const i=BANDS.findIndex(x=>x[0]===b);return i<0?2:i;};
-window.STARLANE_LEVEL=bandIndex;
+window.STARLANE_LEVEL=()=>{const i=bandIndex();return i<4?i:(/adult|ce13/.test(BANDS[i][0])?3:2);};
+// where the maths comes from: the built-in pack, the adult set, or ApolloMaths' exam engine (in a hidden frame), falling back to the pack
+function questionSource(){if(HOST)return;const b=BANDS[bandIndex()][0],SQ=window.StarlaneQuestions;SQ.get=null;SQ.themedShare=.5;if(window.__packBank)window.bank=window.__packBank;
+ if(b==='adult'&&window.ADULT_BANK){window.__packBank=window.__packBank||window.bank;window.bank=window.ADULT_BANK;SQ.themedShare=.35;return;}
+ if(b.startsWith('x-')){const exam=b.slice(2);let f=document.getElementById('slEngine');if(!f){f=document.createElement('iframe');f.id='slEngine';f.title='Question engine';f.style.cssText='position:absolute;width:1px;height:1px;left:-9999px;border:0';f.src=new URL('../ApolloMaths/engine.html',location.href).href;document.body.appendChild(f);}
+  SQ.get=(kind)=>{try{const E=f.contentWindow&&f.contentWindow.Engine;return E&&E.ready?E.ask(kind,exam,playerName()):null;}catch(e){return null;}};}}
 // The host decides where maths questions come from. Here: the built-in pack for the chosen age band,
 // mixed with the game's own themed questions. ApolloMaths can later answer the same socket from its exam banks.
 window.StarlaneQuestions={themedShare:.5,get:null};
@@ -47,7 +54,8 @@ function launchUI(){const p=window.stats.pilot;get('pilotName').value=p?p.name:'
 function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value};window.save();launchUI();}
 let watching=0;
 function backToLaunch(){clearInterval(watching);const d=get('arcade');if(HOST){let sc=0;try{sc=(Arcade.status&&Arcade.status().score)||0;}catch(e){}try{if(d.open)Arcade.close();}catch(e){}try{HOST.exit({score:sc});}catch(e){}return;}try{if(d.open)Arcade.close();}catch(e){}d.classList.remove('sl-booting');launchUI();}
-function play(opts={}){if(!HOST)savePilot();if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';const dlgEl=get('arcade');dlgEl.classList.add('sl-booting');Arcade.open({admin:true});
+window.StarlaneSite.questionSource=questionSource;
+function play(opts={}){if(!HOST){savePilot();questionSource();}if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';const dlgEl=get('arcade');dlgEl.classList.add('sl-booting');Arcade.open({admin:true});
  let started=false,showOn=false,tries=0;
  const go=()=>{const b=document.querySelector('[data-arc="start"]');if(!b){if(++tries<80)setTimeout(go,50);return;}b.click();
   const f=document.querySelector('[data-arc=full]');if(f&&!dlgEl.classList.contains('arc-full'))f.click();};go();
