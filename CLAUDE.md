@@ -35,7 +35,11 @@ Before changing anything, read in this order:
 ## How Stuart likes work delivered
 
 - Plan first for anything major; he responds well to a short list of thoughts before code.
-- Deliver **only changed files**, zipped with the repo's folder structure, so he can drag the folders into
-  GitHub's upload box. A single changed `index.html` can go on its own. He adds `.github/` files by hand.
-- List any files he must **delete** on GitHub (uploads can't delete).
-- Say briefly what changed and give a short numbered list of things to try. Direct, concise, no padding.
+- **Work through pull requests** (since 14 Nov 2026 the Claude GitHub App has write access to his repos):
+  attach the repo to the session with push access, work on a branch named `claude/<short-description>`,
+  never push to `main`, and open a pull request with a plain-English summary, what was tested (rig results),
+  and a short numbered list of things to try. Stuart reviews and merges on GitHub; Pages then republishes.
+- Deletions, `.github/` workflow files and dotfiles go in the pull request like any other change.
+- Only if a session cannot get push access: fall back to a zip of changed files with folder structure, and list
+  files to delete.
+- Direct, concise, no padding; say what was and wasn't tested.
