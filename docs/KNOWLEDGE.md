@@ -1,7 +1,7 @@
 # Starlane Trader — knowledge base
 
 *Stuart Okin — personal project, written in a personal capacity.*
-*Last full update: 13 November 2026 (ApolloMaths 2.80, Starlane cache `starlane-v5`).*
+*Last full update: 13 November 2026 (ApolloMaths 2.80, `starlane-v5`); added to on 15 November 2026 (`starlane-v14`: cheat page, battle display, whole-screen mouse, cockpit lamps — §3.11–3.14).*
 
 This document is written so that a future person or AI model, starting cold, can understand the whole game,
 how it connects to ApolloMaths, and why it is the way it is. Lessons learned are in `LESSONS.md`; future
@@ -39,14 +39,15 @@ It now has three audiences:
 | Test rig | `tests/` in this repo (see `tests/README.md`) |
 | Automated workflows | `.github/workflows/` (ApolloMaths has `exam-watch.yml`; Starlane's are planned — ROADMAP) |
 
-Both sites are **static GitHub Pages sites with no build step**. Stuart edits by uploading changed files
-through GitHub's web upload. Both are on the origin `stuartokin.github.io`, so pages from one can script pages
+Both sites are **static GitHub Pages sites with no build step**. Changes are committed and pushed to `main` by
+Claude (Stuart no longer uploads files); Pages publishes in a minute or two. Both are on the origin `stuartokin.github.io`, so pages from one can script pages
 of the other when framed (this is how ApolloMaths hosts Starlane — §6).
 
 ### Files in this repo
 
 | File | Role |
 |---|---|
+| `js/version.js` | The version shown in Pause, on the launch page and the cheat page; bump with `CACHE` in `sw.js` |
 | `cheats.html`, `js/cheats-page.js`, `js/cheats-def.js`, `css/cheats.css` | **The cheat page** (§3.11): grown-ups change enemies, attacks, safe zones, emergency escape, money, ship and equipment |
 | `index.html` | Launch page: title, LAUNCH, Watch trailer, 2-minute tour, pilot registration (name + level), hidden `<dialog id="arcade">` |
 | `js/site.js` | **This site's host.** Its own save store, pilot levels, question-source switching, the test-mode code box, launch/stop flow, video start-up, and the "hosted by ApolloMaths" mode |
@@ -326,6 +327,7 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
 | 13 Nov | This knowledge base, the portable test rig, read-only adventure test hooks (`starlane-v5`) |
 | 15 Nov | The cheat page and emergency escape; settings can be applied to a real commander (`starlane-v6`) |
 | 15 Nov | Battle display, Controls page, Pause in test mode, touch full cockpit, cheat page tidy (`starlane-v8`) |
+| 15 Nov | Battle display on the whole screen, mouse on the whole screen and Capture mouse, version shown, lasers from the screen corners, cockpit status lamps, sticky notes moved (`starlane-v9`–`v14`) |
 
 ## 8. Things that are true but easy to forget
 

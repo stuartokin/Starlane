@@ -1,7 +1,8 @@
 # Starlane roadmap and future requirements
 
 *Stuart Okin — personal project, written in a personal capacity.*
-*Requirements as stated by Stuart on 13 November 2026, written up as specifications. Not yet built.*
+*Requirements as stated by Stuart on 13 November 2026, written up as specifications. R1–R5 not yet built.*
+*Status 15 November 2026 (`starlane-v14`): see **Done** below for what was built since, and the open questions for Stuart there.*
 
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.
 
@@ -136,7 +137,15 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **15 Nov 2026 — aiming over the whole screen; version shown** (`starlane-v11`), from Stuart's screen recording.
 - **15 Nov 2026 — cockpit switch panels: status lamps, tidy labels, TIPS obeyed** (`starlane-v13`).
 - **15 Nov 2026 — sticky notes moved** to the canopy frame beside the mirror (`starlane-v14`), as Stuart asked.
-- Open: should the real-commander rules show a small "⚙ custom rules" badge in the game? (Not added; ask Stuart.)
+- **Open questions for Stuart:**
+  - Should a commander with cheat-page rules applied show a small "⚙ custom rules" badge in the game? (Not added.)
+- **Not yet checked on Stuart's own devices** (tested in the rig and in screenshots only): the captured-mouse cursor
+  following the mouse (the headless browser can't move a locked pointer), the cockpit lamps and the sticky notes
+  at his screen size, and the battle display on the real Fold.
+- **Known limits:** the whole-screen battle display and wide 3D cockpit need Modern style and full screen;
+  Retro/Original keep the 4:3 picture, and phones start in Retro.
+- **Backup tags:** pushing tags (`backup/…`) was refused from the cloud session (HTTP 403); `main` pushes work.
+  To undo, reset to an earlier commit (e.g. `eb4ab83` is the version before the cheat page).
 
 ## R5. Smaller open items
 

@@ -24,7 +24,7 @@ somewhere/
 ## Run
 
 ```bash
-python tests/run_all.py                 # everything (about 6 minutes)
+python tests/run_all.py                 # everything (about 9 minutes)
 python tests/run_all.py static,site     # just some suites
 python tests/test_adventures.py icemoon,contact   # chosen adventures only
 SHOTS=1 python tests/test_adventures.py # also save a screenshot of every adventure scene to tests/out/
