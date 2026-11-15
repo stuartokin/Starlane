@@ -1,6 +1,6 @@
 # Starlane roadmap and future requirements
 
-*Stuart Okin, Director of Cyber Regulation and Emerging Technologies, Ofgem — personal project.*
+*Stuart Okin — personal project, written in a personal capacity.*
 *Requirements as stated by Stuart on 13 November 2026, written up as specifications. Not yet built.*
 
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.

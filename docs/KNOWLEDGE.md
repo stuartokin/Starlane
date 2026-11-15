@@ -1,6 +1,6 @@
 # Starlane Trader — knowledge base
 
-*Stuart Okin, Director of Cyber Regulation and Emerging Technologies, Ofgem — personal project.*
+*Stuart Okin — personal project, written in a personal capacity.*
 *Last full update: 13 November 2026 (ApolloMaths 2.80, Starlane cache `starlane-v5`).*
 
 This document is written so that a future person or AI model, starting cold, can understand the whole game,
