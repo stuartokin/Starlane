@@ -211,6 +211,8 @@ How it is controlled:
     `#slCursor` moved by `movementX/Y`. `lockButton()` hands clicks to the battle buttons, the side-panel
     switches, the shell buttons or the game, in that order. `lockTick()`, called from the render loop, releases
     the pointer for menus, docking, shows and tours.
+- **Lasers in the battle display** start from the bottom corners of the whole screen (`beamWide()` on the wide
+  canvas; `G._beamFrom`), or from (150,H) and (650,H) in the 4:3 picture. `drawBoot()` is skipped there.
 - **`underAttack()`**: an attacker within 12 km, a missile coming at you, or hit in the last 10 s. The
   escape button uses it too; key 9 works any time escape is on.
 

@@ -2,6 +2,11 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v12 — 15 November 2026
+- Battle display: your lasers now come from the bottom corners of the screen (they started from where the
+  cockpit console used to be, half-way up). The start-up "systems check" no longer darkens the lower screen
+  or covers the radar in the battle display.
+
 ## starlane-v11 — 15 November 2026
 - **Mouse aiming really uses the whole screen**: steering is measured from the crosshair to the edges of the
   whole visible screen (before, full turn was reached inside the old 4:3 picture, so the rest of a wide

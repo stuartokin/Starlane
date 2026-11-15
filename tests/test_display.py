@@ -12,7 +12,7 @@ async def flying(pg):
 
 async def attack(pg):
     """Pirates after you: the safe zone off for this practice copy, then a few arrival ticks."""
-    await pg.evaluate(f"(()=>{{const d={D};d.test.ch=Object.assign({{}},d.CHD,{{safeKm:0,pack:3,pirateRate:400}});d.set('overlay',null);}})()")
+    await pg.evaluate(f"(()=>{{const d={D};d.test.ch=Object.assign({{}},d.CHD,{{safeKm:0,weapKm:0,pack:3,pirateRate:400}});d.set('overlay',null);}})()")
     await pg.wait_for_timeout(400)
     # keep the arrivals coming until pirates are after you (peaceful systems may need a few goes)
     await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<60&&!d.ships.some(x=>!x.dead&&x.angry&&x.target==='player');i++)d.spawnTick(100);}})()")
@@ -85,6 +85,9 @@ async def main(p):
     await pg.mouse.move(1850, 300); await pg.mouse.down(); await pg.wait_for_timeout(150); f2 = await pg.evaluate(f"{D}.fireNow"); await pg.mouse.up()
     await pg.mouse.move(120, 920); await pg.mouse.down(); await pg.wait_for_timeout(150); f3 = await pg.evaluate(f"{D}.fireNow"); await pg.mouse.up()
     R.check(f2 is True and f3 is False, 'battle display: fires anywhere in space, not on the instruments', [f2, f3])
+    await pg.mouse.move(1850, 300); await pg.mouse.down()
+    bf = await until(pg, f"{D}.beamFrom", 4000, 100); await pg.mouse.up()
+    R.check(bool(bf) and bf[0][0] < 0 and bf[1][0] > 800 and bf[0][1] > 590, 'battle display: the lasers come from the bottom corners of the screen', bf)
     # steering measured over the whole screen: the old picture's edge is not yet full turn, the screen edge is
     sp = await pg.evaluate(f"{D}.aimSpan()")
     R.check(sp['r'] > 500 and sp['l'] > 500, 'aiming uses the whole screen width (not just the 4:3 picture)', sp)

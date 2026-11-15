@@ -82,6 +82,9 @@ time once. Read before making changes.
     (his screen recording showed it at once), and scale controls to the area actually shown.
 21h. **Show the version.** Stuart can now read it in Pause, on the launch page or on the cheat page. Ask for
     it first when he reports a problem.
+21i. **Moving the console moves what hangs off it.** Things were placed relative to the console top (`VH`):
+    the laser start points and the start-up "systems check" shade. When the battle display took the console
+    away, they were left floating mid-screen. Search for `VH` when changing the layout.
 
 ## Content
 
