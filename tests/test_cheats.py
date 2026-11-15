@@ -81,9 +81,9 @@ async def main(p):
     R.check(await pg.evaluate(f"{D}.CH('escape')") is True, 'test mode ✨ CHEATS: the escape switch turns it on')
     await pg.evaluate(f"{D}.set('overlay',null)"); await pg.wait_for_timeout(300)
     await pg.evaluate(f"{D}.ships.forEach(s=>{{s.dead=true;}})"); await pg.wait_for_timeout(11000)
-    R.check(await pg.evaluate(f"!{D}.underAttack()&&!{D}.btns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button is hidden when nobody is attacking')
+    R.check(await pg.evaluate(f"!{D}.underAttack()&&!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button is hidden when nobody is attacking')
     await pg.evaluate(f"{D}.hurtDbg(1)"); await pg.wait_for_timeout(400)
-    R.check(await pg.evaluate(f"!!{D}.btns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button shows when you are attacked')
+    R.check(await pg.evaluate(f"!!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button shows when you are attacked')
     # leave test mode: normal rules again
     await pg.evaluate(f"{D}.testExit()"); await pg.wait_for_timeout(300)
     R.check(await pg.evaluate(f"[{D}.CH('maxShips'),{D}.CH('escape'),{D}.C.credits!==77777]") == [6, False, True], 'leaving test mode puts the normal game back')

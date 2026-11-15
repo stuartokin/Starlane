@@ -189,6 +189,15 @@ How it is controlled:
   after.
 - `PIT3D()` returns false while `bdOn()`, so every "3D cockpit" path steps aside.
 - `bdForce` clears when a fight ends. The first time it comes on, Nova explains (`C.opt.bTip`).
+- **The whole screen.** In Modern style and full screen, `wideState()` turns on whenever the battle display
+  is on and the screen is wider or taller than the picture. `drawBattleWide()` then draws the HUD on the wide
+  canvas behind the picture:
+  - it uses game units scaled by `wd.s` over the whole screen; on touch screens the instruments stay within
+    the picture's width;
+  - its buttons can't use `btns`, which holds canvas clicks, so they go in `G._bdHits` (screen pixels), served
+    by a capture `pointerdown` listener on the host.
+
+  Retro and Original draw only the 4:3 picture.
 - **`underAttack()`**: an attacker within 12 km, a missile coming at you, or hit in the last 10 s. The
   escape button uses it too; key 9 works any time escape is on.
 

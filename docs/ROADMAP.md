@@ -131,6 +131,7 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
     by default.
   - The escape button appears only under attack.
   - "No random attacks" was left as it is (Stuart's mistake, not a bug).
+- **15 Nov 2026 — battle display on the whole screen** (`starlane-v9`), as Stuart asked. Modern style only; Retro/Original keep 4:3.
 - Open: should the real-commander rules show a small "⚙ custom rules" badge in the game? (Not added; ask Stuart.)
 
 ## R5. Smaller open items

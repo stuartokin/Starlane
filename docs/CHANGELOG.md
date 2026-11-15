@@ -2,6 +2,12 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v9 — 15 November 2026
+- **Battle display uses the whole screen** in Modern style and full screen, whatever its shape (wide laptops,
+  the taller Fold, phones): the 3D view fills the screen and the instruments sit at the screen's bottom corners
+  (on touch screens, within the picture's width so they stay clear of the steering and FIRE controls). The red
+  alert edge goes round the whole screen. Retro and Original styles keep the 4:3 picture.
+
 ## starlane-v8 — 15 November 2026
 - **Battle display**: under attack the cockpit steps aside and the whole screen shows space, with a small radar
   (bottom centre) and slim instruments. Automatic by default (a one-off Nova tip says where to change it);

@@ -73,6 +73,9 @@ time once. Read before making changes.
 21e. **Clicks in tests: the canvas is 800×600 game units.** Scale clicks by the canvas size ÷ 800, or call the
     button's `fn` from `_dbg.btns`. Arrival ticks (`spawnTick`) also need one frame after changing `safeKm`,
     because `SAFE` updates in the flight loop.
+21f. **Two kinds of button.** Buttons on the game canvas live in `btns`; buttons drawn on the wide canvas
+    behind it (the whole-screen battle display) live in `G._bdHits` in screen pixels. Tests should look in
+    `_dbg.allBtns`, which holds both.
 
 ## Content
 
