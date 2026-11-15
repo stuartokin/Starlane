@@ -2,6 +2,10 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v14 — 15 November 2026
+- The three sticky notes (lived-in cockpit) moved from the console screens (one covered "MISSILES" on SHIP
+  SYSTEMS) to the canopy frame beside the rear-view mirror, and toned down so they look like paper, not lamps.
+
 ## starlane-v13 — 15 November 2026
 - **Cockpit switch panels redesigned** (wide 3D cockpit): every switch has a glowing status lamp — **red** off
   or not available, **yellow** ready, **green** on or active — instead of the OFF / PRESS / TURN / GUARDED words.

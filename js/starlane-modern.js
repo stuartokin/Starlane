@@ -336,7 +336,7 @@ const StarModern=(()=>{
    {const w=mesh(g,new T.IcosahedronGeometry(3,0),mat(0xffb020,{rough:.4,metal:.3}),-128,-54,4);w.scale.set(1.4,.5,1);}
    const curve=new T.CatmullRomCurve3([new T.Vector3(-168,-60,88),new T.Vector3(-150,-75,70),new T.Vector3(-110,-92,74),new T.Vector3(-70,-108,80),new T.Vector3(-40,-118,70)]);mesh(g,new T.TubeGeometry(curve,30,.8,6,false),mat(0x222428),0,0,0);
    const curve2=new T.CatmullRomCurve3([new T.Vector3(168,-58,80),new T.Vector3(150,-80,85),new T.Vector3(120,-105,78)]);mesh(g,new T.TubeGeometry(curve2,20,.7,6,false),mat(0xb33a2a),0,0,0);
-   for(const[sx,sy,col,rot]of[[240,420,0xffe45e,.12],[30,580,0xff7eb6,-.18],[770,424,0x7cff9a,.2]]){const q=onS(sx,sy,Zs-.8);mesh(g,new T.PlaneGeometry(4.2,4.2),new T.MeshBasicMaterial({color:col,side:T.DoubleSide,toneMapped:false}),q[0],q[1],q[2],0,0,rot);}}
+   for(const[sx,sy,col,rot]of[[300,16,0xffe45e,.12],[318,30,0xff7eb6,-.18],[500,18,0x7cff9a,.2]]){const q=onS(sx,sy,Zs-.8);const nc=new T.Color(col).multiplyScalar(.7);mesh(g,new T.PlaneGeometry(4.2,4.2),new T.MeshBasicMaterial({color:nc,side:T.DoubleSide}),q[0],q[1],q[2],0,0,rot);}}
   // personal items bought at the shipyard
   if(has('p_dice')){const dt=cabCanvas('dice',64,64,(c,w,h)=>{c.fillStyle='#f4f1ea';c.fillRect(0,0,w,h);c.fillStyle='#d6234a';for(const[x,y]of[[16,16],[48,48],[32,32],[16,48],[48,16]])c.beginPath(),c.arc(x,y,6,0,7),c.fill();});
    for(const[dx,dy]of[[-3,0],[3,-4]]){mesh(g,new T.CylinderGeometry(.15,.15,22,4),mat(0xdddddd),-62+dx,49-dy,104);const d=mesh(g,new T.BoxGeometry(5,5,5),mat(0xffffff,{map:dt,rough:.95}),-62+dx,36-dy,104,.3,.5,.2);d.userData.swing=dx;}}

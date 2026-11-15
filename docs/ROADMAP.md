@@ -135,7 +135,7 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **15 Nov 2026 — mouse on the whole screen** (`starlane-v10`). Decisions (Stuart): everywhere in flight, not only in the battle display; Capture mouse offered, off by default; cockpit controls keep priority.
 - **15 Nov 2026 — aiming over the whole screen; version shown** (`starlane-v11`), from Stuart's screen recording.
 - **15 Nov 2026 — cockpit switch panels: status lamps, tidy labels, TIPS obeyed** (`starlane-v13`).
-- Open: the sticky notes on the console cover part of the SHIP SYSTEMS screen ("MISSILES"). Move them, or keep them where they are? (They were left deliberately before.)
+- **15 Nov 2026 — sticky notes moved** to the canopy frame beside the mirror (`starlane-v14`), as Stuart asked.
 - Open: should the real-commander rules show a small "⚙ custom rules" badge in the game? (Not added; ask Stuart.)
 
 ## R5. Smaller open items
@@ -145,7 +145,7 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   `QA-report-questions-hints-lessons.md` from the ApolloMaths repo (nothing uses them since 2.79).
 - **Run the rig in CI** on every push to `main` (`.github/workflows/tests.yml`), so Stuart's uploads are checked.
 - Check Nova's voice on Stuart's devices (device speech varies); trailer length (~46 s) is accepted.
-- The cockpit console sticky note was left in place deliberately — ask before removing.
+- The cockpit sticky notes now sit beside the mirror (Stuart, 15 Nov 2026).
 - Consider science questions for children's levels too, once R1–R3 are proven.
 
 ## 5. Suggested build order

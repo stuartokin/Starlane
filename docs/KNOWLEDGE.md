@@ -336,4 +336,5 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
   game, add a stub to `site.js` too.
 - `arcade.js` here and in ApolloMaths are different files now (ApolloMaths' would try to open Starlane remotely
   from inside Starlane — an infinite loop).
-- A sticky note drawn on the cockpit console was noticed and deliberately left; the trailer is ~46 s (accepted).
+- The three sticky notes (`starlane-modern.js`, lived-in cockpit, placed with `onS(x,y)` in game units) sit on
+  the canopy frame beside the mirror since `starlane-v14`, at Stuart's request (they used to cover console text); the trailer is ~46 s (accepted).
