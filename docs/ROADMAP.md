@@ -125,6 +125,12 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   - It can play a practice copy **and** apply settings to the real commander, so a parent can set a child's game.
   - Emergency escape: 4× speed for 5 s, attackers lose you, 60 s wait (all adjustable).
   - Publish straight to `main`.
+- **15 Nov 2026 — battle display and fixes** (`starlane-v8`). Decisions (Stuart, 15 Nov):
+  - The battle display starts on Automatic, with a one-off tip saying where to change it.
+  - Its radar is at the bottom centre; it shows speed, shields, energy, laser heat, missiles, target and escape
+    by default.
+  - The escape button appears only under attack.
+  - "No random attacks" was left as it is (Stuart's mistake, not a bug).
 - Open: should the real-commander rules show a small "⚙ custom rules" badge in the game? (Not added; ask Stuart.)
 
 ## R5. Smaller open items

@@ -40,8 +40,8 @@ function rowCmd(i){ const v = st.form[i.k], id = 'c_' + i.k, set = i.type === 'b
  return `<div class="ch-row" data-c="${i.k}"><span class="ch-l">${esc(i.label)}</span><div class="ch-multi${st.form.setEquip ? '' : ' off'}" id="${id}">${i.options.map(([val, l]) => `<label><input type="checkbox" value="${val}" ${(v || []).includes(val) ? 'checked' : ''}> ${esc(l)}</label>`).join('')}</div></div>`; }
 
 function build(){ const f = $('chForm');
- f.innerHTML = D.rules.map((g, n) => `<details class="ch-card ch-group" ${n < 4 ? 'open' : ''}><summary>${esc(g.group)}<span class="ch-n"></span></summary><div class="ch-rows">${g.items.map(rowRule).join('')}</div></details>`).join('')
-  + D.cmd.map(g => `<details class="ch-card ch-group" open><summary>${esc(g.group)} <span class="ch-n"></span></summary><div class="ch-rows">${g.items.map(rowCmd).join('')}</div></details>`).join('');
+ f.innerHTML = D.rules.map((g, n) => `<details class="ch-card ch-group"><summary>${esc(g.group)}<span class="ch-n"></span></summary><div class="ch-rows">${g.items.map(rowRule).join('')}</div></details>`).join('')
+  + D.cmd.map(g => `<details class="ch-card ch-group"><summary>${esc(g.group)} <span class="ch-n"></span></summary><div class="ch-rows">${g.items.map(rowCmd).join('')}</div></details>`).join('');
  $('chName').value = st.name;
  f.querySelectorAll('[data-k]').forEach(row => { const i = RULES.find(x => x.k === row.dataset.k), inp = row.querySelector('input');
   inp.addEventListener('input', () => { st.rules[i.k] = i.type === 'bool' ? inp.checked : +inp.value; row.classList.toggle('on', st.rules[i.k] !== i.def); const vv = $('r_' + i.k + '_v'); if (vv) vv.textContent = show(i, st.rules[i.k]); save(); }); });
@@ -62,6 +62,8 @@ function linkFromHash(){ const m = location.hash.match(/[#&]s=([\w-]+)/); if (!m
 async function copyLink(){ const url = location.origin + location.pathname + '#s=' + b64(JSON.stringify({name:st.name, rules:diffRules(st.rules), form:st.form}));
  try { await navigator.clipboard.writeText(url); toast('Link copied — open it on another device to load these settings'); } catch(e) { window.prompt('Copy this link:', url); } }
 
+// back to the game: close this tab if the game opened it, otherwise go to the launch page
+function back(e){ if (e) e.preventDefault(); try { if (window.opener && !window.opener.closed) { window.close(); return; } } catch(err) {} location.href = './'; }
 function unlocked(){ $('chLock').hidden = true; $('chMain').hidden = false; $('chBar').hidden = false;
  load(); const fromLink = linkFromHash(); build(); if (fromLink) { save(); toast('Settings loaded from the link and saved on this device'); }
  $('chPresets').innerHTML = D.presets.map((p, n) => `<button type="button" data-p="${n}">${esc(p[1])}</button>`).join('');
@@ -70,9 +72,11 @@ function unlocked(){ $('chLock').hidden = true; $('chMain').hidden = false; $('c
  $('chPlay').onclick = () => { save(); location.href = './?cheats=play'; };
  $('chApply').onclick = () => { save(); if (confirm('Apply these settings to the real commander saved on this device?\n\nCommander changes (credits, ship, equipment…) are made now. The rules stay on until you remove them (test mode → ✨ CHEATS → 🧹 Remove custom rules).')) location.href = './?cheats=apply'; };
  $('chLink').onclick = copyLink;
+ $('chBack').onclick = back;
  $('chReset').onclick = () => { if (confirm('Put every setting back to the normal game?')) preset(D.presets[0]); }; }
 
 window.addEventListener('DOMContentLoaded', () => {
+ $('chBackTop').onclick = back;
  let ok = false; try { ok = sessionStorage.getItem(OK_KEY) === CHECK; } catch(e) {}
  if (ok) { unlocked(); return; }
  $('chLockForm').addEventListener('submit', e => { e.preventDefault();

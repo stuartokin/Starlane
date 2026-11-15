@@ -172,6 +172,37 @@ as test mode (only the FNV-1a check value is in the repo). Once unlocked, the ta
   `misN()` lowers `m.need` so the mission can still be finished. Story 2's ambush stores `m.need`.
 - **`SAFE`** is now a `let` and is reset each flight frame from `CH('safeKm')`.
 
+### 3.12 Battle display (since `starlane-v8`)
+In a fight the cockpit steps aside: the world renders full height (as the 3D cockpit does, `MAPI.full`) with
+`drawBattleHUD()` instead of the console:
+- a small radar at the bottom centre (top-down, with height ticks; red = attacking you, yellow = missile,
+  cyan square = station);
+- a left box (speed, shields, energy, hull);
+- a right box (laser heat, missiles, lock, fuel, target name/distance/health), and the 🚀 escape button.
+
+How it is controlled:
+- **Setting** `C.opt.battle` = `auto` (default) | `on` | `off`, chosen in Pause → Display → ⚔ Battle display
+  (`menuTab='battle'`, `renderBattleMenu`).
+- **What it shows** is `C.opt.bShow` (defaults in `BD_ITEMS`).
+- **`bdOn()`**: flight, front cockpit view, no seat, show or tour, and then `bdForce` (F3 / the ⚔ BATTLE
+  button) or the setting. `auto` follows `bdT`, which is set to 10 s whenever `underAttack()` and counts down
+  after.
+- `PIT3D()` returns false while `bdOn()`, so every "3D cockpit" path steps aside.
+- `bdForce` clears when a fight ends. The first time it comes on, Nova explains (`C.opt.bTip`).
+- **`underAttack()`**: an attacker within 12 km, a missile coming at you, or hit in the last 10 s. The
+  escape button uses it too; key 9 works any time escape is on.
+
+### 3.13 Small things added in `starlane-v8`
+- Test mode keeps `OPT_KEEP` options (keys, controls, battle, bShow, bTip, cock3d, mfd) when you exit; they
+  are preferences, not part of the practice game.
+- Pause → GAME in test mode shows ↩ Back to test mode, and ⚙ Back to the cheat page when `test.fromPage`
+  (set when the cheat page started it). `backToCheats()` opens a new tab when hosted.
+- Display tab:
+  - `cockpit` is labelled "Cockpit frame";
+  - `cock3d` is labelled "Full 3D cockpit";
+  - touch screens get a 📱 button for `cock3d` (tablets start with the simple cockpit; `C.opt.device`).
+- `wingWrap()` wraps text on the side screens of the wide 3D cockpit.
+
 ### 3.10 Saving
 The game calls the host's `save()`/`get()`; the commander lives at `stats.arcade.saves.starlane`.
 Standalone: localStorage key **`starlane-standalone-v1`** only. Hosted: saved into the child's ApolloMaths
@@ -261,6 +292,7 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
 | 2.71–2.80 | ApolloMaths generalised (exam plans, adaptive difficulty, new layout, themes, themed shop and arcade); built-in Starlane removed (2.79); adult and exam-practice levels on the Starlane site; profile protection |
 | 13 Nov | This knowledge base, the portable test rig, read-only adventure test hooks (`starlane-v5`) |
 | 15 Nov | The cheat page and emergency escape; settings can be applied to a real commander (`starlane-v6`) |
+| 15 Nov | Battle display, Controls page, Pause in test mode, touch full cockpit, cheat page tidy (`starlane-v8`) |
 
 ## 8. Things that are true but easy to forget
 

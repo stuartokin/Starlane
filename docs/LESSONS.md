@@ -67,6 +67,12 @@ time once. Read before making changes.
 21c. **Random events make flaky tests.** The hyperspace check failed now and then because of the 3% chance of
     being pulled out of hyperspace by alien raiders. Tests now switch that chance off (`test.ch.interdict=0`)
     rather than retry.
+21d. **Game settings changed in test mode used to vanish.** Test mode plays a copy of the commander, and the
+    copy held the key settings, so "Reset all keys" seemed not to work. Preferences now carry over on exit
+    (`OPT_KEEP`); add new display or control options to that list.
+21e. **Clicks in tests: the canvas is 800×600 game units.** Scale clicks by the canvas size ÷ 800, or call the
+    button's `fn` from `_dbg.btns`. Arrival ticks (`spawnTick`) also need one frame after changing `safeKm`,
+    because `SAFE` updates in the flight loop.
 
 ## Content
 
