@@ -64,6 +64,9 @@ time once. Read before making changes.
 21b. **The cheat page re-saves its own state when you press Play or Apply.** Tests that seed
     `starlane-cheats-v1` must reload the page before clicking. Also, navigating to the same page with only a new
     `#hash` doesn't reload it.
+21c. **Random events make flaky tests.** The hyperspace check failed now and then because of the 3% chance of
+    being pulled out of hyperspace by alien raiders. Tests now switch that chance off (`test.ch.interdict=0`)
+    rather than retry.
 
 ## Content
 

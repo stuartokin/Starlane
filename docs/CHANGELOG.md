@@ -2,6 +2,10 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v7 — 15 November 2026
+- The Swarm preset now switches the emergency escape on (it didn't, so there was no 🚀 button).
+- Test mode → ✨ CHEATS has a 🚀 Emergency escape on/off switch.
+
 ## starlane-v6 — 15 November 2026
 - **Cheat page** at `/Starlane/cheats.html`, locked with the test-mode code. It changes:
   - enemies at once, attack rate, pirates per attack, time between arrivals, enemy toughness, damage, missiles

@@ -79,7 +79,7 @@ const presets = [
  ['normal', '↺ Normal game', {}, {}],
  ['peace', '🕊 Peaceful cruise', {peace:true, interdict:0, safeKm:40, police:true}, {}],
  ['easy', '🧸 Easy fights', {enemyDmg:50, enemyHP:60, shieldRegen:200, escape:true, infMissiles:true}, {}],
- ['swarm', '🐝 Swarm', {maxShips:16, pirateRate:300, pack:5, spawnGap:6, misAtk:6, vorn:6, safeKm:5, interdict:400}, {}],
+ ['swarm', '🐝 Swarm', {maxShips:16, pirateRate:300, pack:5, spawnGap:6, misAtk:6, vorn:6, safeKm:5, interdict:400, escape:true}, {}],
  ['rich', '💰 Rich trader', {freeShop:true, rewardScale:300}, {credits:'100000'}],
  ['tank', '🛡 Tank', {god:true, noHeat:true, infMissiles:true, infECM:true, infBomb:true, infStarburst:true, infFuel:true, escape:true}, {}]
 ];

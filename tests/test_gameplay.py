@@ -12,7 +12,7 @@ async def main(p):
     R.check(bool(await until(pg, f"{D}.mode==='flight'", 20000)), 'launch → flight (after the cut-scene)')
     R.check(await pg.evaluate(f"{D}.weaponsSafe()") in (True, False), 'weapons-safe rule answers near the station', await pg.evaluate(f"{D}.weaponsSafe()"))
     sys0 = await pg.evaluate(f"{D}.C.sys")
-    await test_mode(pg); await pg.evaluate(f"(()=>{{const d={D};d.set&&d.set('overlay',null);d.C.fuel=99;const cur=d.C.sys;d.C.target=(cur+1)%256;d.startHyperDbg();}})()")
+    await test_mode(pg); await pg.evaluate(f"(()=>{{const d={D};d.set&&d.set('overlay',null);d.test.ch=Object.assign({{}},d.CHD,{{interdict:0}});d.C.fuel=99;const cur=d.C.sys;d.C.target=(cur+1)%256;d.startHyperDbg();}})()")
     R.check(bool(await until(pg, f"{D}.mode==='flight'&&{D}.C.sys!=={sys0}", 30000)), 'hyperspace jump arrives in another system')
     await pg.evaluate(f"{D}.C.opt.style='modern'"); await pg.wait_for_timeout(1500)
     R.check(await pg.evaluate(f"{D}.styleNow") == 'modern', 'Modern (3D) style runs')

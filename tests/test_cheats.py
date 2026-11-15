@@ -38,6 +38,7 @@ async def main(p):
     R.check(saved and saved['rules']['maxShips'] == 3, 'moving a slider saves on this device', saved and saved['rules'].get('maxShips'))
     await pg.click("#chPresets button:has-text('Swarm')"); await pg.wait_for_timeout(200)
     saved = await pg.evaluate("JSON.parse(localStorage.getItem('starlane-cheats-v1'))")
+    R.check(saved['rules']['escape'] is True, 'Swarm also switches the emergency escape on')
     R.check(saved['rules']['maxShips'] == 16 and saved['rules']['pack'] == 5, 'a preset sets and saves its rules', {k: saved['rules'][k] for k in ('maxShips', 'pack', 'misAtk')})
     R.check('changed from normal' in await pg.inner_text('#chCount'), 'the page counts the changes', await pg.inner_text('#chCount'))
     # share link round trip
@@ -71,6 +72,13 @@ async def main(p):
     R.check(r is True and sp[2] and sp[0] > sp[1] * 2, 'emergency escape: a big burst of speed', sp)
     R.check(await pg.evaluate(f"{D}.ships.filter(s=>!s.dead&&s.target==='player').every(s=>s.lostT>0)"), 'emergency escape: attackers lose you')
     R.check(await pg.evaluate(f"{D}.escapeNow()") is False, 'emergency escape waits before it can be used again')
+    # the test-mode ✨ CHEATS tab can switch the escape on without the cheat page
+    await pg.evaluate(f"{D}.test.ch=null"); await pg.evaluate("Arcade._game().testMode()"); await pg.wait_for_timeout(200)
+    await pg.evaluate(f"{D}.btns.find(b=>b.label==='✨ CHEATS').fn()"); await pg.wait_for_timeout(200)
+    await pg.evaluate(f"{D}.btns.find(b=>b.label&&b.label.startsWith('🚀 Emergency escape')).fn()"); await pg.wait_for_timeout(200)
+    R.check(await pg.evaluate(f"{D}.CH('escape')") is True, 'test mode ✨ CHEATS: the escape switch turns it on')
+    await pg.evaluate(f"{D}.set('overlay',null)"); await pg.wait_for_timeout(300)
+    R.check(await pg.evaluate(f"!!{D}.btns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button shows in flight')
     # leave test mode: normal rules again
     await pg.evaluate(f"{D}.testExit()"); await pg.wait_for_timeout(300)
     R.check(await pg.evaluate(f"[{D}.CH('maxShips'),{D}.CH('escape'),{D}.C.credits!==77777]") == [6, False, True], 'leaving test mode puts the normal game back')
