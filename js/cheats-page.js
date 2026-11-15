@@ -76,6 +76,7 @@ function unlocked(){ $('chLock').hidden = true; $('chMain').hidden = false; $('c
  $('chReset').onclick = () => { if (confirm('Put every setting back to the normal game?')) preset(D.presets[0]); }; }
 
 window.addEventListener('DOMContentLoaded', () => {
+ try { const v = window.STARLANE_VERSION; if (v) $('chVer').textContent = `Version ${v.v}`; } catch(e) {}
  $('chBackTop').onclick = back;
  let ok = false; try { ok = sessionStorage.getItem(OK_KEY) === CHECK; } catch(e) {}
  if (ok) { unlocked(); return; }

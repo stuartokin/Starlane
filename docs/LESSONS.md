@@ -76,6 +76,12 @@ time once. Read before making changes.
 21f. **Two kinds of button.** Buttons on the game canvas live in `btns`; buttons drawn on the wide canvas
     behind it (the whole-screen battle display) live in `G._bdHits` in screen pixels. Tests should look in
     `_dbg.allBtns`, which holds both.
+21g. **"It works in the test" isn't "it feels right".** The mouse was tracked across the whole screen (the
+    tests passed), but steering hit full turn inside the old 4:3 picture, and the aiming ring was clipped to
+    it. To Stuart it looked as if the mouse ignored most of the screen. Check what the player sees and feels
+    (his screen recording showed it at once), and scale controls to the area actually shown.
+21h. **Show the version.** Stuart can now read it in Pause, on the launch page or on the cheat page. Ask for
+    it first when he reports a problem.
 
 ## Content
 

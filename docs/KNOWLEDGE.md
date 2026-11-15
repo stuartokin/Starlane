@@ -203,6 +203,9 @@ How it is controlled:
   coordinates past the picture's edges (`toGameXY`).
   - "Open space", where the mouse steers and fires, is `y < openY()`: above the console (`VH`), or in the battle
     display above the instruments (`G._bdTop`).
+  - Aiming: `aimSpan()` is the steering area around the crosshair. It is the picture, or the whole screen when
+    the wide view is on, and full turn comes near its edges. `aimRing()` draws the ring and line; on a wide
+    screen `aimWide()` draws them on the wide canvas so they show anywhere.
   - The canvas `mouseleave` doesn't drop a held fire button while the wide view is on.
   - **Capture mouse** (`C.opt.mouseLock`, off by default): `requestPointerLock` on the host, and a DOM cursor
     `#slCursor` moved by `movementX/Y`. `lockButton()` hands clicks to the battle buttons, the side-panel

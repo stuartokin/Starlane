@@ -54,7 +54,7 @@ if(/[?&]cheats=/.test(location.search)){try{history.replaceState(null,'',locatio
 window.StarlaneSite.probe=n=>{const SQ=window.StarlaneQuestions,out=[],kinds=['fuel','trade','hyper','repair','dock'];for(let i=0;i<n*20&&out.length<n;i++){const q=SQ&&typeof SQ.get==='function'?SQ.get(kinds[i%kinds.length],{}):null;if(q)out.push({q:q.q,ans:q.ans,u:q.u||'',exam:q.exam||null,topic:q.topic||null});}return{hosted:!!HOST,socket:!!(SQ&&typeof SQ.get==='function'),questions:out};};
 
 /* ---------- the launch screen ---------- */
-function launchUI(){const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';
+function launchUI(){try{const v=window.STARLANE_VERSION;if(v&&get('slVer'))get('slVer').textContent=`· Version ${v.v} (${v.date})`;}catch(e){}const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';
  get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';}
 function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value};window.save();launchUI();}
 let watching=0;

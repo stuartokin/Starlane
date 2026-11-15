@@ -11,6 +11,8 @@ async def main(p):
     R.check(await pg.evaluate("window.STARLANE_LEVEL()") == 2, 'pilot level 11–12 → question band 2')
     keys = await pg.evaluate("Object.keys(localStorage)")
     R.check(keys == ['starlane-standalone-v1'], 'saves only under starlane-standalone-v1', keys)
+    ver = await pg.evaluate("(document.getElementById('slVer')||{}).textContent||''")
+    R.check(ver.startswith('· Version v'), 'the launch page shows the version', ver)
     q = await pg.evaluate("Arcade._game()._dbg.makeMathQDbg('trade')")
     R.check(bool(q and q.get('q') and q.get('ans') in q.get('opts', [])), 'a maths question is built with its answer among the options', (q or {}).get('q', '')[:70])
     # the code box: a wrong code is refused; the right one (only if supplied) opens test mode

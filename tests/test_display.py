@@ -14,7 +14,8 @@ async def attack(pg):
     """Pirates after you: the safe zone off for this practice copy, then a few arrival ticks."""
     await pg.evaluate(f"(()=>{{const d={D};d.test.ch=Object.assign({{}},d.CHD,{{safeKm:0,pack:3,pirateRate:400}});d.set('overlay',null);}})()")
     await pg.wait_for_timeout(400)
-    await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<6;i++)d.spawnTick(100);}})()")
+    # keep the arrivals coming until pirates are after you (peaceful systems may need a few goes)
+    await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<60&&!d.ships.some(x=>!x.dead&&x.angry&&x.target==='player');i++)d.spawnTick(100);}})()")
     await pg.wait_for_timeout(600)
 
 async def main(p):
@@ -84,6 +85,11 @@ async def main(p):
     await pg.mouse.move(1850, 300); await pg.mouse.down(); await pg.wait_for_timeout(150); f2 = await pg.evaluate(f"{D}.fireNow"); await pg.mouse.up()
     await pg.mouse.move(120, 920); await pg.mouse.down(); await pg.wait_for_timeout(150); f3 = await pg.evaluate(f"{D}.fireNow"); await pg.mouse.up()
     R.check(f2 is True and f3 is False, 'battle display: fires anywhere in space, not on the instruments', [f2, f3])
+    # steering measured over the whole screen: the old picture's edge is not yet full turn, the screen edge is
+    sp = await pg.evaluate(f"{D}.aimSpan()")
+    R.check(sp['r'] > 500 and sp['l'] > 500, 'aiming uses the whole screen width (not just the 4:3 picture)', sp)
+    vt = await pg.evaluate(f"{D}.starVer()")
+    R.check(vt.startswith('Starlane Trader v'), 'Pause shows the version', vt)
     wd = await pg.evaluate(f"{D}.wideNow()")
     R.check(await pg.evaluate(f"{D}.bdOn()") and wd and wd['w'] >= 1850, 'Modern style: the battle display fills the whole screen', wd)
     hits = await pg.evaluate(f"{D}.bdHits.map(b=>[b.x,b.y,b.w,b.h])")

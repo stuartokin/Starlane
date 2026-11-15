@@ -2,6 +2,14 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v11 — 15 November 2026
+- **Mouse aiming really uses the whole screen**: steering is measured from the crosshair to the edges of the
+  whole visible screen (before, full turn was reached inside the old 4:3 picture, so the rest of a wide
+  screen did nothing), and the aiming ring and line are drawn on the whole screen, not cut off at the
+  picture's edge.
+- **Version shown** in Pause (GAME tab, bottom right), on the launch page and on the cheat page
+  (`js/version.js`; kept equal to `CACHE` in `sw.js` by `test_static`).
+
 ## starlane-v10 — 15 November 2026
 - **The mouse works on the whole screen** in flight, not just over the 4:3 game picture: it aims (steers),
   left click fires, right-drag looks around, the wheel changes speed. Cockpit buttons, side-panel switches,

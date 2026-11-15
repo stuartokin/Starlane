@@ -30,6 +30,11 @@ async def main(p):
         for m in re.finditer(r'.{0,30}Apollo.{0,30}', t):
             if not re.search(r'Apollo (11|astronaut)|/ApolloMaths/', m.group(0)): apollo.append(f'{f.name}: {m.group(0).strip()}')
     R.check(not apollo, 'no "Apollo" shown to players (except Moon-landing history)', apollo[:3])
+    # 3a. the version shown to players matches the offline cache name
+    vj = (STARLANE / 'js/version.js').read_text(encoding='utf-8'); sw = (STARLANE / 'sw.js').read_text(encoding='utf-8')
+    m1 = re.search(r"cache:\s*'([^']+)'", vj); m2 = re.search(r"CACHE='([^']+)'", sw); m3 = re.search(r"v:\s*'v(\d+)'", vj)
+    ok = bool(m1 and m2 and m3 and m1.group(1) == m2.group(1) == f'starlane-v{m3.group(1)}')
+    R.check(ok, 'version.js matches CACHE in sw.js', [m1 and m1.group(1), m2 and m2.group(1)])
     # 3b. the cheat page's normal values match the game's (CHD in starlane.js ↔ js/cheats-def.js)
     if shutil.which('node'):
         js = """const fs=require('fs'),src=fs.readFileSync(process.argv[1],'utf8'),m=src.match(/const CHD=(\{[^;]*\});/);
