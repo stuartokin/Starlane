@@ -216,6 +216,15 @@ How it is controlled:
 - **`underAttack()`**: an attacker within 12 km, a missile coming at you, or hit in the last 10 s. The
   escape button uses it too; key 9 works any time escape is on.
 
+### 3.14 Cockpit switch panels (since `starlane-v13`)
+The wide 3D cockpit's side panels (`deckState`, `drawWing`, `drawSwitch`) show 15 switches (`DECK_L`,
+`DECK_R`).
+- Each switch has a status from `swState(id)`: `r` (off / not available), `y` (ready) or `g` (on / active),
+  drawn as a glowing lamp in the cell's corner (`SWC` colours), with the cell's border tinted to match.
+- The name comes from `swLabel()` (with counts) under a control drawn at 60% size. One font size is fitted to
+  the longest name, "MISSIONS 9".
+- `deckTip()` (hover labels) shows only when `C.opt.tips` is on.
+
 ### 3.13 Small things added in `starlane-v8`
 - Test mode keeps `OPT_KEEP` options (keys, controls, battle, bShow, bTip, cock3d, mfd) when you exit; they
   are preferences, not part of the practice game.

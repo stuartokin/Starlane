@@ -134,6 +134,8 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **15 Nov 2026 — battle display on the whole screen** (`starlane-v9`), as Stuart asked. Modern style only; Retro/Original keep 4:3.
 - **15 Nov 2026 — mouse on the whole screen** (`starlane-v10`). Decisions (Stuart): everywhere in flight, not only in the battle display; Capture mouse offered, off by default; cockpit controls keep priority.
 - **15 Nov 2026 — aiming over the whole screen; version shown** (`starlane-v11`), from Stuart's screen recording.
+- **15 Nov 2026 — cockpit switch panels: status lamps, tidy labels, TIPS obeyed** (`starlane-v13`).
+- Open: the sticky notes on the console cover part of the SHIP SYSTEMS screen ("MISSILES"). Move them, or keep them where they are? (They were left deliberately before.)
 - Open: should the real-commander rules show a small "⚙ custom rules" badge in the game? (Not added; ask Stuart.)
 
 ## R5. Smaller open items

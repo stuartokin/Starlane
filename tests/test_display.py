@@ -60,6 +60,9 @@ async def main(p):
     await pg.evaluate(f"{D}.C.opt.style='modern'"); await pg.wait_for_timeout(1500)
     await flying(pg); await pg.wait_for_timeout(2000)
     # the mouse outside the game picture (the wide 3D cockpit's side areas)
+    # cockpit switch lamps: red = off / not available, yellow = ready, green = on
+    st = await pg.evaluate(f"(()=>{{const d={D};d.C.opt.tips=false;const a=d.swState('tips').c;d.C.opt.tips=true;const b=d.swState('tips').c;delete d.C.equip.dock;return [a,b,d.swState('dock').c,d.swState('dock').t,d.C.missiles>0?d.swState('missile').c:'y'];}})()")
+    R.check(st == ['r', 'g', 'r', 'NONE', 'y'], 'cockpit lamps: TIPS off red / on green, no docking computer red, missiles ready yellow', st)
     await pg.mouse.move(150, 250); await pg.wait_for_timeout(200)
     hv = await pg.evaluate(f"{D}.hoverNow")
     R.check(hv and hv['x'] < 0, 'mouse outside the picture still aims (steers)', hv)

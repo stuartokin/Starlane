@@ -2,6 +2,13 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v13 — 15 November 2026
+- **Cockpit switch panels redesigned** (wide 3D cockpit): every switch has a glowing status lamp — **red** off
+  or not available, **yellow** ready, **green** on or active — instead of the OFF / PRESS / TURN / GUARDED words.
+  Small control on top, the name (with its number: MSL 3, TIME ×2, HOLD 0/20, HYP 4 s) across the cell below,
+  one size for all, never running into the next switch. Cells are rounded and tinted by their state.
+- Hover labels on the switches now obey the TIPS switch.
+
 ## starlane-v12 — 15 November 2026
 - Battle display: your lasers now come from the bottom corners of the screen (they started from where the
   cockpit console used to be, half-way up). The start-up "systems check" no longer darkens the lower screen
