@@ -1,0 +1,59 @@
+/* Starlane cheat page (cheats.html) */
+:root{--bg:#02040c;--card:rgba(8,14,32,.9);--line:#26305a;--text:#e8ecfa;--dim:#9aa6cc;--gold:#ffe45e;--cyan:#3fe0ff;--green:#3cff6a;--red:#ff8a8a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body.ch-body{margin:0;min-height:100vh;background:var(--bg) radial-gradient(ellipse at 50% 0,#14306a 0,#050a1c 50%,#02040c 100%) fixed;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.45;padding-bottom:120px;overflow-x:hidden}
+.ch-head{max-width:860px;margin:0 auto;padding:22px 16px 6px}
+.ch-head h1{margin:0;color:var(--gold);font-size:clamp(22px,5vw,34px);letter-spacing:.03em}
+.ch-head p{margin:.4em 0 0;color:#c8d0ff}
+main,.ch-lock{max-width:860px;margin:0 auto;padding:0 16px}
+.ch-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:14px 0}
+.ch-lock{max-width:420px;margin-top:24px}
+.ch-card h2{margin:0 0 8px;font-size:17px;color:var(--gold)}
+.ch-lock form{display:flex;gap:8px}
+.ch-lock input{flex:1;min-width:0;font-size:20px;letter-spacing:.2em;text-align:center;padding:8px;border-radius:8px;border:1px solid #3b4a8f;background:#050a1c;color:#fff}
+button{font:inherit;padding:9px 14px;border-radius:10px;border:1px solid #3b4a8f;background:#0b1328;color:var(--text);cursor:pointer}
+button:hover{filter:brightness(1.2)}
+button.ch-go{border-color:#7fe9ff;background:linear-gradient(#1b6f8f,#0d3c5c);font-weight:700}
+.ch-lock button{border-color:var(--cyan);background:#123a55}
+.ch-err{color:var(--red);min-height:1.2em;margin:8px 0 0}
+.ch-small{color:#7f8bb5;font-size:13px}.ch-small a{color:var(--cyan)}
+.ch-how ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.ch-how details{margin-top:10px;color:#c8d0ff}.ch-how summary{cursor:pointer;color:var(--cyan)}
+.ch-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ch-chips button{padding:7px 12px;font-size:14px}
+.ch-name{display:grid;gap:4px;margin-top:12px;font-size:13px;color:var(--dim)}
+input[type=text],input[type=number],input:not([type]),select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid #3b4a8f;background:#050a1c;color:#fff;max-width:100%}
+.ch-count{margin:10px 0 0;color:var(--dim);font-size:14px}.ch-count b{color:var(--gold)}
+.ch-group{padding:0}
+.ch-group>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;color:var(--gold);font-size:17px;display:flex;justify-content:space-between;gap:8px}
+.ch-group>summary::-webkit-details-marker{display:none}
+.ch-group>summary::after{content:'▾';color:var(--dim)}.ch-group:not([open])>summary::after{content:'▸'}
+.ch-group .ch-n{color:var(--cyan);font-size:13px;font-weight:400;margin-left:auto}
+.ch-rows{padding:0 16px 10px}
+.ch-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:10px 0;border-top:1px solid rgba(59,74,143,.35)}
+.ch-row label,.ch-row .ch-l{color:var(--text);min-width:0}
+.ch-row .ch-hint{grid-column:1/-1;color:#7f8bb5;font-size:12px;margin-top:-4px}
+.ch-row.on .ch-l::before{content:'• ';color:var(--gold);font-weight:700}
+.ch-row.range{grid-template-columns:minmax(0,1fr) auto}
+.ch-row.range input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--cyan)}
+.ch-val{color:var(--cyan);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.ch-row input[type=checkbox]{width:24px;height:24px;accent-color:var(--cyan)}
+.ch-row select,.ch-row input[type=number]{width:200px}
+.ch-multi{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.ch-multi label{display:flex;gap:8px;align-items:center;font-size:14px;color:#c8d0ff}
+.ch-multi.off{opacity:.45}
+.ch-foot{max-width:860px;margin:6px auto}
+.ch-bar{position:fixed;left:0;right:0;bottom:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,6,18,.96);border-top:1px solid var(--line);z-index:10}
+.ch-bar button{flex:1 1 150px;max-width:240px}
+#chToast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#0b1328;border:1px solid var(--cyan);color:#fff;padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .3s;z-index:20;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+#chToast.on{opacity:1}
+@media (max-width:520px){
+ .ch-row{grid-template-columns:1fr}
+ .ch-row:not(.range):has(input[type=checkbox]){grid-template-columns:minmax(0,1fr) auto}
+ .ch-row select,.ch-row input[type=number]{width:100%}
+ .ch-val{text-align:left}
+ .ch-row.range{grid-template-columns:minmax(0,1fr) auto}
+ .ch-bar button{flex:1 1 40%;padding:9px 8px;font-size:14px}
+ body.ch-body{padding-bottom:150px}
+}

@@ -30,6 +30,17 @@ async def main(p):
         for m in re.finditer(r'.{0,30}Apollo.{0,30}', t):
             if not re.search(r'Apollo (11|astronaut)|/ApolloMaths/', m.group(0)): apollo.append(f'{f.name}: {m.group(0).strip()}')
     R.check(not apollo, 'no "Apollo" shown to players (except Moon-landing history)', apollo[:3])
+    # 3b. the cheat page's normal values match the game's (CHD in starlane.js ↔ js/cheats-def.js)
+    if shutil.which('node'):
+        js = """const fs=require('fs'),src=fs.readFileSync(process.argv[1],'utf8'),m=src.match(/const CHD=(\{[^;]*\});/);
+          global.window={};new Function('window',fs.readFileSync(process.argv[2],'utf8'))(global.window);
+          const game=m?Function('return '+m[1])():null,page=window.STARLANE_CHEAT_DEFS.defaults(),bad=[];
+          if(!game)bad.push('CHD not found');else{for(const k of new Set([...Object.keys(game),...Object.keys(page)]))if(game[k]!==page[k])bad.push(k+': game '+game[k]+' page '+page[k]);}
+          console.log(JSON.stringify({bad,n:Object.keys(page).length}));"""
+        r = subprocess.run(['node', '-e', js, str(STARLANE / 'js/starlane.js'), str(STARLANE / 'js/cheats-def.js')], capture_output=True, text=True)
+        try: out = json.loads(r.stdout)
+        except Exception: out = {'bad': [r.stderr[:200]], 'n': 0}
+        R.check(not out['bad'], "cheat page's normal values match the game's", out['bad'][:4] or f"{out['n']} rules")
     # 4. adventures and question packs, checked inside the page
     pg = await browser(p); await open_site(pg)
     adv = await pg.evaluate("""(()=>{const bad=[],types={};const ages=['young','mid','older'];

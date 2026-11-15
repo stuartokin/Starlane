@@ -57,6 +57,13 @@ time once. Read before making changes.
     adventures appearing mid-trailer.
 20. **Run videos in a sandbox and restore exactly.** Snapshot the real game (`snapReal`) before a trailer and
     restore it after; players must never lose progress to a demo.
+21a. **Keep cheats as data with one accessor.** Every tunable number reads `CH(k)` with the normal value in
+    `CHD`. The page's list (`cheats-def.js`) is checked against `CHD`, so the two can't drift. Lasting rules live
+    with the commander (`C.cheats`), and one-off changes are applied once. That way a parent can set a child's
+    game without touching the child's device storage directly.
+21b. **The cheat page re-saves its own state when you press Play or Apply.** Tests that seed
+    `starlane-cheats-v1` must reload the page before clicking. Also, navigating to the same page with only a new
+    `#hash` doesn't reload it.
 
 ## Content
 

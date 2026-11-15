@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#03050f">
+<meta name="robots" content="noindex">
+<title>Starlane Trader — cheat page</title>
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="stylesheet" href="css/cheats.css">
+</head>
+<body class="ch-body">
+<header class="ch-head">
+ <h1>⚙ Starlane cheat page</h1>
+ <p>For grown-ups: change how Starlane Trader plays. Try the settings in a practice copy, or apply them to a commander.</p>
+</header>
+
+<section id="chLock" class="ch-card ch-lock" aria-label="Unlock">
+ <h2>🔒 Enter the test code</h2>
+ <p>This is the same code as the game's test mode.</p>
+ <form id="chLockForm"><input id="chCode" type="password" inputmode="numeric" autocomplete="off" maxlength="16" aria-label="Test code"><button type="submit">Unlock</button></form>
+ <p id="chLockMsg" class="ch-err" role="alert"></p>
+ <p class="ch-small"><a href="./">← Back to Starlane Trader</a></p>
+</section>
+
+<main id="chMain" hidden>
+ <section class="ch-card ch-how">
+  <h2>How to use it</h2>
+  <ol>
+   <li><b>Choose your settings</b> below, or start from a preset. They save on this device as you go.</li>
+   <li><b>▶ Play a practice copy</b>: opens the game with these settings on a copy of your commander. Leave test mode and everything goes back to how it was.</li>
+   <li><b>✅ Apply to my commander</b>: changes the real commander saved on this device. The rules stay on until you remove them.</li>
+  </ol>
+  <details><summary>Applying the settings to a child's game in the maths-practice app</summary>
+   <p>Open this page <b>on the child's device</b> (or send yourself the 🔗 link and open it there), unlock it and choose the settings. Then open Starlane from the maths-practice app, open test mode (triple-tap the score, or Ctrl+Shift+G, then the family passphrase), go to <b>✨ CHEATS</b> and press <b>✅ Apply them to the REAL commander</b>. <b>🧹 Remove custom rules</b> on the same page puts the normal rules back.</p>
+  </details>
+ </section>
+
+ <section class="ch-card">
+  <h2>Presets</h2>
+  <div id="chPresets" class="ch-chips"></div>
+  <label class="ch-name">Name these settings <input id="chName" maxlength="40" placeholder="e.g. Easy mode"></label>
+  <p id="chCount" class="ch-count"></p>
+ </section>
+
+ <div id="chForm"></div>
+ <p class="ch-small ch-foot">Rules marked • differ from the normal game. Commander changes (credits, ship, equipment) are made once, when you play or apply.</p>
+</main>
+
+<nav id="chBar" class="ch-bar" hidden>
+ <button id="chPlay" type="button" class="ch-go">▶ Play a practice copy</button>
+ <button id="chApply" type="button">✅ Apply to my commander</button>
+ <button id="chLink" type="button">🔗 Copy link</button>
+ <button id="chReset" type="button" class="ghost">↺ Reset</button>
+</nav>
+<div id="chToast" role="status" aria-live="polite"></div>
+<script src="js/cheats-def.js"></script>
+<script src="js/cheats-page.js"></script>
+</body>
+</html>

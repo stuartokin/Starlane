@@ -118,6 +118,15 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   intro card ("A new adventure written by AI — <month>").
 - **Kill switch:** `ADVENTURE_FORGE_PAUSED=true`. Cap of 24 AI adventures until Stuart reviews the approach.
 
+## Done
+
+- **15 Nov 2026 — cheat page** (`cheats.html`, `starlane-v6`). Decisions (Stuart, 15 Nov):
+  - It is locked with the test-mode code.
+  - It can play a practice copy **and** apply settings to the real commander, so a parent can set a child's game.
+  - Emergency escape: 4× speed for 5 s, attackers lose you, 60 s wait (all adjustable).
+  - Publish straight to `main`.
+- Open: should the real-commander rules show a small "⚙ custom rules" badge in the game? (Not added; ask Stuart.)
+
 ## R5. Smaller open items
 
 - **ApolloMaths housekeeping:** delete `js/starlane.js`, `js/starlane-modern.js`, `js/starlane-adventures.js`,

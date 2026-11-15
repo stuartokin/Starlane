@@ -41,15 +41,16 @@ everything else uses the game's own `testMode()` directly. `run_all.py` writes `
 | `static` | Every JS file parses; all 50 adventures are well formed (answers in range, per-age questions, explanations, flight goals); the question pack at every age band and the adult set give valid questions; no API keys or the test code in the repo; no “Apollo” shown to players (Moon-landing history excepted) |
 | `site` | Launch page, pilot registration, the game starting, saving only under `starlane-standalone-v1`, the code box, Stop, trailer and tour (no flash of the game, a key stops them), and the maths source for age, adult and exam-practice levels |
 | `gameplay` | Starts docked, launch cut-scene to flight, weapons-safe near the station, a hyperspace jump, the Modern 3D style, the phone layout |
+| `cheats` | The cheat page: locked by the code, every rule has a control, saving, presets, 🔗 links; ▶ Play opens a practice copy with the settings (real commander untouched); spawn limits, no-attacks, police off, safe-zone and weapons-safe distances, emergency escape; ✅ Apply puts the rules on the real commander and they survive a reload; removing them; the hand-off is refused without the unlocked page; no sideways scroll on a folded Fold or a phone |
 | `adventures` | Every adventure started in test mode and stepped through scene by scene at phone (844×390) and laptop (1280×720) size, with no errors |
-| `bridge` | ApolloMaths: a new child added, Starlane opened from the arcade inside ApolloMaths, the child's name and exam reach the game, no “Apollo” in questions, answers recorded and the commander saved in ApolloMaths, Stop returns |
+| `bridge` | ApolloMaths: a new child added, Starlane opened from the arcade inside ApolloMaths, the child's name and exam reach the game, no “Apollo” in questions, answers recorded and the commander saved in ApolloMaths, cheat-page settings applied to and removed from the child's real commander, Stop returns |
 
 ## Test hooks in the game
 
 `Arcade._game()._dbg` exposes read-mostly hooks used here, among them `mode`, `overlay`, `C` (commander),
 `set(k,v)`, `launchDbg()`, `startHyperDbg()`, `advStartDbg(id)`, `advNow`, `advNextDbg()`, `openMathDbg(kind)`,
 `pickMathDbg(option)`, `mathQNow`, `makeMathQDbg(kind)`, `persistNow()`, `weaponsSafe()`, `startShow(kind)`,
-`show`. `Arcade._game().testMode()` / `inTest()` open and query test mode. Keep these working — the automated
+`show`, and for the cheat page `CH(k)`, `CHD`, `SAFE`, `escapeNow()`, `escT`, `escCD`, `cheatPlay(s)`, `cheatApplyReal(s)`, `cheatClearReal()`, `cheatCmd(c,s)`, `spawnTick(dt)`, `missionSpawns()`. `Arcade._game().testMode()` / `inTest()` open and query test mode. Keep these working — the automated
 workflows depend on them.
 
 ## Adding a test

@@ -47,6 +47,7 @@ of the other when framed (this is how ApolloMaths hosts Starlane — §6).
 
 | File | Role |
 |---|---|
+| `cheats.html`, `js/cheats-page.js`, `js/cheats-def.js`, `css/cheats.css` | **The cheat page** (§3.11): grown-ups change enemies, attacks, safe zones, emergency escape, money, ship and equipment |
 | `index.html` | Launch page: title, LAUNCH, Watch trailer, 2-minute tour, pilot registration (name + level), hidden `<dialog id="arcade">` |
 | `js/site.js` | **This site's host.** Its own save store, pilot levels, question-source switching, the test-mode code box, launch/stop flow, video start-up, and the "hosted by ApolloMaths" mode |
 | `js/starlane.js` (~514 KB) | **The game.** Flight, trading, galaxy, combat, docking, missions, Nova, adventures runtime, test mode, maps, cockpit, cut-scenes, videos |
@@ -130,6 +131,46 @@ or Ctrl+Shift+G, opens test mode (subject to the host's check).
 A grown-up's sandbox copy of the commander (`test={real:snapReal(),…}`): god mode, free fuel and cargo, jump
 anywhere, stage any adventure, scenarios. The real commander is restored on exit. On the standalone site it
 needs a code; in ApolloMaths it needs the family passphrase.
+
+### 3.11 The cheat page (`cheats.html`, since `starlane-v6`)
+A grown-ups' page at `/Starlane/cheats.html` (no link from the launch page), locked with the **same test code**
+as test mode (only the FNV-1a check value is in the repo). Once unlocked, the tab remembers it in
+`sessionStorage['starlane-cheats-ok']`.
+
+- **What it changes.** `js/cheats-def.js` lists everything:
+  - **rules** are lasting changes the game reads through `CH(k)`: enemies (most ships at once, pirate rate,
+    pirates per attack, time between arrivals, toughness, damage, missiles, police), mission attackers, hyperspace
+    interdiction and raiders, the safe zone (random attacks stop), the weapons-safe distance and the attacker
+    distance that unlocks weapons, the **emergency escape**, invincible, damage taken, recharge, laser damage,
+    no overheating, unlimited missiles/ECM/shock pulse/starburst, infinite fuel, jump anywhere, free shopping and
+    mission rewards.
+  - **commander changes** (`cmd`) are made once: credits, legal status, rank, difficulty, maths, movies, fuel,
+    repair, adventures reset, ship, lasers, missiles, starburst charges, cargo size, personal items and an exact
+    equipment list.
+- **Normal values.** `CHD` in `starlane.js` holds the normal game. The `def` values in `cheats-def.js` must
+  match it (`test_static` checks this).
+- **Saving.** The page saves as you go to `localStorage['starlane-cheats-v1']` =
+  `{v, name, rules, cmd, form, saved}`. Here `form` is the page's raw state and `cmd` is in the game's shape.
+  Presets: Normal, Peaceful cruise, Easy fights, Swarm, Rich trader, Tank. 🔗 Copy link puts the settings in
+  `#s=…` (base64url JSON). Nothing is sent anywhere.
+- **Hand-off to the game.** ▶ Play opens `./?cheats=play` and ✅ Apply opens `./?cheats=apply`. `site.js`
+  honours these only if this tab unlocked the page; otherwise they are ignored. The query is then removed from
+  the address. `StarlaneSite.cheats()` reads the saved settings. Never in hosted mode.
+- **In the game:**
+  - `cheatPlay(s)` opens test mode with `test.ch` = the rules and applies `cmd` to the practice copy.
+  - `cheatApplyReal(s)` applies `cmd` to the **real** commander and stores the changed rules as `C.cheats`, so
+    they travel with the save. In test mode it edits `test.real.C`, so exit keeps it.
+  - `cheatClearReal()` removes `C.cheats`.
+  - `CH(k)` = `test.ch` → `C.cheats` → `CHD`.
+- **Test mode's ✨ CHEATS tab** has: Open the cheat page, Use them in this practice copy, Apply them to the REAL
+  commander, and Remove custom rules. This tab is how a parent applies settings to a child's commander inside
+  ApolloMaths: unlock the page on the child's device first, because the settings are per device.
+- **Emergency escape:** key **9** or Backspace, or the 🚀 ESCAPE button at the top centre in flight.
+  `escapeNow()` gives `escPower`× full speed for `escSecs` seconds. Attackers get `lostT` (they stop targeting
+  you), incoming missiles are destroyed, and it can't be used again for `escWait` seconds.
+- **Mission attackers.** `misAtk` > 0 sets the size of every mission attack. If it is fewer than a mission needs,
+  `misN()` lowers `m.need` so the mission can still be finished. Story 2's ambush stores `m.need`.
+- **`SAFE`** is now a `let` and is reset each flight frame from `CH('safeKm')`.
 
 ### 3.10 Saving
 The game calls the host's `save()`/`get()`; the commander lives at `stats.arcade.saves.starlane`.
@@ -219,6 +260,7 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
 | 2.67–2.70 | ApolloMaths opens Starlane remotely (`StarlaneHost`); exam-following questions; answer reports; probe check |
 | 2.71–2.80 | ApolloMaths generalised (exam plans, adaptive difficulty, new layout, themes, themed shop and arcade); built-in Starlane removed (2.79); adult and exam-practice levels on the Starlane site; profile protection |
 | 13 Nov | This knowledge base, the portable test rig, read-only adventure test hooks (`starlane-v5`) |
+| 15 Nov | The cheat page and emergency escape; settings can be applied to a real commander (`starlane-v6`) |
 
 ## 8. Things that are true but easy to forget
 

@@ -43,6 +43,14 @@ async def main(p):
     await fr.evaluate("(()=>{const d=Arcade._game()._dbg;d.C.credits+=77;d.persistNow();})()"); await pg.wait_for_timeout(500)
     saved = await pg.evaluate("(()=>{const s=stats.arcade.saves.starlane;if(!s)return null;const o=typeof s==='string'?JSON.parse(s):s;return o.credits})()")
     R.check(saved is not None and saved >= 77, "the commander is saved into the child's ApolloMaths progress", saved)
+    # a parent applies cheat-page settings to the child's real commander from test mode → ✨ CHEATS
+    await fr.evaluate("""localStorage.setItem('starlane-cheats-v1',JSON.stringify({v:1,name:'Easy',rules:{enemyDmg:50,escape:true},cmd:{credits:4321},form:{}}))""")
+    await fr.evaluate("(()=>{const g=Arcade._game();g.testMode();g._dbg.cheatApplyReal(g._dbg.cheatSrc?null:undefined);g._dbg.testExit();})()"); await pg.wait_for_timeout(500)
+    ch = await pg.evaluate("(()=>{const s=stats.arcade.saves.starlane;const o=typeof s==='string'?JSON.parse(s):s;return [o.cheats||null,o.credits]})()")
+    R.check(ch[0] == {'enemyDmg': 50, 'escape': True} and ch[1] == 4321, "cheat settings applied to the child's real commander are saved in ApolloMaths", ch)
+    R.check(await fr.evaluate("[Arcade._game()._dbg.CH('escape'),Arcade._game().inTest()]") == [True, False], "the child's game then plays with those rules")
+    await fr.evaluate("(()=>{const g=Arcade._game();g.testMode();g._dbg.cheatClearReal();g._dbg.testExit();})()"); await pg.wait_for_timeout(500)
+    R.check(await pg.evaluate("(()=>{const s=stats.arcade.saves.starlane;const o=typeof s==='string'?JSON.parse(s):s;return !o.cheats})()"), "removing them is saved in ApolloMaths too")
     await fr.evaluate("(document.querySelector('[data-arc=quit]')||{click(){}}).click()"); await pg.wait_for_timeout(2000)
     R.check(await pg.evaluate("!document.getElementById('slRemote')"), 'Stop closes Starlane and returns to the ApolloMaths arcade')
     R.check(not pg.errors, 'no page errors', pg.errors[:3]); await pg.close_all(); return R
