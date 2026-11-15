@@ -2,6 +2,14 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v10 — 15 November 2026
+- **The mouse works on the whole screen** in flight, not just over the 4:3 game picture: it aims (steers),
+  left click fires, right-drag looks around, the wheel changes speed. Cockpit buttons, side-panel switches,
+  the battle buttons and Pause / Exit full screen / Stop keep first claim on clicks; the pointer doesn't steer
+  or fire over the console or the battle instruments. Touch steering can start outside the picture too.
+- **Capture mouse** (Pause → Controls, off by default): a click in flight locks the pointer to the game, with
+  its own cursor; Esc, Pause, docking or menus give it back.
+
 ## starlane-v9 — 15 November 2026
 - **Battle display uses the whole screen** in Modern style and full screen, whatever its shape (wide laptops,
   the taller Fold, phones): the 3D view fills the screen and the instruments sit at the screen's bottom corners

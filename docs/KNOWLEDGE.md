@@ -198,6 +198,16 @@ How it is controlled:
     by a capture `pointerdown` listener on the host.
 
   Retro and Original draw only the 4:3 picture.
+- **The mouse on the whole screen** (`wholeScreenMouse(host)`, installed at start and by `wideState()`):
+  pointer, wheel and right-drag events outside the canvas go to `G.onPointer` / `G.onWheel`, with game
+  coordinates past the picture's edges (`toGameXY`).
+  - "Open space", where the mouse steers and fires, is `y < openY()`: above the console (`VH`), or in the battle
+    display above the instruments (`G._bdTop`).
+  - The canvas `mouseleave` doesn't drop a held fire button while the wide view is on.
+  - **Capture mouse** (`C.opt.mouseLock`, off by default): `requestPointerLock` on the host, and a DOM cursor
+    `#slCursor` moved by `movementX/Y`. `lockButton()` hands clicks to the battle buttons, the side-panel
+    switches, the shell buttons or the game, in that order. `lockTick()`, called from the render loop, releases
+    the pointer for menus, docking, shows and tours.
 - **`underAttack()`**: an attacker within 12 km, a missile coming at you, or hit in the last 10 s. The
   escape button uses it too; key 9 works any time escape is on.
 
