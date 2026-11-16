@@ -2,6 +2,27 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v16 — 16 November 2026
+Cockpit review on every device, from Stuart's Fold screenshot ("mixed styles", hard to fly).
+- **Settings follow the device you are playing on.** Display and control settings (style, controls, cockpit
+  screens, full 3D cockpit) used to be fixed by the device the commander was created on. A laptop commander
+  played on the Fold got the laptop's full 3D cockpit with touch controls on top. Now phone, tablet/Fold and
+  laptop each keep their own settings, with touch defaults the first time.
+- **Touch joystick turns the ship.** Left and right now turn, like the mouse. Before, they rolled the ship
+  (Elite style), so turning took a roll and a pull. Classic roll steering: Pause → Controls → Flight assists →
+  Joystick turns (off).
+- **No more fighting the ship after launch.** On touch screens the docking assist switched on as soon as you
+  left the station. It locked your roll to the station's spin and slowly turned you back to the station. It now
+  works only when you are approaching and facing the station.
+- **Stray diagonal lines removed:** docking-corridor frames too close to the camera are no longer drawn.
+- The corridor hint ("LINE UP WITH THE CORRIDOR") shows only when you are facing the station.
+- **Touch full screen:** Pause, Full screen and Stop shrink to icons in the corner, so they no longer cover the
+  speed slider. The slider starts below them. The bulkhead portholes are hidden behind the touch controls (they
+  looked like a second joystick).
+- Upright phones get a "turn your screen sideways" tip.
+- Big screens (2000+ px wide) get bigger corner buttons and score strip.
+- New `cockpit` test suite. The rig now also runs the ApolloMaths bridge from this session.
+
 ## starlane-v15 — 16 November 2026
 - **Difficulty levels: Easy, Normal and Hard.** Each one now changes the whole fight, not just the damage you take:
   - **Easy:** fewer and weaker pirates who come alone, faster shields, less hyperspace ambush, and the emergency

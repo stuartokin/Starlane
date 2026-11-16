@@ -99,6 +99,15 @@ time once. Read before making changes.
 21m. **Modern style is slow in the headless browser** (software WebGL: a few frames a second), so game time
     passes slowly. Wait on game state (`deathT`, `mode`) with `until`, never on wall-clock time.
 
+21n. **Settings chosen per device must be re-checked per device.** `C.opt.device` was set once, when the
+    commander was created, so a laptop commander on the Fold kept the laptop's full 3D cockpit, mouse controls
+    and touch controls all at once. Device-dependent settings now live per device kind (`devApply`).
+21o. **An assist that helps in one place can fight you in another.** The docking assist's corridor test had no
+    "approaching" check, so straight after launch it spun the ship and steered it back to the station. Give
+    every assist an "is the player actually trying to do this?" test.
+21p. **Fixed-position elements have no `offsetParent`.** Use `getClientRects().length` to ask whether something
+    is shown.
+
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

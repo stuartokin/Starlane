@@ -372,10 +372,12 @@ dialog.tour-front[open]{position:fixed;inset:0;margin:auto;z-index:91}
 .arcade.arc-full.arc-tw .arc-game{position:relative}
 .arcade.arc-full.arc-tw .arc-hud{position:fixed!important;top:6px!important;left:10px!important;right:auto!important;bottom:auto!important;grid-area:auto;z-index:5;font-size:11px;gap:6px;opacity:.9;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:8px}
 .arcade.arc-full.arc-tw .arc-ctl{position:fixed!important;top:6px!important;right:8px!important;left:auto!important;bottom:auto!important;grid-area:auto;z-index:5;gap:6px;margin:0;display:flex}
-.arcade.arc-full.arc-tw .arc-ctl button{font-size:12px;padding:4px 9px;min-height:0}
+.arcade.arc-full.arc-tw .arc-ctl button{font-size:16px;padding:4px 8px;min-height:0;min-width:40px}
+/* touch full screen: the corner buttons become a compact row of icons, so they never sit on the speed slider */
+.arcade.arc-full.arc-tw .arc-ctl .arc-lbl{display:none}
+.arcade.arc-full.arc-tw .arc-ctl{flex-direction:row;align-items:center}
 @media (min-aspect-ratio:3/2){
 .arcade.arc-full.arc-tw .arc-hud{flex-direction:column;align-items:flex-start;gap:2px}
-.arcade.arc-full.arc-tw .arc-ctl{flex-direction:column;align-items:flex-end}
 }
 
 /* Starlane showcase videos: nothing but the picture */
@@ -383,3 +385,9 @@ dialog.tour-front[open]{position:fixed;inset:0;margin:auto;z-index:91}
 .arcade.arc-show .arc-game{background:#000}
 .arcade.arc-show #arcCanvas{border-color:transparent;box-shadow:none}
 .arcade.arc-show,.arcade.arc-show *{cursor:none!important}
+
+/* very large screens (QHD, 4K, big monitors): the score strip and the Pause / Full screen / Stop buttons grow with the screen */
+@media (min-width:2000px){
+.arcade.arc-full .arc-hud{font-size:clamp(14px,.75vw,26px)}
+.arcade.arc-full .arc-ctl button{font-size:clamp(14px,.7vw,24px);padding:.45em .9em}
+}

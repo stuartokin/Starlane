@@ -174,6 +174,23 @@ assist, turn-to-target, docking assist, pop-up DOCK/JUMP/ECM/TURN buttons) on Pa
 screen on phones uses side touch controls (`TD`) and a floating joystick. Triple-tap the score strip on touch,
 or Ctrl+Shift+G, opens test mode (subject to the host's check).
 
+**Since `starlane-v16`:**
+- **Per-device settings.** `devApply()` (called from `fixOpt`) works out the device kind every load (`devKind()`:
+  phone, tablet or desktop, from `pointer:coarse` and screen size). The settings in `DEV_OPTS` (style, controls,
+  mfd, cock3d) are kept per kind in `C.opt.devs`, so switching device swaps them. First time on a kind:
+  - phone: Retro, classic, simple cockpit;
+  - tablet: classic, simple cockpit;
+  - desktop: the defaults.
+- **Touch steering.** The `turn` assist (touch only, on by default) makes the joystick and drag-steer move yaw
+  instead of roll, in both `controls()` and `controlsModern()`.
+- **Docking assist** acts only when you are in the corridor, not `departing()`, and facing the station within
+  0.7 rad.
+- **Touch full screen layout** (`tdUpdate`, `.arc-tw` CSS):
+  - the corner buttons are icons in a row (`.arc-lbl` hidden);
+  - the speed track starts below `.arc-ctl`;
+  - `TD.layout` records the rectangles;
+  - `surround()` is off while `TD.on`.
+
 ### 3.9 Test mode
 A grown-up's sandbox copy of the commander (`test={real:snapReal(),…}`): god mode, free fuel and cargo, jump
 anywhere, stage any adventure, scenarios. The real commander is restored on exit. On the standalone site it
@@ -373,7 +390,7 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
 | 13 Nov | This knowledge base, the portable test rig, read-only adventure test hooks (`starlane-v5`) |
 | 15 Nov | The cheat page and emergency escape; settings can be applied to a real commander (`starlane-v6`) |
 | 15 Nov | Battle display, Controls page, Pause in test mode, touch full cockpit, cheat page tidy (`starlane-v8`) |
-| 16 Nov | Difficulty levels (Easy / Normal / Hard); Escape works and steps back; Career returns to Pause; CARRY ON after GAME OVER; the transitions test on every screen size (`starlane-v15`) |
+| 16 Nov | Difficulty levels (Easy / Normal / Hard); Escape works and steps back; Career returns to Pause; CARRY ON after GAME OVER; the transitions test on every screen size (`starlane-v15`). Cockpit review: settings per device, touch joystick turns, no assist after launch, tidy touch layout (`starlane-v16`) |
 | 15 Nov | Battle display on the whole screen, mouse on the whole screen and Capture mouse, version shown, lasers from the screen corners, cockpit status lamps, sticky notes moved (`starlane-v9`–`v14`) |
 
 ## 8. Things that are true but easy to forget

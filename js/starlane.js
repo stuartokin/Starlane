@@ -171,8 +171,14 @@ function makeStarlane(env){
   ['missile','Fire missile',['m']],['ecm','E.C.M.',['u']],['bomb','Shock pulse',['b']],['jump','Jump drive',['j']],['dock','Docking computer',['c']],['hyper','Hyperspace',['h']],['time','Speed up time',['t']],['view','Next view',['v']],['cam','Outside camera',['o']],['chart','Galaxy chart',['g']],['cargo','Cargo hold',['i']],['missions','Missions',['k']],['career','Career record',['z']],['radarRange','Radar range',['[']],['subsys','Target engines/weapons',[']']],['starburst','Starburst laser',['5']],['firectl','Fire-control computer',['6']],['face','Turn to target',['7']],['wingman','Wingman: attack my target',['\'']],['pod','Escape capsule',['x']],['tips','Hover help on/off',['F1']],['rlock','Roll lock on/off',['l']],['spin','Match station spin',['y']],['scan','Next radar target',['n']],['mfd','Cockpit screens on/off',['F2']]];
  const optDefaults=()=>({clutter:true,tourKeys:true,dockGuide:true,quality:'auto',fps:false,cock3d:true,controls:'modern',reduceMotion:false,cbSafe:false,radar:'holo',radarRange:10000,mapColor:'eco',style:'modern',music:true,ambient:true,difficulty:'normal',subPos:'top',subs:true,voice:true,aiName:'NOVA',redAlert:true,mfd:true,maths:true,cockpit:true,lit:true,tips:true,cuts:true,keys:Object.fromEntries(ACTIONS.map(a=>[a[0],a[2].slice()]))});
  function fixOpt(){C.opt=Object.assign(optDefaults(),C.opt||{});C.opt.keys=Object.assign(optDefaults().keys,C.opt.keys||{});if(!(C.optVer>=2)){C.opt.lit=true;C.opt.cockpit=true;C.optVer=2;}if(!(C.optVer>=3)){if((C.opt.keys.ecm||[]).join()==='e')C.opt.keys.ecm=['u'];C.optVer=3;}if(!(C.optVer>=4)){C.opt.style='modern';C.opt.controls='modern';C.optVer=4;}
-  if(!C.opt.device){const coarse=matchMedia('(pointer:coarse)').matches,small=Math.min(screen.width,screen.height)<520;C.opt.device=coarse?(small?'phone':'tablet'):'desktop';if(C.opt.device==='phone'){C.opt.style='retro';C.opt.controls='classic';C.opt.mfd=false;C.opt.cock3d=false;}if(C.opt.device==='tablet'){C.opt.controls='classic';C.opt.mfd=false;C.opt.cock3d=false;}}
+  devApply();
   C.rep=C.rep||{fed:0,guild:0,pirates:0};C.codex=C.codex||{};C.mkMem=C.mkMem||{};C.paid=C.paid||{};C.ship=C.ship||'kestrel';C.stats=C.stats||{};C.ships=C.ships||[C.ship];if(C.hull===undefined)C.hull=0;C.medals=C.medals||{};C.log=C.log||[];C.rescued=C.rescued||0;}
+ // Display and control settings belong to the kind of device you are playing on (phone, tablet, desktop), not to the
+ // one the commander was created on: each kind keeps its own copy in C.opt.devs and gets sensible defaults the first time.
+ const DEV_OPTS=['style','controls','mfd','cock3d'];
+ function devKind(){let coarse=false;try{coarse=matchMedia('(pointer:coarse)').matches;}catch(e){}const small=Math.min(screen.width,screen.height)<520;return coarse?(small?'phone':'tablet'):'desktop';}
+ function devApply(){const o=C.opt,k=devKind();if(o.device===k)return;o.devs=o.devs||{};if(o.device)o.devs[o.device]=Object.fromEntries(DEV_OPTS.map(x=>[x,o[x]]));
+  if(o.devs[k])Object.assign(o,o.devs[k]);else if(k==='phone')Object.assign(o,{style:'retro',controls:'classic',mfd:false,cock3d:false});else if(k==='tablet')Object.assign(o,{controls:'classic',mfd:false,cock3d:false});else{const d=optDefaults();for(const x of DEV_OPTS)o[x]=d[x];}o.device=k;}
  // ---------------- commander (saved with the player's progress) ----------------
  function newCommander(){const start=GAL.find(s=>s.gov>=5&&s.tech>=6&&s.eco>=4)||GAL.find(s=>s.gov>=4)||GAL[0];
   return{v:1,optVer:4,rep:{fed:0,guild:0,pirates:0},codex:{},mkMem:{},stats:{},ships:['kestrel'],introSeen:false,paid:{},ship:'kestrel',hull:0,medals:{},log:[],rescued:0,opt:optDefaults(),flight:null,sys:start.i,credits:100,fuel:7,cargo:{},cap:20,equip:{},front:'pulse',rear:null,missiles:3,legal:0,killPts:0,kills:0,day:1,missions:[],gov:{},news:[],visited:{[start.i]:1},target:null,invert:false,done:0,market:null,board:null};}
@@ -858,9 +864,9 @@ function makeStarlane(env){
  const departing=()=>{if(!G._departing||!station||!P)return false;const toS=sub(station.pos,P.pos),d=len(toS);if(d>3500||dot(P.o.f,mul(toS,1/Math.max(1,d)))>.6){G._departing=false;return false;}return true;};
  function drawCorridor(ctx){if(!station||dockComp||!C.opt.dockGuide||mode!=='flight'||departing())return;const s0=station,d=len(sub(s0.pos,P.pos));if(d>7500||d<330)return;
   const aligned=dot(P.o.f,mul(s0.o.f,-1))>Math.cos(.26),slow=P.speed<120,matched=Math.abs(((rollLock?lockRate:P.roll))-s0.spin)<.05,good=aligned&&slow&&matched,col=good?'60,255,106':aligned?'255,176,32':'63,224,255';
-  for(let i=5;i>=0;i--){const dist=420+i*520,k=1+i*.18,c=add(s0.pos,mul(s0.o.f,dist)),corners=[[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>cam(add(c,add(mul(s0.o.r,a*125*k),mul(s0.o.u,b*44*k)))));if(corners.some(q=>q[2]<6))continue;
+  for(let i=5;i>=0;i--){const dist=420+i*520,k=1+i*.18,c=add(s0.pos,mul(s0.o.f,dist)),corners=[[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>cam(add(c,add(mul(s0.o.r,a*125*k),mul(s0.o.u,b*44*k)))));if(corners.some(q=>q[2]<120))continue;
    const q=corners.map(proj),pulse=.25+.35*Math.max(0,Math.sin(clock*4-i*.7));ctx.strokeStyle=`rgba(${col},${(.75-i*.1)*(.6+pulse)})`;ctx.lineWidth=i===0?2.2:1.4;pathPoly(ctx,q);ctx.stroke();}
-  if(d<4500&&!msTgt)text(ctx,good?'✓ ALIGNED — FLY IN SLOWLY':!aligned?'LINE UP WITH THE CORRIDOR':!slow?'SLOW DOWN BELOW 120':'MATCH THE SPIN',CX,CY-64,`rgb(${col})`,11,'center');}
+  if(d<4500&&!msTgt&&dot(P.o.f,norm(sub(s0.pos,P.pos)))>.3)text(ctx,good?'✓ ALIGNED — FLY IN SLOWLY':!aligned?'LINE UP WITH THE CORRIDOR':!slow?'SLOW DOWN BELOW 120':'MATCH THE SPIN',CX,CY-64,`rgb(${col})`,11,'center');}
  // ---------------- arrow at the edge of the view to an off-screen target ----------------
  function drawTgtArrow(ctx){const t=radarTgt;if(!t||t.dead||view!=='front')return;const c=cam(t.pos),onScreen=c[2]>5&&(()=>{const q=proj(c);return q[0]>20&&q[0]<W-20&&q[1]>20&&q[1]<VH-20;})();if(onScreen)return;
   let dx=c[0],dy=-c[1];if(c[2]<0&&Math.hypot(dx,dy)<1)dx=1;const a=Math.atan2(dy,dx),R=Math.min(W/2-40,VH/2-40),x=CX+Math.cos(a)*R*1.35,y=CY+Math.sin(a)*R;const X=Math.max(30,Math.min(W-30,x)),Y=Math.max(30,Math.min(VH-30,y));
@@ -1759,6 +1765,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
  function tdUpdate(){twUpdate();const cv=document.getElementById('arcCanvas');const want=!!cv&&cv.offsetParent!==null&&isTouchDevice()&&mode==='flight'&&!overlay&&!tour&&!show&&!(seat);
   let r=null,side=0,box=null;if(want){r=cv.getBoundingClientRect();const host=cv.closest('dialog')||document.body;box=host.getBoundingClientRect();side=Math.min(r.left-box.left,box.right-r.right);}const on=want&&side>=120&&innerWidth>innerHeight;
   if(want&&!on&&innerWidth>innerHeight&&!G._fsTip){G._fsTip=true;msg('TIP: TAP FULL SCREEN FOR BIGGER TOUCH CONTROLS',4,'#ffe45e');}
+  if(want&&innerWidth<innerHeight&&!G._rotTip){G._rotTip=true;msg('📱 TURN YOUR SCREEN SIDEWAYS FOR BIGGER CONTROLS',5,'#ffe45e');}
   if(!on){if(TD.on){TD.on=false;tdRelease();if(TD.el)TD.el.style.display='none';}return;}
   if(!TD.el)tdBuild(cv.closest('dialog')||document.body);TD.on=true;TD.el.style.display='block';const p=TD.parts,s=Math.min(side-16,innerHeight*.34,230),cy=r.top+r.height*.62,lx=box.left+(r.left-box.left)/2,rx=r.right+(box.right-r.right)/2;
   const put=(d,x,y,w,h)=>{d.style.left=(x-w/2)+'px';d.style.top=(y-h/2)+'px';d.style.width=w+'px';d.style.height=h+'px';};
@@ -1767,12 +1774,12 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   {const show={dock:station&&has('dock')&&!dockComp&&len(sub(station.pos,P.pos))<9000,jump:!jump&&!redOn&&(!station||len(sub(station.pos,P.pos))>9000),ecm:has('ecm')&&ships.some(x=>!x.dead&&x.type==='missile'&&x.target==='player'),face:AS('face')&&!!radarTgt&&!radarTgt.dead};let k=0;const bw=Math.min(r.left-box.left-16,130);
    for(const n of['ecm','dock','jump','face']){const d=p.ctx[n],on=AS('ctx')&&show[n]||(n==='face'&&show.face);d.style.display=on?'flex':'none';if(on){put(d,lx,r.top+r.height*.12+k*48,bw,38);if(n==='ecm')d.style.background=Math.floor(clock*4)%2?'rgba(255,45,85,.9)':'rgba(120,20,40,.9)';k++;}}}
   const x0=r.right+8,x1=box.right-44,aw=Math.max(60,x1-x0),fc=x0+aw/2,f=Math.min(aw*.92,170),sm=Math.min(aw*.46,84);const fy=cy+f*.18,by2=fy-f/2-sm/2-12;put(p.fire,fc,fy,f,f);put(p.boost,fc-sm*.56,by2,sm,sm);put(p.msl,fc+sm*.56,by2,sm,sm);const lf=Math.max(9,Math.min(14,sm*.2))+'px';p.boost.style.fontSize=lf;p.msl.style.fontSize=lf;p.msl.textContent=sm<70?'MSL':'MISSILE';p.fire.style.fontSize=Math.max(13,Math.min(22,f*.15))+'px';
-  const th=Math.min(innerHeight*.42,260),tx=box.right-22;put(p.track,tx,r.top+r.height*.3+8,26,th);p.handle.style.top=`${(1-(P?P.throttle:0))*(th-24)}px`;put(p.lab,tx,r.top+r.height*.3+th/2+24,60,16);}
+  const ctl=document.querySelector('#arcade .arc-ctl'),cb=ctl&&ctl.getClientRects().length?ctl.getBoundingClientRect().bottom:0,t0=Math.max(r.top+8,cb+12),th=Math.max(90,Math.min(innerHeight*.42,260,fy-f/2-sm-30-t0)),tx=box.right-22;put(p.track,tx,t0+th/2,26,th);p.handle.style.top=`${(1-(P?P.throttle:0))*(th-24)}px`;put(p.lab,tx,t0+th+12,60,16);TD.layout={track:[tx-13,t0,26,th],fire:[fc-f/2,fy-f/2,f,f],ctl:cb};}
  // ---------------- FLIGHT ASSISTS: separate settings for touch screens and for mouse & keyboard ----------------
- const ASSIST_DEF={touch:{joy:true,level:true,aim:true,autofire:false,face:true,dock:true,ctx:true},mouse:{level:false,aim:false,autofire:false,face:false,dock:false}};
+ const ASSIST_DEF={touch:{turn:true,joy:true,level:true,aim:true,autofire:false,face:true,dock:true,ctx:true},mouse:{level:false,aim:false,autofire:false,face:false,dock:false}};
  const asDev=()=>isTouchDevice()?'touch':'mouse';
  function AS(k){const d=asDev(),o=(C.opt.assist=C.opt.assist||{}),s=(o[d]=o[d]||{});if(s[k]===undefined)s[k]=ASSIST_DEF[d][k]===true;return !!s[k];}
- const ASSIST_INFO=[['joy','Floating joystick','Put your thumb down anywhere on the left side and the joystick appears under it, with fine control near the middle.',true],['level','Auto-level','The ship gently rolls itself back level when you are not rolling.'],['aim','Aim assist','Your aim is drawn gently towards an enemy near the crosshair.'],['autofire','Auto-fire','Fires for you when an enemy is right in your sights.'],['face','Turn to target','Tap a radar icon (or press 🎯 / key 7) and the ship turns to face it. Move to take over.'],['dock','Docking assist','In the docking corridor the ship lines up the slot and matches its spin — you just control speed.'],['ctx','Pop-up buttons','DOCK, JUMP and E.C.M. buttons appear beside the controls when they are useful.',true]];
+ const ASSIST_INFO=[['turn','Joystick turns','Push left or right to turn the ship, like the mouse. Off: classic steering, where left and right roll the ship.',true],['joy','Floating joystick','Put your thumb down anywhere on the left side and the joystick appears under it, with fine control near the middle.',true],['level','Auto-level','The ship gently rolls itself back level when you are not rolling.'],['aim','Aim assist','Your aim is drawn gently towards an enemy near the crosshair.'],['autofire','Auto-fire','Fires for you when an enemy is right in your sights.'],['face','Turn to target','Tap a radar icon (or press 🎯 / key 7) and the ship turns to face it. Move to take over.'],['dock','Docking assist','In the docking corridor the ship lines up the slot and matches its spin — you just control speed.'],['ctx','Pop-up buttons','DOCK, JUMP and E.C.M. buttons appear beside the controls when they are useful.',true]];
  let faceT=null,dockAssisted=false,lvlSign=1,lvlPrev=null;
  const projOnto=(t,f)=>{const d=dot(t,f);return sub(t,mul(f,d));};
  function rollToward(t){const tp=projOnto(t,P.o.f),l=len(tp);if(l<.2)return 0;const tn=mul(tp,1/l),ang=v=>Math.acos(Math.max(-1,Math.min(1,dot(v,tn)))),a=ang(P.o.u);if(a<.01)return 0;const tryPos=ang(rot(P.o.u,P.o.f,-.02));return Math.max(-1,Math.min(1,a*2.2))*(tryPos<a?1:-1);}
@@ -1781,7 +1788,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   // turn to target
   if(faceT&&(faceT.dead||!faceT.pos||manualTurn))faceT=null;if(faceT){const want=norm(sub(faceT.pos,P.pos));steer(P.o,want,1.6*dt);if(dot(P.o.f,want)>Math.cos(.02))faceT=null;}
   // docking assist: level the slot, match the spin, keep pointing at the station
-  const corr=AS('dock')&&!dockComp&&inCorridor();if(corr){const su=dot(station.o.u,P.o.u)>=0?station.o.u:mul(station.o.u,-1);const a0=Math.atan2(dot(station.o.r,P.o.u),dot(station.o.r,P.o.r)),a=Math.abs(((a0*57.3+90)%180+180)%180-90);
+  const corr=AS('dock')&&!dockComp&&inCorridor()&&!departing()&&dot(P.o.f,norm(sub(station.pos,P.pos)))>Math.cos(.7);if(corr){const su=dot(station.o.u,P.o.u)>=0?station.o.u:mul(station.o.u,-1);const a0=Math.atan2(dot(station.o.r,P.o.u),dot(station.o.r,P.o.r)),a=Math.abs(((a0*57.3+90)%180+180)%180-90);
    if(!rollLock){if(!manualRoll)I.roll=rollToward(su);if(a<4){rollLock=true;lockRate=station.spin;dockAssisted=true;msg('🛬 DOCKING ASSIST: SLOT LEVEL, SPIN MATCHED — CONTROL YOUR SPEED',3,'#3cff6a');}}
    if(!manualTurn)steer(P.o,norm(sub(station.pos,P.pos)),.5*dt);}else if(dockAssisted){dockAssisted=false;rollLock=false;}
   // auto-level (not while docking)
@@ -1791,7 +1798,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
    if(best){const want=norm(sub(best.pos,P.pos));if(AS('aim')&&!manualTurn)steer(P.o,want,.7*dt);if(AS('autofire')&&dot(P.o.f,want)>Math.cos(.035)&&P.heat<.8)I.fire=true;}}}
  function faceTarget(o){if(!o||!o.pos)return;faceT=o;msg('🎯 TURNING TO TARGET',1.2,'#3fe0ff');}
  function renderAssists(ctx){const d=asDev();text(ctx,'🛟 FLIGHT ASSISTS',CX,96,'#ffe45e',20,'center');text(ctx,`Settings for this device: ${d==='touch'?'📱 TOUCH SCREEN (on by default)':'🖱 MOUSE & KEYBOARD (off by default)'}`,CX,122,'#9aa3c7',11,'center');
-  const rows=ASSIST_INFO.filter(a=>!a[3]||d==='touch'),sp=rows.length>6?40:44;rows.forEach(([k,l,desc],i)=>{const y=144+i*sp,on=AS(k);button(ctx,B(40,y,180,30,`${on?'✅':'⬜'} ${l}`,()=>{C.opt.assist[d][k]=!on;persist();},{fs:11}),on);ctx.save();ctx.beginPath();ctx.rect(232,y-2,530,36);ctx.clip();wrap(ctx,desc,232,y,530,14,'#c8d0ff',11);ctx.restore();});
+  const rows=ASSIST_INFO.filter(a=>!a[3]||d==='touch'),sp=rows.length>7?36:rows.length>6?40:44;rows.forEach(([k,l,desc],i)=>{const y=144+i*sp,on=AS(k);button(ctx,B(40,y,180,30,`${on?'✅':'⬜'} ${l}`,()=>{C.opt.assist[d][k]=!on;persist();},{fs:11}),on);ctx.save();ctx.beginPath();ctx.rect(232,y-2,530,36);ctx.clip();wrap(ctx,desc,232,y,530,14,'#c8d0ff',11);ctx.restore();});
   {const y=144+rows.length*sp+4,on=C.opt.weapSafe!==false;button(ctx,B(40,y,180,30,`${on?'✅':'⬜'} Weapons safe`,()=>{C.opt.weapSafe=!on;persist();},{fs:11}),on);ctx.save();ctx.beginPath();ctx.rect(232,y-2,530,36);ctx.clip();wrap(ctx,'Near a space station your lasers and missiles are held, so you cannot hit the station by accident. They arm again straight away if you are attacked. (All devices, on by default.)',232,y,530,14,'#c8d0ff',11);ctx.restore();}
   button(ctx,B(CX-80,488,160,30,'◀ BACK',()=>{menuTab='controls';},{fs:12}));}
  // the alien ship really flashes its message: groups of flashes for numbers, or a row of lamps for binary
@@ -1825,7 +1832,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   for(const x0 of[0,w-220]){c.save();c.beginPath();c.rect(x0,h-16,220,16);c.clip();for(let k=-2;k<20;k++){c.fillStyle=k%2?'#ffcc22':'#1a1a1a';c.beginPath();c.moveTo(x0+k*24,h);c.lineTo(x0+k*24+12,h-16);c.lineTo(x0+k*24+36,h-16);c.lineTo(x0+k*24+24,h);c.fill();}c.restore();}
   const vg=c.createRadialGradient(w/2,h/2,h*.4,w/2,h/2,w*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.3)');c.fillStyle=vg;c.fillRect(0,0,w,h);
   try{G._bulk=cv.toDataURL('image/jpeg',.82);}catch(e){G._bulk='';}return G._bulk;}
- function surround(on){const cv=document.getElementById('arcCanvas'),ar=document.getElementById('arcade');if(!cv||!ar)return;ar.classList.toggle('arc-show',!!show);if(show)on=false;const host=cv.parentElement,want=on&&ar.classList.contains('arc-full');if(want===!!host.__slBulk)return;
+ function surround(on){const cv=document.getElementById('arcCanvas'),ar=document.getElementById('arcade');if(!cv||!ar)return;ar.classList.toggle('arc-show',!!show);if(show)on=false;if(TD.on)on=false;const host=cv.parentElement,want=on&&ar.classList.contains('arc-full');if(want===!!host.__slBulk)return;
   if(want){const u=bulkheadURL();if(!u)return;host.__slBulk={bg:host.style.background};host.style.background=`#05080f url(${u}) center/cover no-repeat`;}else{host.style.background=host.__slBulk.bg||'';host.__slBulk=null;}}
  // in the meteor-towing task FIRE works the tractor beam, so the lasers stay quiet near the meteor
  function tractorWanted(){if(!adv||!P||!adv.fl)return false;const sc=adv.def.scenes[adv.si];if(!sc||sc.setup!=='meteor')return false;const m=adv.st.met;if(!m||m.dead)return false;if(adv.fl.attached)return true;const l=toLocal(P.o,sub(m.pos,P.pos));return len(l)<2500&&l[2]>0;}
@@ -2518,19 +2525,19 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   button(ctx,B(CX-100,H-70,200,40,'✕ CLOSE',()=>{overlay=null;}));}
  // ---------------- main update / render ----------------
  const held=id=>(C.opt.keys[id]||[]).some(k=>K[k]||(k.length===1&&K[k.toUpperCase()]));
- function controls(){const inv=C.invert?-1:1;if(C.opt.controls==='modern')return controlsModern(inv);let roll=(held('rollR')?1:0)-(held('rollL')?1:0),pitch=((held('up')?1:0)-(held('down')?1:0))*inv,thr=(held('fast')||K.PageUp?1:0)-(held('slow')||K.PageDown?1:0),fire=held('fire')||fireTouch;
-  if(stick){roll+=pad.x*1.2;pitch+=-pad.y*1.2*inv;}
-  let yaw=(held('yawR')?1:0)-(held('yawL')?1:0);
+ function controls(){const inv=C.invert?-1:1;if(C.opt.controls==='modern')return controlsModern(inv);let yawT=0,roll=(held('rollR')?1:0)-(held('rollL')?1:0),pitch=((held('up')?1:0)-(held('down')?1:0))*inv,thr=(held('fast')||K.PageUp?1:0)-(held('slow')||K.PageDown?1:0),fire=held('fire')||fireTouch;
+  if(stick){if(touchSeen&&AS('turn'))yawT+=pad.x*1.1;else roll+=pad.x*1.2;pitch+=-pad.y*1.2*inv;}
+  let yaw=yawT+(held('yawR')?1:0)-(held('yawL')?1:0);
   if(gp){const a=gp.axes||[],b=i=>gp.buttons[i]&&gp.buttons[i].pressed;if(Math.abs(a[2]||0)>.2)yaw+=a[2];if(Math.abs(a[0]||0)>.15)roll+=a[0];if(Math.abs(a[1]||0)>.15)pitch+=-(a[1])*inv;if(b(7))thr+=1;if(b(6))thr-=1;if(b(0))fire=true;}
-  if(TD.on){roll+=TD.x*1.2;pitch+=-TD.y*1.2*inv;if(TD.fire)fire=true;}
+  if(TD.on){if(AS('turn'))yaw+=TD.x*1.1;else roll+=TD.x*1.2;pitch+=-TD.y*1.2*inv;if(TD.fire)fire=true;}
   return{roll:Math.max(-1,Math.min(1,roll)),pitch:Math.max(-1,Math.min(1,pitch)),yaw:Math.max(-1,Math.min(1,yaw)),thr,fire,boost:!!K.Shift||(TD.on&&TD.boost)};}
  let kbSteerT=0;const kd=c=>!!(K[c]||K[c.toUpperCase()]);
  function controlsModern(inv){let roll=(kd('e')?1:0)-(kd('q')?1:0),pitch=((K.ArrowUp?1:0)-(K.ArrowDown?1:0))*inv,yaw=(K.ArrowRight?1:0)-(K.ArrowLeft?1:0),thr=(kd('w')||held('fast')?1:0)-(kd('s')||held('slow')?1:0),fire=held('fire')||fireTouch,sx=(kd('d')?1:0)-(kd('a')?1:0),boost=!!K.Shift;
   if(K.ArrowUp||K.ArrowDown||K.ArrowLeft||K.ArrowRight)kbSteerT=performance.now();
   if(hover&&mode==='flight'&&!overlay&&hover.y<openY()&&!touchSeen&&performance.now()-kbSteerT>2000){const sp=aimSpan(),dx=(hover.x-CX)/(hover.x<CX?sp.l:sp.r),dy=(hover.y-CY)/(hover.y<CY?sp.t:sp.b),dz=.07,f=v=>Math.abs(v)<dz?0:Math.sign(v)*Math.min(1,(Math.abs(v)-dz)/(1-dz)*1.3);yaw+=f(dx);pitch+=-f(dy)*inv;}
-  if(stick){roll+=pad.x*1.2;pitch+=-pad.y*1.2*inv;}
+  if(stick){if(touchSeen&&AS('turn'))yaw+=pad.x*1.1;else roll+=pad.x*1.2;pitch+=-pad.y*1.2*inv;}
   if(gp){const a=gp.axes||[],b=i=>gp.buttons[i]&&gp.buttons[i].pressed;if(Math.abs(a[2]||0)>.2)yaw+=a[2];if(Math.abs(a[0]||0)>.15)roll+=a[0];if(Math.abs(a[1]||0)>.15)pitch+=-(a[1])*inv;if(b(7))thr+=1;if(b(6))thr-=1;if(b(0))fire=true;if(b(10))boost=true;}
-  if(TD.on){yaw+=TD.x*1.1;pitch+=-TD.y*1.2*inv;if(TD.fire)fire=true;if(TD.boost)boost=true;}
+  if(TD.on){if(AS('turn'))yaw+=TD.x*1.1;else roll+=TD.x*1.2;pitch+=-TD.y*1.2*inv;if(TD.fire)fire=true;if(TD.boost)boost=true;}
   const c=v=>Math.max(-1,Math.min(1,v));return{roll:c(roll),pitch:c(pitch),yaw:c(yaw),thr,fire,sx:c(sx),boost};}
  let gpPrev=[];
  function pollPad(){gp=null;try{const pads=navigator.getGamepads?navigator.getGamepads():[];gp=[...pads].find(p=>p&&p.connected)||null;}catch(e){}if(!gp)return;const press=i=>gp.buttons[i]&&gp.buttons[i].pressed&&!gpPrev[i];
