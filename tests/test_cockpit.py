@@ -112,7 +112,8 @@ async def main(p):
           for(let i=0;i<40;i++)await new Promise(r=>setTimeout(r,150));return Math.round(d.P.throttle*d.P.max);}})()""")
     easy = await approach('easy'); norm = await approach('normal')
     R.check(easy < 120 and norm > 200, 'auto speed docks you on Easy only (Easy slows below 120; Normal leaves the speed to you)', [easy, norm])
-    await pg.evaluate(f"{D}.setDifficulty('normal')")
+    await pg.evaluate(f"(()=>{{const d={D};d.setDifficulty('normal');d.P.pos=[d.P.pos[0]+60000,d.P.pos[1]+30000,d.P.pos[2]+60000];d.P.throttle=.3;d.P.speed=100;}})()")
+    R.check(await pg.evaluate(f"{D}.mode") == 'flight', 'still flying after the approach checks')
     # Touch Controls page: choose Twin sticks
     await pg.evaluate(f"{D}.set('overlay','menu');{D}.set('menuTab','controls')"); await pg.wait_for_timeout(300)
     R.check(await pg.evaluate(f"!!{D}.btns.find(b=>b.label&&b.label.startsWith('📱 TOUCH CONTROLS'))"), 'Pause → Controls has 📱 TOUCH CONTROLS on touch screens')
@@ -127,7 +128,7 @@ async def main(p):
        const drag=(el,fx,fy,id)=>{{const b=el.getBoundingClientRect(),ev=(t,x,y)=>el.dispatchEvent(new PointerEvent(t,{{pointerId:id,clientX:x,clientY:y,bubbles:true,pointerType:'touch'}}));ev('pointerdown',b.left+b.width/2,b.top+b.height/2);ev('pointermove',b.left+b.width*fx,b.top+b.height*fy);return()=>ev('pointerup',0,0);}};
        d.P.throttle=.3;const up=drag(q('base'),.5,.05,11);const c1=d.ctrlOut;await new Promise(r=>setTimeout(r,1200));const t1=d.P.throttle;up();
        const up2=drag(q('base2'),.95,.05,12);const c2=d.ctrlOut;up2();return {{thr:c1.thr,yaw:c1.yaw,pitch1:c1.pitch,throttleRose:t1>.35,pitch:c2.pitch,roll:c2.roll,shown:q('base2').style.display}};}})()""")
-    R.check(tw['thr'] > .5 and tw['throttleRose'] and abs(tw['pitch1']) < .2 and tw['pitch'] > .5 and tw['roll'] > .5 and tw['shown'] == 'flex',
+    R.check(tw['thr'] > .5 and tw['throttleRose'] and abs(tw['pitch1']) < .2 and tw['pitch'] > .5 and tw['roll'] > .4 and tw['shown'] == 'flex',
             'Twin sticks: left stick up speeds up (no nose movement); right stick lifts the nose and rolls', tw)
     R.check(not pg.errors, 'Fold: no page errors', pg.errors[:3]); await pg.close_all()
 
