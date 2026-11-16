@@ -12,7 +12,7 @@ const fresh=()=>({arcade:{bank:{secs:0,day:''},crt:false,game:'starlane',high:{}
 let st;try{st=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){st=null;}
 if(!st||!st.arcade)st=fresh();
 const A=st.arcade;for(const[k,v]of Object.entries(fresh().arcade))if(A[k]===undefined)A[k]=v;
-if(HOST){st=fresh();try{st.arcade.saves.starlane=HOST.loadSave()||undefined;st.arcade.high.starlane=HOST.high()||0;const pr=HOST.profile()||{};st.pilot={name:pr.name||'Commander',band:pr.band||'11-12'};}catch(e){}}
+if(HOST){st=fresh();try{st.arcade.saves.starlane=HOST.loadSave()||undefined;st.arcade.high.starlane=HOST.high()||0;const pr=HOST.profile()||{};st.pilot={name:pr.name||'Commander',band:pr.band||'11-12'};if(['easy','normal','hard'].includes(pr.difficulty))st.pilot.diff=pr.difficulty;else if(!st.arcade.saves.starlane)st.pilot.diff='easy';}catch(e){}}
 window.stats=st;
 window.save=function(){if(HOST){try{HOST.saveSave(window.stats.arcade.saves.starlane);}catch(e){}return;}try{localStorage.setItem(KEY,JSON.stringify(window.stats));}catch(e){}};
 window.get=id=>document.getElementById(id);
@@ -54,18 +54,23 @@ if(/[?&]cheats=/.test(location.search)){try{history.replaceState(null,'',locatio
 window.StarlaneSite.probe=n=>{const SQ=window.StarlaneQuestions,out=[],kinds=['fuel','trade','hyper','repair','dock'];for(let i=0;i<n*20&&out.length<n;i++){const q=SQ&&typeof SQ.get==='function'?SQ.get(kinds[i%kinds.length],{}):null;if(q)out.push({q:q.q,ans:q.ans,u:q.u||'',exam:q.exam||null,topic:q.topic||null});}return{hosted:!!HOST,socket:!!(SQ&&typeof SQ.get==='function'),questions:out};};
 
 /* ---------- the launch screen ---------- */
-function launchUI(){try{const v=window.STARLANE_VERSION;if(v&&get('slVer'))get('slVer').textContent=`· Version ${v.v} (${v.date})`;}catch(e){}const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';
+function launchUI(){try{const v=window.STARLANE_VERSION;if(v&&get('slVer'))get('slVer').textContent=`· Version ${v.v} (${v.date})`;}catch(e){}const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';get('pilotDiff').value=diffOf();
  get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';}
-function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value};window.save();launchUI();}
+function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value,diff:get('pilotDiff').value};window.save();launchUI();}
 let watching=0;
 function backToLaunch(){clearInterval(watching);const d=get('arcade');if(HOST){let sc=0;try{sc=(Arcade.status&&Arcade.status().score)||0;}catch(e){}try{if(d.open)Arcade.close();}catch(e){}try{HOST.exit({score:sc});}catch(e){}return;}try{if(d.open)Arcade.close();}catch(e){}d.classList.remove('sl-booting');launchUI();}
 window.StarlaneSite.questionSource=questionSource;
+/* ---------- difficulty: chosen on the launch page, changed in the game's Pause → DIFFICULTY ---------- */
+const DIFFS=['easy','normal','hard'];
+// the pilot's choice, else what the saved commander already uses (players from before v15), else Normal
+function diffOf(){const p=window.stats.pilot;if(p&&DIFFS.includes(p.diff))return p.diff;try{const sv=window.stats.arcade.saves.starlane,c=typeof sv==='string'?JSON.parse(sv):sv;const d=c&&c.opt&&c.opt.difficulty;if(DIFFS.includes(d))return d;}catch(e){}return 'normal';}
+window.StarlaneSite.difficulty=d=>{if(!DIFFS.includes(d))return;const p=window.stats.pilot;if(p){p.diff=d;window.save();}try{if(!HOST&&get('pilotDiff'))get('pilotDiff').value=d;}catch(e){}};
 function play(opts={}){if(!HOST){savePilot();questionSource();}if(typeof Arcade==='undefined')return;window.stats.arcade.game='starlane';const dlgEl=get('arcade');dlgEl.classList.add('sl-booting');Arcade.open({admin:true});
  let started=false,showOn=false,tries=0;
  const go=()=>{const b=document.querySelector('[data-arc="start"]');if(!b){if(++tries<80)setTimeout(go,50);return;}b.click();
   const f=document.querySelector('[data-arc=full]');if(f&&!dlgEl.classList.contains('arc-full'))f.click();};go();
  clearInterval(watching);watching=setInterval(()=>{const s=Arcade.status&&Arcade.status(),g=Arcade._game&&Arcade._game(),d=g&&g._dbg;
-  if(!started){if(s&&s.view==='game'&&d){started=true;try{d.C.opt.advAge=BANDS[bandIndex()][2];}catch(e){}
+  if(!started){if(s&&s.view==='game'&&d){started=true;try{d.C.opt.advAge=BANDS[bandIndex()][2];const p=window.stats.pilot;if(p&&DIFFS.includes(p.diff)&&d.C.opt.difficulty!==p.diff){d.C.opt.difficulty=p.diff;if(d.persistNow)d.persistNow();}}catch(e){}
      if(opts.cheats){const how=opts.cheats;setTimeout(()=>{try{if(g.intro&&typeof g.tap==='function')g.tap();d.C.introSeen=true;if(d.overlay==='intro')d.set('overlay',null);const cs=window.StarlaneSite.cheats();if(cs){if(how==='play')g.cheatPlay(cs);else g.cheatApply(cs);}}catch(e){}},500);}
      if(opts.show){try{if(g.intro&&typeof g.tap==='function')g.tap();d.startShow(opts.show);showOn=true;}catch(e){}setTimeout(()=>dlgEl.classList.remove('sl-booting'),120);}else dlgEl.classList.remove('sl-booting');}
    else if(!dlgEl.open)backToLaunch();return;}

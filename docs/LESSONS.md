@@ -86,6 +86,19 @@ time once. Read before making changes.
     the laser start points and the start-up "systems check" shade. When the battle display took the console
     away, they were left floating mid-screen. Search for `VH` when changing the layout.
 
+21j. **A key the shell swallows never reaches the browser.** `arcade.js` calls `preventDefault()` on every key
+    the game handles, which stopped the dialog's Escape `cancel` event. The game's "P or Esc pauses" had never
+    worked, and Escape closed nothing. Handle the keys you promise in the game itself (`escKey()`), and test them
+    with real key presses.
+21k. **One screen at a time means "back" has to be remembered.** With a single `overlay`, closing anything went
+    to the game, so Career opened from Pause closed to the game. Use `openOv`/`closeOv` for screens opened from
+    another, and give every Pause sub-page a parent in `MENU_UP`.
+21l. **Test where you land, not just that it opens.** The `transitions` suite checks the whole state (mode,
+    docked tab, overlay, Pause page, camera, view, style, system) after every step, on every screen size. A test
+    that only checks "the chart opened" would never have caught the surprises fixed in v15.
+21m. **Modern style is slow in the headless browser** (software WebGL: a few frames a second), so game time
+    passes slowly. Wait on game state (`deathT`, `mode`) with `until`, never on wall-clock time.
+
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

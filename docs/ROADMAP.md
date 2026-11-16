@@ -2,7 +2,7 @@
 
 *Stuart Okin — personal project, written in a personal capacity.*
 *Requirements as stated by Stuart on 13 November 2026, written up as specifications. R1–R5 not yet built.*
-*Status 15 November 2026 (`starlane-v14`): see **Done** below for what was built since, and the open questions for Stuart there.*
+*Status 16 November 2026 (`starlane-v15`): see **Done** below for what was built since, and the open questions for Stuart there.*
 
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.
 
@@ -137,7 +137,22 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **15 Nov 2026 — aiming over the whole screen; version shown** (`starlane-v11`), from Stuart's screen recording.
 - **15 Nov 2026 — cockpit switch panels: status lamps, tidy labels, TIPS obeyed** (`starlane-v13`).
 - **15 Nov 2026 — sticky notes moved** to the canopy frame beside the mirror (`starlane-v14`), as Stuart asked.
+- **16 Nov 2026 — difficulty levels and transitions** (`starlane-v15`). Decisions (Stuart, 16 Nov):
+  - Easy, Normal and Hard as planned; Hard pays 25% more on missions.
+  - Easy switches the emergency escape on.
+  - Children new to Starlane in ApolloMaths start on Easy.
+  - Stuart asked for thorough tests of moving between screens, cut-scenes and displays. That found:
+    - Escape didn't work;
+    - Career from Pause closed to the game, not to Pause;
+    - GAME OVER dropped you on the launch page;
+    - adventure offers could replace an open screen;
+    - after dock → launch → death you could restart at an older station;
+    - Pause → WATCH had no ◀ BACK.
+
+    All are fixed.
 - **Open questions for Stuart:**
+  - Should ApolloMaths let a parent set a child's difficulty? (ApolloMaths would add `difficulty` to
+    `StarlaneHost.profile()`; Starlane already reads it.)
   - Should a commander with cheat-page rules applied show a small "⚙ custom rules" badge in the game? (Not added.)
 - **Not yet checked on Stuart's own devices** (tested in the rig and in screenshots only): the captured-mouse cursor
   following the mouse (the headless browser can't move a locked pointer), the cockpit lamps and the sticky notes

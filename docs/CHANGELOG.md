@@ -2,6 +2,29 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v15 — 16 November 2026
+- **Difficulty levels: Easy, Normal and Hard.** Each one now changes the whole fight, not just the damage you take:
+  - **Easy:** fewer and weaker pirates who come alone, faster shields, less hyperspace ambush, and the emergency
+    escape switched on.
+  - **Normal:** exactly as before.
+  - **Hard:** more and tougher pirates in bigger groups, slower shields, more ambushes, and missions pay 25% more.
+
+  Choose on the launch page (*Difficulty (fights)*) or in Pause → GAME → the level button, which opens a new
+  DIFFICULTY page. The two stay in step. A new commander keeps the level, cheat-page settings still win, and
+  children new to Starlane in ApolloMaths start on Easy. Maths questions are not affected.
+- **Escape works** as the help always said: it pauses, steps back one page in Pause, and closes the chart,
+  DATA, cargo, mission log and Career. Before, the game shell swallowed it.
+- **Back to where you came from:** Career opened from Pause closes back to Pause, and DATA goes back to the
+  chart.
+- **GAME OVER no longer throws you out to the launch page.** ▶ CARRY ON docks you at your last station inside
+  the game; ⏏ LEAVE THE GAME leaves as before.
+- Adventure offers no longer pop up over a screen you have open.
+- **Restart point fixed:** the "last docked" restart point now updates the moment you dock. Before, if you
+  docked, launched and died, you could wake up at an older station.
+- Pause → WATCH has a ◀ BACK button, and Nova's intro opened from WATCH closes back to WATCH.
+- New test suites: `transitions` (every screen change, on 10 screen sizes and in all three styles) and
+  `difficulty`.
+
 ## starlane-v14 — 15 November 2026
 - The three sticky notes (lived-in cockpit) moved from the console screens (one covered "MISSILES" on SHIP
   SYSTEMS) to the canopy frame beside the rear-view mirror, and toned down so they look like paper, not lamps.

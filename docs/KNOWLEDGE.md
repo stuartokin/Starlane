@@ -73,6 +73,25 @@ Docked screens: **STATUS, MARKET, SHIPYARD, MISSIONS, DATA, CHART, LAUNCH**. Lau
 (hangar, then out through the station slot, flown at slot height `(HG.yF+HG.yC)/2`). Flight is real-time
 3D-ish space with a sun, planet, moons and station. Docking can be manual or assisted.
 
+**Getting about (since `starlane-v15`).** Only one screen (`overlay`) is open at a time, so "going back" is
+handled explicitly:
+- **Escape** (`escKey()`) steps back one place: a Pause sub-page goes to its parent (`MENU_UP`: DIFFICULTY,
+  WATCH, TOURS, ADVENTURES, SAVES, RESTART → GAME; BATTLE DISPLAY → DISPLAY; FLIGHT ASSISTS → CONTROLS); a
+  Pause tab closes Pause; DATA goes back to the chart; chart, cargo, mission log and arrival report close;
+  with nothing open it pauses (like P). During a cut-scene it still skips the scene. Before v15 the game shell's
+  `preventDefault` swallowed Escape, so "P or Esc pauses" was not true.
+- **Screens opened from another** use `openOv(name,{o,t})` and `closeOv()` and close back to where they came
+  from: Career from Pause returns to Pause. Opened by its key (Z) or from the station page, Career closes to
+  the game.
+- **Dying** shows GAME OVER and waits: **▶ CARRY ON** (`carryOn()`, Enter or Space) docks you at the last
+  station without leaving the game; **⏏ LEAVE THE GAME** ends the session (launch page, or back to ApolloMaths).
+  Before v15 it always dropped you on the launch page after 2.8 s.
+- **Adventure offers** never replace a screen you have open (`advMaybe` waits until nothing is open).
+- The restart point after GAME OVER (`stats.starlaneDockSnap`) is written by `persist()` while docked;
+  docking now calls `persist()` as soon as `mode` becomes `docked`.
+- Movies, tours and test mode snapshot the game (`snapReal`) and return you to the same mode, docked tab and
+  Pause page.
+
 ### 3.2 Visual styles
 Three styles chosen on the title screen: **Modern** (real 3D via Three.js), **Original** (1984 green
 wireframe) and **Retro** (solid shapes, classic feel). `C.opt.style` holds the choice. The **bulkhead surround** (`bulkheadURL()`, `surround(on)`) is a generated image framing the
@@ -92,6 +111,33 @@ Pirates, police, traders and five **faction ships** (halo, scrapjaw, ark, seed, 
 (`weaponsSafe()`, setting `C.opt.weapSafe`, default on): lasers are held near a station unless you were hit in
 the last 45 s or an attacker is within 12 km. **Full hold**: canisters are nudged, not destroyed, with
 "📦 CARGO HOLD FULL" and a Nova line. The tractor beam shares the FIRE input and holds lasers while towing.
+
+### 3.4a Difficulty (since `starlane-v15`)
+`C.opt.difficulty` is `easy`, `normal` (default) or `hard`. `DIFF` in `starlane.js` holds what each level sets
+from the cheat rules. `CH(k)` looks in this order: cheat rules (`test.ch` or `C.cheats`), then the level, then
+`CHD`. Normal sets nothing, so it is exactly the normal game.
+
+| Rule | Easy | Hard |
+|---|---|---|
+| pirateRate | 50 | 140 |
+| pack | 1 (lone pirates) | normal + 40% chance of one more |
+| maxShips | 4 | 8 |
+| enemyHP | 70 | 130 |
+| shieldRegen | 140 | 80 |
+| interdict | 50 | 150 |
+| escape | on | — |
+| rewardScale | — | 125 |
+
+Older multipliers still apply on top: damage taken in `hurt()` (×0.6 / ×1 / ×1.35), and enemy laser and ramming
+hit chances. Where it is chosen:
+- On the launch page (**Difficulty (fights)**, `pilot.diff`), which is applied at launch.
+- In Pause → GAME → the level button → **DIFFICULTY** page (`renderDiff`, `setDifficulty`). A change there goes
+  back to the launch page through `StarlaneSite.difficulty(d)`, except in test mode.
+- A cheat-page *Apply* that sets a difficulty also updates the launch page.
+
+**New commander** keeps the level. In **ApolloMaths**, a child with no saved commander starts on Easy (or on
+`profile().difficulty` if ApolloMaths ever sends one). Maths questions are never affected. Since v15,
+`cheatPlay` stores only the changed rules in `test.ch`, so the level still applies underneath.
 
 ### 3.5 Missions and story
 Bulletin board missions (couriers, supply runs, bounties, freedom missions, mining, station races), the
@@ -327,6 +373,7 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
 | 13 Nov | This knowledge base, the portable test rig, read-only adventure test hooks (`starlane-v5`) |
 | 15 Nov | The cheat page and emergency escape; settings can be applied to a real commander (`starlane-v6`) |
 | 15 Nov | Battle display, Controls page, Pause in test mode, touch full cockpit, cheat page tidy (`starlane-v8`) |
+| 16 Nov | Difficulty levels (Easy / Normal / Hard); Escape works and steps back; Career returns to Pause; CARRY ON after GAME OVER; the transitions test on every screen size (`starlane-v15`) |
 | 15 Nov | Battle display on the whole screen, mouse on the whole screen and Capture mouse, version shown, lasers from the screen corners, cockpit status lamps, sticky notes moved (`starlane-v9`–`v14`) |
 
 ## 8. Things that are true but easy to forget
