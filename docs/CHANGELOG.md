@@ -2,6 +2,20 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v17 — 16 November 2026
+- **Three touch layouts**, chosen in Pause → Controls → 📱 TOUCH CONTROLS and kept per device:
+  - **🕹 Simple** (the default): one joystick steers and **the ship picks its speed**. It cruises in open space
+    and slows near the station, in fights and among rocks. FAST / CRUISE / SLOW replace the speed slider. On
+    **Easy** it also brings you in to dock; on Normal and Hard the final approach is yours (tap SLOW).
+  - **🎮 Twin sticks** (tablets and the open Fold): the left stick does speed and turning; the right stick does
+    nose up and down, and roll. FIRE, BOOST and MISSILE sit above it. Not offered on phones (too small).
+  - **✈️ Classic:** joystick plus speed slider, as before.
+- Tablets and the open Fold get a one-off Nova tip about Twin sticks after their first 25 seconds of flight.
+- **Phones fly with the battle display always on**: a bigger view, readable instruments and the radar. The
+  console is one tap away (⚔ BATTLE).
+- In Simple, the battle display's speed shows the auto level (CRUISE, SLOW, FAST), or YOU while you are steering
+  the speed yourself (keys or the in-picture strip take over for 4 s).
+
 ## starlane-v16 — 16 November 2026
 Cockpit review on every device, from Stuart's Fold screenshot ("mixed styles", hard to fly).
 - **Settings follow the device you are playing on.** Display and control settings (style, controls, cockpit

@@ -2,7 +2,7 @@
 
 *Stuart Okin — personal project, written in a personal capacity.*
 *Requirements as stated by Stuart on 13 November 2026, written up as specifications. R1–R5 not yet built.*
-*Status 16 November 2026 (`starlane-v16`): see **Done** below for what was built since, and the open questions for Stuart there.*
+*Status 16 November 2026 (`starlane-v17`): see **Done** below for what was built since, and the open questions for Stuart there.*
 
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.
 
@@ -153,9 +153,15 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **16 Nov 2026 — cockpit review** (`starlane-v16`), from Stuart's Fold screenshot. Decisions (Stuart, 16 Nov):
   - ApolloMaths does not need a difficulty setting for parents.
   - The rig should test the ApolloMaths bridge from cloud sessions too (read-only clone, `APOLLO_ROOT`).
+- **16 Nov 2026 — touch layouts** (`starlane-v17`). Decisions (Stuart, 16 Nov):
+  - Offer Simple (auto speed), Twin sticks and Classic, with Simple as the default and a tip for tablets.
+  - Auto speed docks you on Easy only.
+  - Keep Classic.
+  - Phones fly with the battle display always on.
+- **Not yet felt on a real device:** how auto speed and Twin sticks handle (tuning values are in `AUTO_LV` and
+  `autoSpeed`).
 - **Next ideas for touch flying (not built; ask Stuart):**
   - a bigger, simpler console on phones (fewer, larger switches);
-  - throttle on the joystick (push up to speed up);
   - a one-tap "fly to target" on the radar for the youngest pilots.
 - **Open questions for Stuart:**
   - (Answered 16 Nov: no difficulty setting in ApolloMaths.) Should ApolloMaths let a parent set a child's difficulty? (ApolloMaths would add `difficulty` to

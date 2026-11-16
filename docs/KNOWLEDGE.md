@@ -191,6 +191,27 @@ or Ctrl+Shift+G, opens test mode (subject to the host's check).
   - `TD.layout` records the rectangles;
   - `surround()` is off while `TD.on`.
 
+**Touch layouts (since `starlane-v17`).** `C.opt.touchMode` is `simple` (default), `twin` or `classic`, and is
+kept per device kind. `tmNow()` gives what is actually in use: Twin needs `TD.on` and a non-phone device, and
+falls back to Simple otherwise. Chosen in Pause → Controls → 📱 TOUCH CONTROLS (`menuTab='touch'`,
+`renderTouchModes`; `MENU_UP.touch='controls'`). Layout in `tdUpdate`:
+- **Simple**, top down: FAST / CRUISE / SLOW (`p.sw`), BOOST and MISSILE, then FIRE.
+- **Twin**, bottom up: right stick (`p.base2`, giving `TD.x2`/`TD.y2`), FIRE, then BOOST and MISSILE side by side.
+- **Classic**: FIRE plus the speed track.
+
+In Twin, `controls()` and `controlsModern()` map the left stick to yaw and to throttle rate (`thr=-TD.y`), and
+the right stick to pitch and roll.
+
+**Auto speed** (`autoSpeed`, called from the end of `assistTick`, when `autoOn()`):
+- It eases `P.throttle` towards the level in `AUTO_LV` (`autoLv`): SLOW 90, CRUISE 0.6×max, FAST max.
+- The speed is capped near the station (160), under attack (0.45×max) and near rocks (0.35×max).
+- In the docking corridor facing the station: on Easy it brings you in (90, then 55 inside 1.5 km); on other
+  levels it lets go and shows "FINAL APPROACH".
+- Keys and the in-picture throttle strip set `autoT` and override it for 4 s.
+
+**Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
+the Twin-sticks tip once (`C.opt.twinTip`).
+
 ### 3.9 Test mode
 A grown-up's sandbox copy of the commander (`test={real:snapReal(),…}`): god mode, free fuel and cargo, jump
 anywhere, stage any adventure, scenarios. The real commander is restored on exit. On the standalone site it
