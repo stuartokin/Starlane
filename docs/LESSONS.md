@@ -108,6 +108,12 @@ time once. Read before making changes.
 21p. **Fixed-position elements have no `offsetParent`.** Use `getClientRects().length` to ask whether something
     is shown.
 
+21q. **A test that moves the ship can end the flight.** The auto-docking check pointed the ship at the station at
+    full speed, so on Normal the ship reached it and the next check ran outside flight. After such a step, put
+    the ship back in open space and check `mode==='flight'` before going on.
+21r. **Cloud sessions can test the ApolloMaths bridge.** ApolloMaths is public: clone it read-only and set
+    `APOLLO_ROOT`. Don't skip the bridge suite just because the folder isn't next to Starlane.
+
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

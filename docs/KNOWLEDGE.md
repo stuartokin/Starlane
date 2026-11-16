@@ -1,7 +1,7 @@
 # Starlane Trader — knowledge base
 
 *Stuart Okin — personal project, written in a personal capacity.*
-*Last full update: 13 November 2026 (ApolloMaths 2.80, `starlane-v5`); added to on 15 November 2026 (`starlane-v14`: cheat page, battle display, whole-screen mouse, cockpit lamps — §3.11–3.14).*
+*Last full update: 13 November 2026 (ApolloMaths 2.80, `starlane-v5`); added to on 15 November 2026 (`starlane-v14`: cheat page, battle display, whole-screen mouse, cockpit lamps — §3.11–3.14); 16 November 2026 (`starlane-v15`–`v17`: difficulty, getting about and Escape, settings per device, touch layouts and auto speed — §3.1, §3.4a, §3.8).*
 
 This document is written so that a future person or AI model, starting cold, can understand the whole game,
 how it connects to ApolloMaths, and why it is the way it is. Lessons learned are in `LESSONS.md`; future
@@ -411,7 +411,7 @@ load. The Starlane content workflows planned in ROADMAP copy this pattern.
 | 13 Nov | This knowledge base, the portable test rig, read-only adventure test hooks (`starlane-v5`) |
 | 15 Nov | The cheat page and emergency escape; settings can be applied to a real commander (`starlane-v6`) |
 | 15 Nov | Battle display, Controls page, Pause in test mode, touch full cockpit, cheat page tidy (`starlane-v8`) |
-| 16 Nov | Difficulty levels (Easy / Normal / Hard); Escape works and steps back; Career returns to Pause; CARRY ON after GAME OVER; the transitions test on every screen size (`starlane-v15`). Cockpit review: settings per device, touch joystick turns, no assist after launch, tidy touch layout (`starlane-v16`) |
+| 16 Nov | Difficulty levels (Easy / Normal / Hard); Escape works and steps back; Career returns to Pause; CARRY ON after GAME OVER; the transitions test on every screen size (`starlane-v15`). Cockpit review: settings per device, touch joystick turns, no assist after launch, tidy touch layout (`starlane-v16`). Touch layouts Simple (auto speed) / Twin sticks / Classic; battle display on for phones (`starlane-v17`) |
 | 15 Nov | Battle display on the whole screen, mouse on the whole screen and Capture mouse, version shown, lasers from the screen corners, cockpit status lamps, sticky notes moved (`starlane-v9`–`v14`) |
 
 ## 8. Things that are true but easy to forget
