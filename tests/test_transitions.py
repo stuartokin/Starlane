@@ -202,8 +202,8 @@ async def walk(p, R, dev, style, full=True):
 
         # --- hyperspace ---
         await W.ev(f"(()=>{{const d={D};d.C.fuel=7;const cur=d.C.sys;const G=d.GALn,s=G[cur];let best=null,bd=1e9;G.forEach((o,i)=>{{if(i===cur)return;const dd=Math.hypot(o.x-s.x,o.y-s.y);if(dd<bd){{bd=dd;best=i;}}}});d.C.target=best;d.startHyperDbg();}})()")
-        await W.until(f"{D}.mode==='hyper'", 5000)
-        await W.until(f"{D}.mode==='flight'", 30000); await W.wait(400)
+        # the countdown runs in game time, which is slow for Modern on big screens in the test browser
+        await W.until(f"{D}.C.sys!=={sys0}&&{D}.mode==='flight'", 90000); await W.wait(400)
         sys1 = await W.ev(f"{D}.C.sys")
         await W.expect('hyperspace jump arrives in flight, in a new system', mode='flight', ov=None)
         W.check(sys1 != sys0, 'the jump really changed system', [sys0, sys1])
