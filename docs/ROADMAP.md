@@ -2,7 +2,7 @@
 
 *Stuart Okin — personal project, written in a personal capacity.*
 *Requirements as stated by Stuart on 13 November 2026, written up as specifications. R1–R5 not yet built.*
-*Status 16 November 2026 (`starlane-v17`): see **Done** below for what was built since, and the open questions for Stuart there.*
+*Status 17 November 2026 (`starlane-v19`): see **Done** below for what was built since, and the open questions for Stuart there.*
 
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.
 
@@ -158,11 +158,19 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   - Auto speed docks you on Easy only.
   - Keep Classic.
   - Phones fly with the battle display always on.
-- **Not yet felt on a real device:** how auto speed and Twin sticks handle (tuning values are in `AUTO_LV` and
-  `autoSpeed`).
-- **Next ideas for touch flying (not built; ask Stuart):**
-  - a bigger, simpler console on phones (fewer, larger switches);
-  - a one-tap "fly to target" on the radar for the youngest pilots.
+- **Auto speed and Twin sticks:** Stuart says they feel OK (17 Nov). Tuning values are in `AUTO_LV` and
+  `autoSpeed`.
+- **17 Nov 2026 — fly to target, VIEW, phone console** (`starlane-v18`). Decisions (Stuart, 17 Nov):
+  - Simpler phone console with JUMP, DOCK, HYPER, MAP, MISN and MORE.
+  - Fly to target: tap once for information, TURN TO / FLY THERE on the card, tap again to fly. It can be
+    switched off.
+  - VIEW cycles Modern displays only.
+  - Check flights and displays thoroughly against missions and adventures (done: `flyto` suite, the adventures
+    suite and the transitions walk).
+- **17 Nov 2026 — Modern cut-scenes looked Retro on the first launch** (`starlane-v19`), reported by Stuart on
+  the Fold. Fixed: the 3D engine loads at start and cut-scenes wait for it. FLY THERE now catches moving ships.
+- **Not yet checked on Stuart's devices:** how FLY THERE handles in real systems (it steers round rocks, the
+  station, moons and the planet); the phone console on a real phone; the cut-scene fix over his connection.
 - **Open questions for Stuart:**
   - (Answered 16 Nov: no difficulty setting in ApolloMaths.) Should ApolloMaths let a parent set a child's difficulty? (ApolloMaths would add `difficulty` to
     `StarlaneHost.profile()`; Starlane already reads it.)
