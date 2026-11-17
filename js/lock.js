@@ -5,7 +5,7 @@
    someone who typed the right code can produce (it can't be copied from this file).
    Set or change the code with:  STARLANE_CODE=… python3 tools/set_code.py   (it never prints the code). */
 window.StarlaneLock = (() => {
- const SALT = 'starlane-trader-lock-v2', ITER = 200000, CHECK = '__CHECK__', KEY = 'starlane-cheats-ok';
+ const SALT = 'starlane-trader-lock-v2', ITER = 200000, CHECK = '91dd5eaf6a10c102237b80f79e1095567f8a54be4643bbe8b6745c617f66d664', KEY = 'starlane-cheats-ok';
  const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
  async function derive(code){ const enc = new TextEncoder();
   const base = await crypto.subtle.importKey('raw', enc.encode(String(code)), 'PBKDF2', false, ['deriveBits']);

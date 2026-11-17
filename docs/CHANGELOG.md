@@ -2,7 +2,7 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
-## starlane-v21 — prepared 17 November 2026 (publish once the code is set)
+## starlane-v21 — 17 November 2026
 - **Stronger lock on test mode and the cheat page.**
   - The code is checked by `js/lock.js` with a slow, salted check (PBKDF2-SHA-256, 200,000 rounds, then
     SHA-256) instead of a quick 8-character hash, so guessing it would take far too long for a reasonable code.

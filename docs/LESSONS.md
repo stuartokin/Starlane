@@ -137,6 +137,11 @@ time once. Read before making changes.
     (PBKDF2) so short codes can't be guessed in seconds.
 21y. **Environment variables load when a session starts.** Stuart added `STARLANE_CODE` mid-session, and the
     running session couldn't see it. Changes to the cloud environment need a new session (or a reconnect).
+21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest
+    Playwright, which wants a newer Chromium than the one pre-installed in `/opt/pw-browsers`. Install the
+    version that matches it (the Node one: `node -e "console.log(require('playwright/package.json').version)"`,
+    e.g. `pip install playwright==1.63.0`) instead of `playwright install`. Clone ApolloMaths next to the repo
+    and set `APOLLO_ROOT` for the bridge suite.
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are
