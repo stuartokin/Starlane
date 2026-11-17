@@ -124,6 +124,9 @@ time once. Read before making changes.
     proportional term always lagged ~5° behind the station's spin, so the "level within 4°" lock never came. Add
     the spin rate to the command.
 
+21v. **Buttons can hide under the subtitle box.** The 🛑 STOP button sat where Nova's subtitles appear, and the
+    tap went to dragging the subtitles. Now any button under the subtitle box wins the tap, and STOP sits low in
+    the view. The transitions suite taps STOP for real on every screen size, which is what caught it.
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

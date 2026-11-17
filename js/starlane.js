@@ -1859,7 +1859,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   if(fly&&fly.o===o)button(ctx,B(x+16+bw,y,bw,24,'🛑 STOP',()=>flyStop('YOU HAVE CONTROL'),{fs:11,bg:'rgba(120,20,40,.92)',border:'#ff2d55'}));
   else if(canFly(o))button(ctx,B(x+16+bw,y,bw,24,'➡️ FLY THERE',()=>flyTo(o),{fs:11,bg:'rgba(20,80,60,.92)',border:'#3cff6a'}));
   else if(AS('fly')&&(adv||race))text(ctx,adv?'Not in adventures':'Not in races',x+16+bw+bw/2,y+6,'#6c7a9c',10,'center',false);}
- function drawFlyPill(ctx){if(!fly||show||overlay||mode!=='flight')return;const n=flyName(fly.o),lab=`🛑 STOP · ➡️ ${n.length>18?n.slice(0,17)+'…':n}`;button(ctx,B(CX-110,COCK()?96:44,220,26,lab,()=>flyStop('YOU HAVE CONTROL'),{fs:11,bg:'rgba(120,20,40,.9)',border:'#ff2d55'}));}
+ function drawFlyPill(ctx){if(!fly||show||overlay||mode!=='flight')return;const n=flyName(fly.o),lab=`🛑 STOP · ➡️ ${n.length>18?n.slice(0,17)+'…':n}`;button(ctx,B(CX-110,bdOn()?H-150:VH-80,220,26,lab,()=>flyStop('YOU HAVE CONTROL'),{fs:11,bg:'rgba(120,20,40,.9)',border:'#ff2d55'}));}
  const flyThreat=()=>clock-(G._shotT||-99)<10||ships.some(x=>!x.dead&&((x.angry&&x.target==='player'&&!(x.lostT>0))||(x.type==='missile'&&x.target==='player'))&&len(sub(x.pos,P.pos))<12000);
  function flyStop(why,col){if(!fly)return;G._flyEnd=why||'(silent)';fly=null;if(why)msg(why,2.5,col||'#ffb020');}
  function flyTick(I,dt){const o=fly.o,isSt=o===station,mx=Math.max(1,P.max);let goal=o.pos,stop=0,slow=false;
@@ -2718,7 +2718,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
  G.onPointer=(type,x,y,id,kind)=>{if(kind==='mouse'&&isTouchDevice())kind='touch';if(kind==='touch'||kind==='pen')touchSeen=true;if(kind==='mouse'){hover={x,y};if(type==='move'&&!ptrs[id])return;}
   if(type==='down'&&G.intro&&G.tap){G.tap();return;}
   if(type==='down'&&(mode==='dockScene'||mode==='launchScene')&&overlay!=='menu'){skipScene();return;}
-  if(type==='down'&&aiRect&&(mode==='flight')&&!overlay&&x>=aiRect.x&&x<=aiRect.x+aiRect.w&&y>=aiRect.y&&y<=aiRect.y+aiRect.h){ptrs[id]={sub:true,dx:x-(aiRect.x+aiRect.w/2),dy:y-aiRect.y};if(aiLine)aiLine.until=Math.max(aiLine.until,performance.now()/1000+4);return;}
+  if(type==='down'&&aiRect&&(mode==='flight')&&!overlay&&!btns.some(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h)&&x>=aiRect.x&&x<=aiRect.x+aiRect.w&&y>=aiRect.y&&y<=aiRect.y+aiRect.h){ptrs[id]={sub:true,dx:x-(aiRect.x+aiRect.w/2),dy:y-aiRect.y};if(aiLine)aiLine.until=Math.max(aiLine.until,performance.now()/1000+4);return;}
   if(type==='down'){for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){const rv=b.fn(x,y);ptrs[id]=rv&&rv.map?rv:'btn';return;}}
    if(kind==='mouse'&&G._btn>0)return;
    if(TD.on)return;

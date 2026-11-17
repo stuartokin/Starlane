@@ -92,6 +92,8 @@ async def walk(p, R, dev, style, full=True):
         # calm, repeatable conditions: no random hyperspace ambush, no adventure offers, no maths gates
         await W.ev(f"(()=>{{const d={D};d.C.opt.style={style!r};d.C.cheats={{interdict:0}};d.C.advLast=Date.now();d.C.opt.maths=false;}})()")
         await W.wait(900)
+        # Nova's welcome for a new commander can open a moment late; close it as a player would
+        await W.ev(f"(()=>{{const d={D};d.C.introSeen=true;if(d.overlay==='intro')d.set('overlay',null);}})()"); await W.wait(200)
         await W.expect('starts docked on the status page', mode='docked', tab='status', ov=None, style=style)
 
         # --- docked: tabs, Pause and its pages ---
