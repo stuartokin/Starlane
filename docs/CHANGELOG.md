@@ -18,6 +18,10 @@ The release number is the offline cache name `CACHE` in `sw.js` (bump it on ever
   in the 3D cockpit's switch panel, and as a 🎛 VIEW button in the clear view.
 - **Simpler console on phones:** six big switches (⚡ JUMP, 🛬 DOCK, 🌌 HYPER, 🗺 MAP, 📋 MISN, ⋯ MORE). MORE opens
   a strip with the rest and closes after a choice. Four big readouts: shields, energy, fuel and speed.
+- FLY THERE steers round rocks, the station, moons and the planet, and hands back control if it bumps anything.
+  The first version flew into the station on the way to the planet. Rock bumps no longer count as "under attack".
+- Any button under Nova's subtitle box now takes the tap (🛑 STOP was hidden there). STOP sits low in the view.
+- Two chance-dependent cheat-page tests were made reliable.
 - Tests: new `flyto` suite. The adventures suite checks FLY THERE is never offered in any scene and cycles VIEW in
   every flight scene. The transitions walk now includes F4 and FLY THERE with Pause and STOP on every screen size.
 

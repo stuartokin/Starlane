@@ -223,7 +223,8 @@ the Twin-sticks tip once (`C.opt.twinTip`).
     drive is used beyond 25 km and dropped inside 9 km.
   - Radar taps (`radarPick`): the first selects (info card); a tap on the same object calls `flyTo`.
   - Cards: `drawTarget` (ships, station) and `drawRadarInfo` (planets and others) end with
-    `cardActs(ctx,o,x,y,w)`. `drawFlyPill` shows 🛑 STOP while flying.
+    `cardActs(ctx,o,x,y,w)`. `drawFlyPill` shows 🛑 STOP while flying (low in the view: `VH-80`, or `H-150` in the battle display).
+    Since v18, buttons win over the subtitle box in `G.onPointer`.
   - The resting mouse pointer doesn't steer while `fly` is set.
   - **Obstacles:** `flyTick` steers round rocks, the station (unless it is the target), moons and the planet
     lying ahead. It slows to 0.3×max among rocks, and to 40 right beside one.

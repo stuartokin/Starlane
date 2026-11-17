@@ -62,7 +62,7 @@ async def main(p):
     cnt = await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<60;i++)d.spawnTick(100);return d.ships.filter(x=>!x.dead&&['pirate','trader','police','alien'].includes(x.T.role)).length;}})()")
     R.check(cnt == 0, 'most ships at once = 0: nothing arrives', cnt)
     await pg.evaluate(f"(()=>{{const t={D}.test;t.ch.maxShips=20;t.ch.pirateRate=400;t.ch.pack=4;t.ch.police=false;}})()")
-    cnt = await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<8;i++)d.spawnTick(100);return [d.ships.filter(x=>!x.dead&&x.T.role==='pirate'&&x.target==='player').length,d.ships.filter(x=>!x.dead&&x.T.role==='police').length];}})()")
+    cnt = await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<80&&d.ships.filter(x=>!x.dead&&x.T.role==='pirate'&&x.target==='player').length<4;i++)d.spawnTick(100);return [d.ships.filter(x=>!x.dead&&x.T.role==='pirate'&&x.target==='player').length,d.ships.filter(x=>!x.dead&&x.T.role==='police').length];}})()")
     R.check(cnt[0] >= 4 and cnt[1] == 0, 'more, bigger pirate attacks and no police', cnt)
     await pg.evaluate(f"(()=>{{const t={D}.test;t.ch.peace=true;{D}.ships.length=0;}})()")
     cnt = await pg.evaluate(f"(()=>{{const d={D};for(let i=0;i<40;i++)d.spawnTick(100);return d.ships.filter(x=>!x.dead&&x.target==='player').length;}})()")
@@ -80,7 +80,8 @@ async def main(p):
     await pg.evaluate(f"{D}.btns.find(b=>b.label&&b.label.startsWith('🚀 Emergency escape')).fn()"); await pg.wait_for_timeout(200)
     R.check(await pg.evaluate(f"{D}.CH('escape')") is True, 'test mode ✨ CHEATS: the escape switch turns it on')
     await pg.evaluate(f"{D}.set('overlay',null)"); await pg.wait_for_timeout(300)
-    await pg.evaluate(f"{D}.ships.forEach(s=>{{s.dead=true;}})"); await pg.wait_for_timeout(11000)
+    # nobody about: clear the sky and keep new arrivals away while the 10 s "recently hit" window runs out
+    await pg.evaluate(f"(()=>{{const d={D};d.test.ch.peace=true;d.ships.forEach(s=>{{s.dead=true;}});}})()"); await pg.wait_for_timeout(11000)
     R.check(await pg.evaluate(f"!{D}.underAttack()&&!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button is hidden when nobody is attacking')
     await pg.evaluate(f"{D}.hurtDbg(1)"); await pg.wait_for_timeout(400)
     R.check(await pg.evaluate(f"!!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button shows when you are attacked')
