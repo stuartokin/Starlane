@@ -2,6 +2,24 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v20 — 17 November 2026
+- **Hyperspace shows your own cockpit.** It always drew the plain console. Now:
+  - 3D cockpit: the real 3D cockpit, with the tunnel shining through a darkened windscreen across the whole screen;
+  - clear view: the tunnel fills the screen;
+  - console cockpit, Retro and Original: as before.
+
+  The quick launch and docking animations (when cut-scenes are off) and the escape capsule follow the same rule.
+- **Harder 📈 TREND questions.** Every level gets questions about the graph shown:
+  - ages 7–12: the three basics (change, mean, range);
+  - ages 13–14: the basics plus percentage change, median, average daily change and the biggest day-to-day move;
+  - adults: percentage change, median, average daily change, a prediction from that rate, the biggest move, the
+    best buy-then-sell profit, and the percentage rise back to the peak.
+
+  Every answer is worked from the graph and explained. Exam practice no longer replaces the graph question with
+  an unrelated one.
+- Tests: new `trend` suite, which re-solves 480 Trend questions from the graph. A cockpit check covers hyperspace
+  in each display on a laptop and the Fold.
+
 ## starlane-v19 — 17 November 2026
 - **Modern cut-scenes no longer look Retro on the first launch.** The 3D engine (about 0.6 MB) started loading
   only when you first flew. On a phone or Fold over the internet, the first launch cut-scene began before it was

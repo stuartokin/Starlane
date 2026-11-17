@@ -169,6 +169,14 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
     suite and the transitions walk).
 - **17 Nov 2026 — Modern cut-scenes looked Retro on the first launch** (`starlane-v19`), reported by Stuart on
   the Fold. Fixed: the 3D engine loads at start and cut-scenes wait for it. FLY THERE now catches moving ships.
+- **17 Nov 2026 — hyperspace cockpit and harder Trend questions** (`starlane-v20`), from Stuart's report.
+- **Cut-scene ideas for Stuart (not built):**
+  - an escape-capsule scene (it reuses "DOCKING…" today);
+  - a galactic-jump scene (none today);
+  - a short arrival flourish as you drop out of hyperspace;
+  - a 3D-cockpit version of the quick launch/dock animation (cut-scenes off).
+- **Market data:** goods' prices rise and fall almost together, so trend graphs look similar. Varying each
+  good's pattern would make the TREND puzzles more interesting (ask Stuart).
 - **Not yet checked on Stuart's devices:** how FLY THERE handles in real systems (it steers round rocks, the
   station, moons and the planet); the phone console on a real phone; the cut-scene fix over his connection.
 - **Open questions for Stuart:**

@@ -212,6 +212,20 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v20`:**
+- `cutLook()` (`'3d'|'console'|'clear'`) picks the cockpit for scenes drawn outside flight.
+  - Hyperspace, 3D cockpit: `renderFlight(ctx)`, then the tunnel drawn with `lighter` over a darkened windscreen
+    (`y<openY()`), across the whole wide canvas.
+  - Hyperspace, clear view: the tunnel at full height.
+  - Console: as before.
+  - `launch` / `dockAnim` (cut-scenes off, and the escape capsule) clear the full height for 3D or clear view.
+  - `_dbg.hyLook` records the choice.
+- **TREND questions** (`themedQ('trend')`) have three tiers: adult (`window.bank===ADULT_BANK`), older
+  (`advAge==='older'`), and basic. `makeMathQ` skips the host's `StarlaneQuestions.get` for `trend`, so the
+  question is always about the graph.
+- Market data note: the price models of different goods move almost in step, so trend graphs look alike (see
+  ROADMAP).
+
 **Since `starlane-v19`:**
 - `G.update` calls `StarModern.load()` whenever the style is Modern and the engine is idle.
 - Cut-scenes hold `scene.t` at 0 (with "PREPARING 3D…") while `StarModern.state==='loading'`, for up to 6 s

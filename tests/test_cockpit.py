@@ -177,7 +177,20 @@ async def main(p):
     R.check(frames and not flat and frames[-1][3], 'Modern launch cut-scene on a slow connection: waits for 3D, no flat (Retro-looking) frames', {'frames': len(frames), 'flat': len(flat)})
     await b.close()
 
-    # 6. big screens: the corner buttons grow
+    # 6. hyperspace shows the cockpit you fly with: 3D cockpit, console or clear view (and Retro's console)
+    for name, w, h, mob in (('laptop', 1280, 800, False), ('Fold open (Edge)', 1000, 558, True)):
+        for setup, want in (("o.style='modern';o.cock3d=true;o.battle=undefined", '3d'), ("o.style='modern';o.cock3d=false;o.battle=undefined", 'console'),
+                            ("o.style='modern';o.battle='on'", 'clear'), ("o.style='retro';o.battle=undefined", 'console')):
+            pg = await browser(p, w, h, mobile=mob); await open_site(pg); await register(pg); await launch_game(pg)
+            await pg.evaluate(f"(()=>{{const o={D}.C.opt;{setup};{D}.C.cheats={{interdict:0}};o.maths=false;}})()")
+            await fly(pg); await pg.wait_for_timeout(1500)
+            await pg.evaluate(f"(()=>{{const d={D};d.C.fuel=7;const cur=d.C.sys,G=d.GALn,s=G[cur];let b=null,bd=1e9;G.forEach((o,i)=>{{if(i===cur)return;const dd=Math.hypot(o.x-s.x,o.y-s.y);if(dd<bd){{bd=dd;b=i;}}}});d.C.target=b;d.startHyperDbg();}})()")
+            await until(pg, f"{D}.mode==='hyper'", 60000); await pg.wait_for_timeout(800)
+            got = await pg.evaluate(f"[{D}.hyLook,{D}.styleNow]")
+            R.check(got[0] == want and not pg.errors, f'{name}: hyperspace in {got[1]} {want} shows the same cockpit', got)
+            await pg.close_all()
+
+    # 7. big screens: the corner buttons grow
     for name, w, h in (('laptop', 1280, 800), ('4K', 3840, 2160)):
         pg = await browser(p, w, h); await open_site(pg); await register(pg); await launch_game(pg)
         fs = await pg.evaluate("parseFloat(getComputedStyle(document.querySelector('#arcade .arc-ctl button')).fontSize)")
