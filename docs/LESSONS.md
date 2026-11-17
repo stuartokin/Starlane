@@ -127,6 +127,10 @@ time once. Read before making changes.
 21v. **Buttons can hide under the subtitle box.** The 🛑 STOP button sat where Nova's subtitles appear, and the
     tap went to dragging the subtitles. Now any button under the subtitle box wins the tap, and STOP sits low in
     the view. The transitions suite taps STOP for real on every screen size, which is what caught it.
+21w. **Local tests hide download time.** The rig serves files from disk, so the 3D engine was always ready by the
+    first launch, and the flat (Retro-looking) cut-scene that Stuart saw on his Fold never showed. To test
+    first-load behaviour, delay the file with `page.route` and block the service worker (`service_workers='block'`):
+    otherwise the offline cache answers and the delay never applies.
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

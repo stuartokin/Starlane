@@ -158,7 +158,26 @@ async def main(p):
                         f'{name} · {tm}{" · battle display" if bd else ""}: controls clear of the picture, buttons and each other', bad or (got if got != want else '') or pg.errors[:2])
                 await pg.close_all()
 
-    # 5. big screens: the corner buttons grow
+    # 5. the first launch on a slow connection: the Modern cut-scene waits for the 3D engine instead of playing flat (Retro-looking)
+    b = await p.chromium.launch(); ctx = await b.new_context(viewport={'width': 1000, 'height': 558}, is_mobile=True, has_touch=True, service_workers='block')
+    pg = await ctx.new_page(); pg.errors = []; pg.on('pageerror', lambda e: pg.errors.append(str(e)[:300]))
+    async def slow(route):
+        await asyncio.sleep(4); await route.continue_()
+    await pg.route('**/three-bundle.js', slow)
+    await open_site(pg); await register(pg); await launch_game(pg)
+    await until(pg, f"{D}.overlay==='intro'", 4000); await pg.evaluate(f"(()=>{{const d={D};d.C.introSeen=true;d.set('overlay',null);}})()")
+    await pg.evaluate(f"{D}.launchDbg()"); await until(pg, f"{D}.mode==='launchScene'", 5000)
+    frames = []
+    for _ in range(80):
+        await pg.wait_for_timeout(200)
+        v = await pg.evaluate(f"[{D}.mode,StarModern.state,{D}.scene?{D}.scene.t:0,{D}.scene3d]")
+        if v[0] != 'launchScene': break
+        frames.append(v)
+    flat = [f for f in frames if f[2] > .05 and not f[3]]
+    R.check(frames and not flat and frames[-1][3], 'Modern launch cut-scene on a slow connection: waits for 3D, no flat (Retro-looking) frames', {'frames': len(frames), 'flat': len(flat)})
+    await b.close()
+
+    # 6. big screens: the corner buttons grow
     for name, w, h in (('laptop', 1280, 800), ('4K', 3840, 2160)):
         pg = await browser(p, w, h); await open_site(pg); await register(pg); await launch_game(pg)
         fs = await pg.evaluate("parseFloat(getComputedStyle(document.querySelector('#arcade .arc-ctl button')).fontSize)")

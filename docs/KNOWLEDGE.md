@@ -212,6 +212,12 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v19`:**
+- `G.update` calls `StarModern.load()` whenever the style is Modern and the engine is idle.
+- Cut-scenes hold `scene.t` at 0 (with "PREPARING 3D…") while `StarModern.state==='loading'`, for up to 6 s
+  (`scene.wait`).
+- `G._scene3d` / `_dbg.scene3d` says whether the last cut-scene frame was drawn in 3D.
+
 **Since `starlane-v18`:**
 - **Fly to target**: `fly={o,ph}`; `flyTo(o)`, `flyStop(why)`, `flyTick(I,dt)`, run first in `assistTick`.
   - Cancelled by manual turn/throttle input, `underAttack()`, or `!flyAllowed()`. `flyAllowed()` needs the `fly`

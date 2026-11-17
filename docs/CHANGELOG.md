@@ -2,6 +2,15 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v19 — 17 November 2026
+- **Modern cut-scenes no longer look Retro on the first launch.** The 3D engine (about 0.6 MB) started loading
+  only when you first flew. On a phone or Fold over the internet, the first launch cut-scene began before it was
+  ready, so it was drawn flat. Now the engine loads as soon as the game opens in Modern style, and a launch or
+  docking cut-scene waits (up to 6 s, showing "PREPARING 3D…") until it is ready. A device that can't do 3D still
+  gets the flat version.
+- New check in the `cockpit` suite: the first launch on a slow connection (the 3D file delayed 4 s, offline cache
+  off) has no flat frames.
+
 ## starlane-v18 — 17 November 2026
 - **➡️ Fly to target.**
   - One tap on a radar icon shows what it is (the ship no longer turns by itself). The card has 🎯 TURN TO and
