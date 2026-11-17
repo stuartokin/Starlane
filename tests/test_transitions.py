@@ -4,7 +4,7 @@ Walks the game through every kind of screen change and checks where you end up a
 docked tabs, Pause and each of its pages (Escape and ◀ BACK step back one page at a time), Career from Pause
 (closes back to Pause), the launch and docking cut-scenes, the chart and its DATA page, cargo and mission log,
 outside camera and views kept across Pause, switching display style mid-flight (Modern / Original / Retro),
-the battle display, the trailer and a tour (you return to the same Pause page), test mode, a maths puzzle, an
+the battle display, 🎛 VIEW (F4) through every Modern display, FLY THERE through Pause and 🛑 STOP, the trailer and a tour (you return to the same Pause page), test mode, a maths puzzle, an
 adventure abandoned from Pause, a hyperspace jump, stopping and relaunching, turning a phone or Fold, and
 dying (CARRY ON docks you at the last station without leaving the game; LEAVE goes to the launch page).
 
@@ -160,6 +160,24 @@ async def walk(p, R, dev, style, full=True):
                 await W.key('Escape', 700); await W.expect(f'switch to {s2} in flight: still flying, nothing else changed', mode='flight', ov=None, style=s2, cam='cockpit')
         # battle display on and off
         await W.key('F3', 300); await W.key('F3', 300); await W.expect('battle display on/off (F3) leaves you flying', mode='flight', ov=None)
+        # 🎛 VIEW (F4): every Modern display in turn, then back to this walk's style
+        if full:
+            n = len(await W.ev(f"{D}.viewList()"))
+            for i in range(n):
+                await W.key('F4', 500)
+                v = await W.ev(f"{D}.viewNow()")
+                await W.expect(f'F4 → {v}: still flying, nothing else changed', mode='flight', ov=None, style='modern', cam='cockpit')
+            await W.ev(f"(()=>{{const d={D};d.C.opt.style={style!r};d.C.opt.battle=undefined;d.C.opt.cock3d=d.C.opt.device==='desktop';}})()"); await W.wait(500)
+        # ➡️ FLY THERE keeps going through Pause, and STOP hands back control
+        await W.ev(f"(()=>{{const d={D};d.C.opt.assist=d.C.opt.assist||{{}};for(const k of ['touch','mouse'])d.C.opt.assist[k]=Object.assign(d.C.opt.assist[k]||{{}},{{fly:true}});d.setLastHit(-99);}})()")
+        await W.ev(f"{D}.flyTo({D}.station)"); await W.wait(300)
+        W.check(bool(await W.ev(f"{D}.fly")), 'FLY THERE starts')
+        await W.key('Escape'); await W.expect('Pause while flying there', ov='menu', menu='main')
+        await W.key('Escape'); await W.expect('resume: still flying', ov=None, mode='flight')
+        W.check(bool(await W.ev(f"{D}.fly")), 'FLY THERE carries on after Pause')
+        if await W.tap('STOP'): await W.expect('🛑 STOP (real tap or click) hands control back', ov=None, mode='flight')
+        else: W.check(False, 'STOP button found')
+        W.check(await W.ev(f"{D}.fly") is None, 'FLY THERE has stopped')
 
         # --- movies and tours return you to the same Pause page ---
         sys0 = await W.ev(f"{D}.C.sys")

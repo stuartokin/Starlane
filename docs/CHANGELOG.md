@@ -2,6 +2,25 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v18 — 17 November 2026
+- **➡️ Fly to target.**
+  - One tap on a radar icon shows what it is (the ship no longer turns by itself). The card has 🎯 TURN TO and
+    ➡️ FLY THERE, or you can tap the same icon again.
+  - The ship turns, flies, uses the jump drive for long trips, slows down and stops: about 1 km from a ship and
+    a few km above a planet or moon.
+  - At the station it flies round to the slot, levels with it and matches its spin. On Easy it takes you in and
+    docks; on Normal and Hard it stops lined up for you to fly in.
+  - 🛑 STOP, steering, or coming under attack hands control back.
+  - Not offered in adventures or station races, or for black holes and missiles.
+  - It is a flight assist: on for touch screens, off for mouse and keyboard (switch it in Flight assists).
+- **🎛 VIEW (F4)** steps through the Modern displays: 3D cockpit, console cockpit, clear view (the battle display
+  layout). Phones skip the 3D cockpit, and from Retro or Original VIEW switches to Modern. It is on the console,
+  in the 3D cockpit's switch panel, and as a 🎛 VIEW button in the clear view.
+- **Simpler console on phones:** six big switches (⚡ JUMP, 🛬 DOCK, 🌌 HYPER, 🗺 MAP, 📋 MISN, ⋯ MORE). MORE opens
+  a strip with the rest and closes after a choice. Four big readouts: shields, energy, fuel and speed.
+- Tests: new `flyto` suite. The adventures suite checks FLY THERE is never offered in any scene and cycles VIEW in
+  every flight scene. The transitions walk now includes F4 and FLY THERE with Pause and STOP on every screen size.
+
 ## starlane-v17 — 16 November 2026
 - **Three touch layouts**, chosen in Pause → Controls → 📱 TOUCH CONTROLS and kept per device:
   - **🕹 Simple** (the default): one joystick steers and **the ship picks its speed**. It cruises in open space

@@ -212,6 +212,27 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v18`:**
+- **Fly to target**: `fly={o,ph}`; `flyTo(o)`, `flyStop(why)`, `flyTick(I,dt)`, run first in `assistTick`.
+  - Cancelled by manual turn/throttle input, `underAttack()`, or `!flyAllowed()`. `flyAllowed()` needs the `fly`
+    assist, flight, and no adventure, race, tour, show or seat. `canFly(o)` also excludes `bh` and missiles.
+  - Station phases: `go` (to the corridor point 2.6 km out, round the side if the station is in the way), then
+    `align` (level with the slot as the docking assist does, lock the spin, face along the axis), then on Easy
+    `in` (fly the axis at 70, then 50, until the game docks). Other levels stop at `align`.
+  - Other targets stop at 1000 (ships), 250 (small things), or R+3000 (planet, moons; stars 3R+3000). The jump
+    drive is used beyond 25 km and dropped inside 9 km.
+  - Radar taps (`radarPick`): the first selects (info card); a tap on the same object calls `flyTo`.
+  - Cards: `drawTarget` (ships, station) and `drawRadarInfo` (planets and others) end with
+    `cardActs(ctx,o,x,y,w)`. `drawFlyPill` shows 🛑 STOP while flying.
+  - The resting mouse pointer doesn't steer while `fly` is set.
+- **VIEW**: `cycleView()`, `viewNow()` (`'3d'|'console'|'clear'|null`) and `viewList()`.
+  - It sets `style='modern'` with `cock3d`, or `battle='on'` for clear view.
+  - It is ACTION `display` (F4), deck key `display` (also in `DECK_R`), and a 🎛 VIEW button in `drawBattleHUD`.
+- **Phone console**: `phoneCon()` (`device==='phone'`).
+  - `consoleKeys` draws `phoneKeys` (`PHONE_KEYS` + MORE; buttons labelled `phone <key>` / `more <key>` for
+    tests).
+  - The dashboard draws `bigRead` readouts instead of the bars.
+
 ### 3.9 Test mode
 A grown-up's sandbox copy of the commander (`test={real:snapReal(),…}`): god mode, free fuel and cargo, jump
 anywhere, stage any adventure, scenarios. The real commander is restored on exit. On the standalone site it
