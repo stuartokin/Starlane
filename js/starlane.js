@@ -1882,7 +1882,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   let dir=norm(sub(goal,P.pos)),rocky=false,close=false;for(const[pos,rr,isRock]of obs){const to=sub(pos,P.pos),dd=len(to),look=rr+2200;if(dd>look||dd>len(sub(goal,P.pos))+rr)continue;if(isRock)rocky=true;const tn=mul(to,1/dd),c=dot(tn,dir);if(dd<rr+700)close=true;
    if(c>.5){let side=sub(dir,mul(tn,c));side=len(side)<.05?P.o.u:norm(side);dir=norm(add(mul(dir,.4),mul(side,1.2*(1-(dd-rr)/2200)+.5)));}}
   steer(P.o,dir,1.4*dt);I.yaw=0;I.pitch=0;if(!rollLock&&!(isSt&&fly.ph==='align'))I.roll=rollToward(V(0,1,0))*.6;
-  const want=slow?(fly.ph==='in'?(dist<1500?50:70):0):Math.min(close?40:rocky?.3*mx:mx,Math.max(isSt&&remain<700?12:60,Math.min(mx,remain*.35)));P.throttle+=(Math.min(1,want/mx)-P.throttle)*Math.min(1,dt*1.5);}
+  const want=slow?(fly.ph==='in'?(dist<1500?50:70):0):Math.min(close?40:rocky?.3*mx:mx,Math.max(isSt&&remain<700?12:60,Math.min(mx,(isSt?0:(o.speed||0))+remain*.35+(isSt||!(o.speed>5)?0:25))));P.throttle+=(Math.min(1,want/mx)-P.throttle)*Math.min(1,dt*1.5);}
  let faceT=null,dockAssisted=false,lvlSign=1,lvlPrev=null;
  const projOnto=(t,f)=>{const d=dot(t,f);return sub(t,mul(f,d));};
  function rollToward(t){const tp=projOnto(t,P.o.f),l=len(tp);if(l<.2)return 0;const tn=mul(tp,1/l),ang=v=>Math.acos(Math.max(-1,Math.min(1,dot(v,tn)))),a=ang(P.o.u);if(a<.01)return 0;const tryPos=ang(rot(P.o.u,P.o.f,-.02));return Math.max(-1,Math.min(1,a*2.2))*(tryPos<a?1:-1);}

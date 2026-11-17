@@ -8,6 +8,8 @@ The release number is the offline cache name `CACHE` in `sw.js` (bump it on ever
   ready, so it was drawn flat. Now the engine loads as soon as the game opens in Modern style, and a launch or
   docking cut-scene waits (up to 6 s, showing "PREPARING 3D…") until it is ready. A device that can't do 3D still
   gets the flat version.
+- FLY THERE to a moving ship now catches up and stops about 1 km away. Before, it matched the ship's speed and
+  followed it forever without arriving.
 - New check in the `cockpit` suite: the first launch on a slow connection (the 3D file delayed 4 s, offline cache
   off) has no flat frames.
 
