@@ -170,6 +170,13 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **17 Nov 2026 — Modern cut-scenes looked Retro on the first launch** (`starlane-v19`), reported by Stuart on
   the Fold. Fixed: the 3D engine loads at start and cut-scenes wait for it. FLY THERE now catches moving ships.
 - **17 Nov 2026 — hyperspace cockpit and harder Trend questions** (`starlane-v20`), from Stuart's report.
+- **v21 — FINISH IN A NEW SESSION (17 Nov 2026).** The stronger lock is built and tested with a made-up code,
+  but `js/lock.js` holds the placeholder `__CHECK__`, so v21 is on the working branch only, not on `main`. In a
+  session on Stuart's Default environment (it has `STARLANE_CODE`):
+  1. `python3 tools/set_code.py`;
+  2. run the full rig (the cheat-page checks now use the real code);
+  3. publish to `main`;
+  4. tell Stuart to unlock with his **new** code (the old one stops working).
 - **Cut-scene ideas for Stuart (not built):**
   - an escape-capsule scene (it reuses "DOCKING…" today);
   - a galactic-jump scene (none today);

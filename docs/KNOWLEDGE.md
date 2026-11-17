@@ -266,8 +266,8 @@ needs a code; in ApolloMaths it needs the family passphrase.
 
 ### 3.11 The cheat page (`cheats.html`, since `starlane-v6`)
 A grown-ups' page at `/Starlane/cheats.html` (no link from the launch page), locked with the **same test code**
-as test mode (only the FNV-1a check value is in the repo). Once unlocked, the tab remembers it in
-`sessionStorage['starlane-cheats-ok']`.
+as test mode. Once unlocked, the tab remembers the derived key (not the code) in
+`sessionStorage['starlane-cheats-ok']`. The lock itself is described under §5.
 
 - **What it changes.** `js/cheats-def.js` lists everything:
   - **rules** are lasting changes the game reads through `CH(k)`: enemies (most ships at once, pirate rate,
@@ -403,8 +403,21 @@ questions or the `bank` (`makeBankQ()` turns a bank question `{q, a, h|s}` into 
 - `play(opts)` opens the arcade with the `sl-booting` class (black screen) so neither the arcade menu nor the
   game's title screen flashes; dismisses the title with `g.tap()`; for videos starts `startShow` before
   uncovering. A watcher returns to the launch page when the game or video ends (`backToLaunch`).
-- Test-mode code: Ctrl+Shift+G / triple-tap opens `#slCode`; the code is checked against an FNV-1a hash of
-  `'starlane|' + code`. **The code itself is not in the repo** (Stuart has it).
+- **Test-mode / cheat-page code (since `starlane-v21`):** Ctrl+Shift+G / triple-tap opens `#slCode`.
+  - `js/lock.js` (`StarlaneLock`) checks the code: K = PBKDF2-SHA-256(code, `starlane-trader-lock-v2`, 200,000
+    iterations); the repo holds only CHECK = SHA-256(K).
+  - Guessing from CHECK is slow, and the "unlocked" marker the cheat page keeps for the tab is K, which can't be
+    copied from the repo.
+  - `site.js` checks it for the code box and for `?cheats=play|apply` (`cheatGo()`); `cheats-page.js` for the
+    page.
+  - **The code itself is not in the repo.** Stuart saved it as `STARLANE_CODE` on his Default cloud environment.
+  - `tools/set_code.py` writes CHECK from it (`--check` verifies) and never prints the code.
+  - Tests build the marker with `unlock_js()` in `rig.py`. Without `STARLANE_CODE` the cheat-page tests are
+    skipped, and `test_static` fails while CHECK is still the placeholder `__CHECK__`.
+  - It is still a lock for children: a person using the browser's developer tools can get round any check that
+    runs in the browser.
+  - Before v21 it was a quick FNV-1a hash (`6f8f905c`), and the marker was that same value, so anyone reading the
+    repo could unlock the page.
 - `window.StarlaneSite = {ready, hosted, forceExit, questionSource, probe}`.
 
 ## 6. Access from ApolloMaths (the bridge)

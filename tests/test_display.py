@@ -105,14 +105,17 @@ async def main(p):
     R.check(not pg.errors, 'no page errors (whole screen)', pg.errors[:3]); await pg.close_all()
     # started from the cheat page: Pause offers the way back there
     pg = await browser(p, 1280, 800); await open_site(pg); await register(pg)
-    await pg.goto(f'{serve()}/Starlane/cheats.html'); await pg.evaluate("sessionStorage.setItem('starlane-cheats-ok','6f8f905c')"); await pg.reload(); await pg.wait_for_timeout(400)
-    await pg.click('#chPlay')
-    await until(pg, "(()=>{try{return Arcade._game().inTest()}catch(e){return false}})()", 20000); await pg.wait_for_timeout(600)
-    await pg.evaluate(f"{D}.set('overlay','menu');{D}.set('menuTab','main')"); await pg.wait_for_timeout(300)
-    R.check(await pg.evaluate(f"!!{D}.btns.find(b=>b.label==='⚙ BACK TO THE CHEAT PAGE')"), 'Pause in a practice copy from the cheat page: ⚙ Back to the cheat page')
-    await pg.evaluate(f"{D}.btns.find(b=>b.label==='⚙ BACK TO THE CHEAT PAGE').fn()")
-    R.check(bool(await until(pg, "location.pathname.endsWith('cheats.html')&&!!document.getElementById('chForm')", 8000)), '… and it goes back there')
-    R.check(not pg.errors, 'no page errors (cheat page round trip)', pg.errors[:3]); await pg.close_all()
+    if not unlock_js():
+        R.skip('Pause in a practice copy from the cheat page', 'set STARLANE_CODE: the cheat page can only be unlocked with the real code'); await pg.close_all(); pg = None
+    else:
+        await pg.goto(f'{serve()}/Starlane/cheats.html'); await pg.evaluate(unlock_js()); await pg.reload(); await until(pg, "!document.getElementById('chMain').hidden", 8000); await pg.wait_for_timeout(400)
+        await pg.click('#chPlay')
+        await until(pg, "(()=>{try{return Arcade._game().inTest()}catch(e){return false}})()", 20000); await pg.wait_for_timeout(600)
+        await pg.evaluate(f"{D}.set('overlay','menu');{D}.set('menuTab','main')"); await pg.wait_for_timeout(300)
+        R.check(await pg.evaluate(f"!!{D}.btns.find(b=>b.label==='⚙ BACK TO THE CHEAT PAGE')"), 'Pause in a practice copy from the cheat page: ⚙ Back to the cheat page')
+        await pg.evaluate(f"{D}.btns.find(b=>b.label==='⚙ BACK TO THE CHEAT PAGE').fn()")
+        R.check(bool(await until(pg, "location.pathname.endsWith('cheats.html')&&!!document.getElementById('chForm')", 8000)), '… and it goes back there')
+        R.check(not pg.errors, 'no page errors (cheat page round trip)', pg.errors[:3]); await pg.close_all()
     # touch screens: full cockpit switch, and the battle display fits
     for w, h, name in ((1100, 880, 'open Fold'), (844, 390, 'phone')):
         pg = await browser(p, w, h, True); await open_site(pg); await register(pg); await launch_game(pg)

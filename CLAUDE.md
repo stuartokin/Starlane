@@ -23,8 +23,12 @@ Before changing anything, read in this order:
 
 ## Rules for working here
 
-- **Never commit secrets.** The repo is public. The test-mode code is held by Stuart; only a check value
-  (FNV-1a hash) is in `site.js`. Tests read it from `STARLANE_CODE`. API keys live only in GitHub secrets.
+- **Never commit secrets.** The repo is public. The test-mode / cheat-page code is held by Stuart and saved as
+  the environment variable `STARLANE_CODE` on his **Default** cloud environment. Only a slow, salted check value
+  (PBKDF2 → SHA-256) is in `js/lock.js`. Never print the code.
+  - To set or change it: `python3 tools/set_code.py`, then run the tests and publish.
+  - If `js/lock.js` still says `__CHECK__`, the lock isn't set: `test_static` fails, so don't publish.
+  - API keys live only in GitHub secrets.
 - **Bump `CACHE` in `sw.js`** (`starlane-vN`) **and `js/version.js`** on every release, or players' devices keep the old files. The version shows in Pause, on the launch page and on the cheat page (`test_static` checks the two match).
 - **Keep the debug hooks** on `Arcade._game()._dbg` working — tests and the automated workflows use them.
 - **Run the rig**: `python tests/run_all.py` (about 9 minutes). Everything must pass before shipping.

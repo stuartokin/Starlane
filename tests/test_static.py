@@ -22,6 +22,13 @@ async def main(p):
             if code and code in t: hits.append(f'{f.name}: test-mode code')
             if re.search(r'sk-ant-[A-Za-z0-9_-]{10,}', t): hits.append(f'{f.name}: API key')
     R.check(not hits, 'no test-mode code or API keys in the repo', hits or ('code checked' if code else 'set STARLANE_CODE to also check the code'))
+    # 2b. the lock (js/lock.js) holds a real check value, and with STARLANE_CODE it matches that code
+    lk = (STARLANE / 'js' / 'lock.js').read_text(encoding='utf-8'); m = re.search(r"CHECK = '([^']*)'", lk)
+    R.check(bool(m) and re.fullmatch(r'[0-9a-f]{64}', m.group(1) or ''), 'the test-mode lock is set (js/lock.js has a check value)', 'run tools/set_code.py' if not (m and re.fullmatch(r'[0-9a-f]{64}', m.group(1) or '')) else '')
+    if code:
+        sys.path.insert(0, str(STARLANE / 'tools')); import set_code
+        R.check(m and set_code.keys(code)[2] == m.group(1), 'the lock matches STARLANE_CODE')
+    else: R.skip('the lock matches STARLANE_CODE', 'set STARLANE_CODE')
     # 3. "Apollo" only as history (Apollo 11 / Apollo astronaut) in what players see
     apollo = []
     for f in list((STARLANE / 'js').glob('*.js')) + [STARLANE / 'index.html']:

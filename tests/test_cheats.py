@@ -4,11 +4,11 @@ to the real commander (kept with the save until removed). Also the emergency esc
 from rig import *
 
 D = "Arcade._game()._dbg"
-UNLOCK = "sessionStorage.setItem('starlane-cheats-ok','6f8f905c')"
+UNLOCK = unlock_js()   # needs STARLANE_CODE: the unlock marker can only be made from the real code
 
 async def open_page(pg, unlock=True):
     await pg.goto(f'{serve()}/Starlane/cheats.html')
-    if unlock: await pg.evaluate(UNLOCK); await pg.reload()
+    if unlock: await pg.evaluate(UNLOCK); await pg.reload(); await until(pg, "!document.getElementById('chMain').hidden", 8000)
     await pg.wait_for_timeout(400)
 
 async def to_flight(pg):
@@ -22,13 +22,20 @@ async def main(p):
     # 1. locked until the code is given
     await open_page(pg, unlock=False)
     R.check(await pg.evaluate("document.getElementById('chMain').hidden&&!document.getElementById('chLock').hidden"), 'page is locked until the test code is entered')
-    await pg.fill('#chCode', '0000'); await pg.click('#chLockForm button'); await pg.wait_for_timeout(200)
+    await pg.fill('#chCode', '0000'); await pg.click('#chLockForm button'); await until(pg, "/Not quite/.test(document.getElementById('chLockMsg').textContent)", 8000)
     R.check('Not quite' in await pg.inner_text('#chLockMsg') and await pg.evaluate("document.getElementById('chMain').hidden"), 'a wrong code keeps it locked')
     code = os.environ.get('STARLANE_CODE')
     if code:
-        await pg.fill('#chCode', code); await pg.click('#chLockForm button'); await pg.wait_for_timeout(300)
+        await pg.fill('#chCode', code); await pg.click('#chLockForm button'); await until(pg, "!document.getElementById('chMain').hidden", 8000)
         R.check(not await pg.evaluate("document.getElementById('chMain').hidden"), 'the real code unlocks it')
-    else: R.skip('the real code unlocks it', 'set STARLANE_CODE')
+        k = await pg.evaluate("sessionStorage.getItem('starlane-cheats-ok')")
+        R.check(bool(k) and len(k) == 64 and k not in open(STARLANE / 'js' / 'lock.js').read(), 'the unlocked marker is made from the code, not copied from the repo')
+        await pg.evaluate("sessionStorage.setItem('starlane-cheats-ok','0'.repeat(64))"); await pg.reload(); await pg.wait_for_timeout(1500)
+        R.check(await pg.evaluate("document.getElementById('chMain').hidden"), 'a made-up marker does not unlock it')
+    else:
+        R.skip('the real code unlocks it', 'set STARLANE_CODE')
+        R.skip('cheat page settings, Play and Apply', 'set STARLANE_CODE: the cheat page can only be unlocked with the real code')
+        await pg.close_all(); return R
     # 2. the form and saving
     await open_page(pg)
     n = await pg.evaluate("[document.querySelectorAll('[data-k]').length, STARLANE_CHEAT_DEFS.rules.flatMap(g=>g.items).length]")

@@ -89,6 +89,16 @@ async def test_mode(pg):
     await pg.evaluate("Arcade._game().testMode()"); await pg.wait_for_timeout(300)
     return await pg.evaluate("!!Arcade._game().inTest()")
 
+def unlock_js():
+    """JavaScript that marks this tab as unlocked for the cheat page, made from STARLANE_CODE (None without it).
+    The marker is the slow-derived key from js/lock.js, so it can't be made without the real code."""
+    code = os.environ.get('STARLANE_CODE', '')
+    if not code.strip(): return None
+    sys.path.insert(0, str(STARLANE / 'tools'))
+    import set_code
+    _, k, _ = set_code.keys(code)
+    return f"sessionStorage.setItem('starlane-cheats-ok','{k}')"
+
 def run(main):
     from playwright.async_api import async_playwright
     async def go():

@@ -29,11 +29,15 @@ python tests/run_all.py                 # everything (about 9 minutes)
 python tests/run_all.py static,site     # just some suites
 python tests/test_adventures.py icemoon,contact   # chosen adventures only
 SHOTS=1 python tests/test_adventures.py # also save a screenshot of every adventure scene to tests/out/
-STARLANE_CODE=xxxxxxxx python tests/run_all.py    # also test the test-mode code box with the real code
+python tests/run_all.py                 # sessions on Stuart's Default environment have STARLANE_CODE already
 ```
 
-The test-mode code is **never** stored in this public repo. Without `STARLANE_CODE`, that one check is skipped;
-everything else uses the game's own `testMode()` directly. `run_all.py` writes `tests/out/report.md`.
+The test-mode code is **never** stored in this public repo; it comes from the `STARLANE_CODE` environment
+variable (on Stuart's Default cloud environment).
+- The cheat page can only be unlocked with the real code (`unlock_js()` in `rig.py` derives the marker from it).
+- Without `STARLANE_CODE` the code-box and cheat-page checks are skipped, and `static` fails if `js/lock.js`
+  still holds the placeholder.
+- Everything else uses the game's own `testMode()` directly. `run_all.py` writes `tests/out/report.md`.
 
 ## Suites
 

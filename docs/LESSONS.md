@@ -131,6 +131,12 @@ time once. Read before making changes.
     first launch, and the flat (Retro-looking) cut-scene that Stuart saw on his Fold never showed. To test
     first-load behaviour, delay the file with `page.route` and block the service worker (`service_workers='block'`):
     otherwise the offline cache answers and the delay never applies.
+21x. **A lock whose "unlocked" marker equals the stored check value isn't a lock.** The cheat page remembered
+    "unlocked" by storing the very hash that sat in the public repo, so anyone could copy it. Store something
+    only the right code produces (the derived key), check it against the stored hash, and use a slow, salted hash
+    (PBKDF2) so short codes can't be guessed in seconds.
+21y. **Environment variables load when a session starts.** Stuart added `STARLANE_CODE` mid-session, and the
+    running session couldn't see it. Changes to the cloud environment need a new session (or a reconnect).
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

@@ -2,6 +2,16 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v21 — prepared 17 November 2026 (publish once the code is set)
+- **Stronger lock on test mode and the cheat page.**
+  - The code is checked by `js/lock.js` with a slow, salted check (PBKDF2-SHA-256, 200,000 rounds, then
+    SHA-256) instead of a quick 8-character hash, so guessing it would take far too long for a reasonable code.
+  - The tab's "unlocked" marker is now a key only the right code produces; before, it was the check value
+    itself, which anyone reading the repo could copy.
+  - Stuart's new code is read from `STARLANE_CODE` (his Default environment) by `tools/set_code.py`, which never
+    prints it.
+  - A browser's developer tools can still get round it; it is a lock for children, not a bank vault.
+
 ## starlane-v20 — 17 November 2026
 - **Hyperspace shows your own cockpit.** It always drew the plain console. Now:
   - 3D cockpit: the real 3D cockpit, with the tunnel shining through a darkened windscreen across the whole screen;

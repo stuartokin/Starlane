@@ -48,7 +48,9 @@ const PROBE=!!HOST&&/[?&]probe=1/.test(location.search);
 /* ---------- the cheat page (cheats.html): settings saved on this device; the page passes ?cheats=play|apply ---------- */
 window.StarlaneSite.cheats=()=>{try{const s=JSON.parse(localStorage.getItem('starlane-cheats-v1')||'null');return s&&s.rules?s:null;}catch(e){return null;}};
 // only honoured straight after the cheat page has been unlocked with the test code in this tab
-const CHEAT_GO=(()=>{const m=(location.search.match(/[?&]cheats=(play|apply)/)||[])[1];if(!m||HOST)return null;try{if(sessionStorage.getItem('starlane-cheats-ok')!=='6f8f905c')return null;}catch(e){return null;}return m;})();
+// honoured only if this tab unlocked the cheat page with the right code (its key is checked against js/lock.js)
+const CHEAT_M=(()=>{const m=(location.search.match(/[?&]cheats=(play|apply)/)||[])[1];return !m||HOST?null:m;})();
+function cheatGo(){if(!CHEAT_M||!window.StarlaneLock)return Promise.resolve(null);let k=null;try{k=sessionStorage.getItem(StarlaneLock.KEY);}catch(e){}return StarlaneLock.okKey(k).then(ok=>ok?CHEAT_M:null);}
 if(/[?&]cheats=/.test(location.search)){try{history.replaceState(null,'',location.pathname);}catch(e){}}
 // the parent page's check: report what this connection would deliver, without starting the game
 window.StarlaneSite.probe=n=>{const SQ=window.StarlaneQuestions,out=[],kinds=['fuel','trade','hyper','repair','dock'];for(let i=0;i<n*20&&out.length<n;i++){const q=SQ&&typeof SQ.get==='function'?SQ.get(kinds[i%kinds.length],{}):null;if(q)out.push({q:q.q,ans:q.ans,u:q.u||'',exam:q.exam||null,topic:q.topic||null});}return{hosted:!!HOST,socket:!!(SQ&&typeof SQ.get==='function'),questions:out};};
@@ -78,19 +80,18 @@ function play(opts={}){if(!HOST){savePilot();questionSource();}if(typeof Arcade=
   if(opts.show&&showOn&&d&&!d.show)backToLaunch();},300);}
 
 /* ---------- test mode: Ctrl+Shift+G or triple-tap the score, then the code ---------- */
-const CHECK='6f8f905c';
-const fnv=s=>{let h=0x811c9dc5;for(const ch of new TextEncoder().encode('starlane|'+s)){h^=ch;h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');};
+// the code is checked by js/lock.js (a slow, salted check; the code itself is never stored)
 function gameNow(){const g=typeof Arcade!=='undefined'&&Arcade._game&&Arcade._game();return g&&typeof g.testMode==='function'&&get('arcCanvas')&&get('arcCanvas').offsetParent?g:null;}
 function askCode(){const g=gameNow();if(!g)return;if(g.inTest&&g.inTest()){g.testMode();return;}if(HOST){try{HOST.requestTest(()=>{const g2=gameNow();if(g2&&!(g2.inTest&&g2.inTest()))g2.testMode();});}catch(e){}return;}
  let box=get('slCode');if(!box){box=document.createElement('div');box.id='slCode';box.innerHTML=`<div class="sl-code-card"><h3>🧪 Test mode</h3><p>Enter the test code</p><input id="slCodeIn" type="password" inputmode="numeric" autocomplete="off" maxlength="16"><div class="sl-code-btns"><button id="slCodeOk" type="button">Open</button><button id="slCodeNo" type="button" class="ghost">Cancel</button></div><p id="slCodeMsg" class="msg"></p></div>`;
   get('arcade').appendChild(box);get('slCodeNo').onclick=()=>box.classList.remove('on');
-  const ok=()=>{if(fnv(get('slCodeIn').value.trim())===CHECK){box.classList.remove('on');const g2=gameNow();if(g2)g2.testMode();}else{get('slCodeMsg').textContent='Not quite — try again.';get('slCodeIn').select();}};
+  const ok=async()=>{get('slCodeMsg').textContent='Checking…';const k=window.StarlaneLock?await StarlaneLock.tryCode(get('slCodeIn').value):null;if(k){get('slCodeMsg').textContent='';box.classList.remove('on');const g2=gameNow();if(g2)g2.testMode();}else{get('slCodeMsg').textContent='Not quite — try again.';get('slCodeIn').select();}};
   get('slCodeOk').onclick=ok;get('slCodeIn').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')ok();if(e.key==='Escape')box.classList.remove('on');});}
  get('slCodeIn').value='';get('slCodeMsg').textContent='';box.classList.add('on');setTimeout(()=>get('slCodeIn').focus(),30);}
 document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&(e.key==='G'||e.key==='g')){e.preventDefault();askCode();}},true);
 let taps=[];document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#arcHud'))return;const now=Date.now();taps=taps.filter(t=>now-t<900);taps.push(now);if(taps.length>=3){taps=[];askCode();}},true);
 
 /* ---------- start-up ---------- */
-window.addEventListener('DOMContentLoaded',()=>{if(PROBE){document.body.classList.add('sl-hosted');window.StarlaneSite.ready=true;return;}if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();if(CHEAT_GO)setTimeout(()=>play({cheats:CHEAT_GO}),50);get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
+window.addEventListener('DOMContentLoaded',()=>{if(PROBE){document.body.classList.add('sl-hosted');window.StarlaneSite.ready=true;return;}if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();cheatGo().then(m=>{if(m)setTimeout(()=>play({cheats:m}),50);});get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});});
 })();

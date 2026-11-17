@@ -3,8 +3,8 @@
    Locked with the same test code as the game's test mode (only its FNV-1a check value is here). */
 (function(){
 const D = window.STARLANE_CHEAT_DEFS, $ = id => document.getElementById(id);
-const CHECK = '6f8f905c', OK_KEY = 'starlane-cheats-ok';
-const fnv = s => { let h = 0x811c9dc5; for (const ch of new TextEncoder().encode('starlane|' + s)) { h ^= ch; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+// the lock is js/lock.js: a slow, salted check; the tab remembers the key that only the right code produces
+const L = window.StarlaneLock, OK_KEY = L.KEY;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const RULES = D.rules.flatMap(g => g.items), CMDS = D.cmd.flatMap(g => g.items);
 const blankCmd = () => { const c = {}; for (const i of CMDS) c[i.k] = i.type === 'bool' ? false : i.type === 'multi' ? [] : ''; return c; };
@@ -78,11 +78,12 @@ function unlocked(){ $('chLock').hidden = true; $('chMain').hidden = false; $('c
 window.addEventListener('DOMContentLoaded', () => {
  try { const v = window.STARLANE_VERSION; if (v) $('chVer').textContent = `Version ${v.v}`; } catch(e) {}
  $('chBackTop').onclick = back;
- let ok = false; try { ok = sessionStorage.getItem(OK_KEY) === CHECK; } catch(e) {}
- if (ok) { unlocked(); return; }
- $('chLockForm').addEventListener('submit', e => { e.preventDefault();
-  if (fnv($('chCode').value.trim()) === CHECK) { try { sessionStorage.setItem(OK_KEY, CHECK); } catch(e) {} unlocked(); }
+ let k0 = null; try { k0 = sessionStorage.getItem(OK_KEY); } catch(e) {}
+ $('chLockForm').addEventListener('submit', async e => { e.preventDefault(); $('chLockMsg').textContent = 'Checking…';
+  const k = await L.tryCode($('chCode').value);
+  if (k) { try { sessionStorage.setItem(OK_KEY, k); } catch(e) {} $('chLockMsg').textContent = ''; unlocked(); }
   else { $('chLockMsg').textContent = 'Not quite — try again.'; $('chCode').select(); } });
- $('chCode').focus(); });
+ $('chCode').focus();
+ L.okKey(k0).then(ok => { if (ok) unlocked(); }); });
 window.StarlaneCheatPage = {get state(){ return st; }, save, toGame, unlocked};
 })();
