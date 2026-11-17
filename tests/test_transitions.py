@@ -165,7 +165,7 @@ async def walk(p, R, dev, style, full=True):
             n = len(await W.ev(f"{D}.viewList()"))
             for i in range(n):
                 await W.key('F4', 500)
-                v = await W.ev(f"{D}.viewNow()")
+                v = await W.ev(f"{D}.viewMode()")
                 await W.expect(f'F4 → {v}: still flying, nothing else changed', mode='flight', ov=None, style='modern', cam='cockpit')
             await W.ev(f"(()=>{{const d={D};d.C.opt.style={style!r};d.C.opt.battle=undefined;d.C.opt.cock3d=d.C.opt.device==='desktop';}})()"); await W.wait(500)
         # ➡️ FLY THERE keeps going through Pause, and STOP hands back control

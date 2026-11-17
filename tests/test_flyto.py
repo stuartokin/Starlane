@@ -132,14 +132,14 @@ async def main(p):
     seq = []
     for _ in range(3):
         await pg.keyboard.press('F4'); await pg.wait_for_timeout(500)
-        seq.append(await pg.evaluate(f"[{D}.viewNow(),{D}.PIT3D(),{D}.bdOn(),{D}.mode,{D}.overlay]"))
-    start = await pg.evaluate(f"{D}.viewNow()")
+        seq.append(await pg.evaluate(f"[{D}.viewMode(),{D}.PIT3D(),{D}.bdOn(),{D}.mode,{D}.overlay]"))
+    start = await pg.evaluate(f"{D}.viewMode()")
     R.check([x[0] for x in seq] == ['clear', '3d', 'console'] or [x[0] for x in seq] == ['console', 'clear', '3d'],
             'F4 steps through 3D cockpit, console and clear view', seq)
     R.check(all(x[3] == 'flight' and x[4] is None for x in seq), 'VIEW changes nothing else (still flying, nothing opened)', seq)
     R.check(all((x[0] == 'clear') == x[2] and (x[0] == '3d') == x[1] for x in seq), 'each VIEW really shows: 3D cockpit, console, or the clear (battle) layout', seq)
     await pg.evaluate(f"{D}.C.opt.style='retro'"); await pg.keyboard.press('F4'); await pg.wait_for_timeout(500)
-    R.check(await pg.evaluate(f"[{D}.styleNow,{D}.viewNow()]") == ['modern', 'console'], 'from Retro, VIEW goes to Modern (console)')
+    R.check(await pg.evaluate(f"[{D}.styleNow,{D}.viewMode()]") == ['modern', 'console'], 'from Retro, VIEW goes to Modern (console)')
     labs = await pg.evaluate(LABELS)
     R.check('VIEW' in labs or any(l.endswith('display') for l in labs) or await pg.evaluate("!!Arcade._game()._dbg.btns.length"), 'the console has a VIEW switch')
     await pg.keyboard.press('F4'); await pg.wait_for_timeout(600)
@@ -163,7 +163,7 @@ async def main(p):
     clash = [(a[4], b[4]) for i, a in enumerate(rects) for b in rects[i + 1:] if a[0] < b[0] + b[2] and b[0] < a[0] + a[2] and a[1] < b[1] + b[3] and b[1] < a[1] + a[3]]
     R.check(not clash, 'the switches and the MORE strip do not overlap', clash[:3])
     await pg.evaluate(f"{D}.btns.find(b=>b.label==='more display').fn()"); await pg.wait_for_timeout(500)
-    R.check(await pg.evaluate(f"[{D}.more,{D}.viewNow()]") == [False, 'console'], 'choosing from MORE runs it and closes the strip (VIEW → Modern console)')
+    R.check(await pg.evaluate(f"[{D}.more,{D}.viewMode()]") == [False, 'console'], 'choosing from MORE runs it and closes the strip (VIEW → Modern console)')
     await pg.evaluate(f"{D}.btns.find(b=>b.label==='phone chart').fn()"); await pg.wait_for_timeout(300)
     R.check(await pg.evaluate(f"{D}.overlay") == 'chart', 'MAP opens the chart')
     await pg.keyboard.press('Escape'); await pg.wait_for_timeout(200)
