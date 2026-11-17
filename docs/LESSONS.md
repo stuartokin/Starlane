@@ -114,6 +114,16 @@ time once. Read before making changes.
 21r. **Cloud sessions can test the ApolloMaths bridge.** ApolloMaths is public: clone it read-only and set
     `APOLLO_ROOT`. Don't skip the bridge suite just because the folder isn't next to Starlane.
 
+21s. **An autopilot meets the real map.** The first FLY THERE to the planet flew straight into the station,
+    which orbits on the way, and in an asteroid field it pushed against a rock until the ship was destroyed. Any
+    "fly there for me" needs obstacle avoidance and must stop on a bump. Test it in real systems, from several
+    sides.
+21t. **"Under attack" included bumps.** `underAttack()` counts any hit in the last 10 s, so bumping a rock looked
+    like an attack. Pass `collision=true` to `hurt()` for bumps, and decide per feature whether a bump matters.
+21u. **Chasing a spinning target needs feed-forward.** Rolling towards the slot's angle with a simple
+    proportional term always lagged ~5° behind the station's spin, so the "level within 4°" lock never came. Add
+    the spin rate to the command.
+
 ## Content
 
 21. **Children's content must be right.** Every question has a worked explanation; generated questions are

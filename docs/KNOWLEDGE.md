@@ -225,6 +225,11 @@ the Twin-sticks tip once (`C.opt.twinTip`).
   - Cards: `drawTarget` (ships, station) and `drawRadarInfo` (planets and others) end with
     `cardActs(ctx,o,x,y,w)`. `drawFlyPill` shows 🛑 STOP while flying.
   - The resting mouse pointer doesn't steer while `fly` is set.
+  - **Obstacles:** `flyTick` steers round rocks, the station (unless it is the target), moons and the planet
+    lying ahead. It slows to 0.3×max among rocks, and to 40 right beside one.
+  - **Bumps vs attacks:** `hurt(d,dir,collision)` now passes `collision=true` for rocks, canisters and
+    `crash()`. Only non-collision hits set `G._shotT`. `flyThreat()` (real attackers, missiles, or being shot in
+    the last 10 s) cancels FLY THERE; a bump cancels it with "BUMPED SOMETHING".
 - **VIEW**: `cycleView()`, `viewNow()` (`'3d'|'console'|'clear'|null`) and `viewList()`.
   - It sets `style='modern'` with `cock3d`, or `battle='on'` for clear view.
   - It is ACTION `display` (F4), deck key `display` (also in `DECK_R`), and a 🎛 VIEW button in `drawBattleHUD`.

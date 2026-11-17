@@ -452,7 +452,7 @@ function makeStarlane(env){
   else{buildSystem(false);placeAtArrival();if(C.wing&&C.wing.jumps>0){C.wing.jumps--;if(!C.wing.jumps)setTimeout(()=>radio('wingbye','Wingman','That’s my contract done. Good flying, Commander!',5),4000);}econTick();const fresh=!C.visited[C.sys];C.visited[C.sys]=1;if(fresh)C.newData=(C.newData||0)+1;missionSpawns();setTimeout(()=>{const t=here(),ev=sysEvent(C.sys,C.day),f=SL.features(t);say('arrive',`Welcome to ${t.name}, a ${GOV[t.gov].toLowerCase()}.${ev?' News: '+t.name+' is '+ev.text+'.':''}${f.obstacle?' Hazard ahead: '+{field:'an asteroid field',mines:'a pirate minefield',blackhole:'a black hole'}[f.obstacle]+'.':''}${fresh?' New system charted.':''}`,3);if(C.fuel<1.5)setTimeout(()=>say('fuel','Fuel is low. Refuel at the station.',60),5000);},1800);msg(`WELCOME TO ${here().name.toUpperCase()}`,4,'#3fe0ff');}
   P.speed=150;P.throttle=.5;mode='flight';}
  // ---------------- combat ----------------
- function hurt(d,fromDir,collision){if(show)return;if(test&&test.god||CH('god')){lastHitT=clock;return;}d=d*CH('dmgTaken')/100/shipCls().shield*({easy:.6,normal:1,hard:1.35}[C.opt.difficulty]||1);if(d>3){if(lockOn){lockOn=null;lockT=0;lockCD=Math.max(lockCD,2.5);msg('HIT! TARGET LOCK LOST',1.2,'#ff2d55');}jamT=2.5;}const e0=P.energy;lastHitT=clock;const front=dot(fromDir,P.o.f)>0;if(front){P.shF-=d;if(P.shF<0){P.energy+=P.shF;P.shF=0;}}else{P.shA-=d;if(P.shA<0){P.energy+=P.shA;P.shA=0;}}
+ function hurt(d,fromDir,collision){if(!collision)G._shotT=clock;else if(fly)flyStop('⚠ BUMPED SOMETHING — YOU HAVE CONTROL','#ff2d55');if(show)return;if(test&&test.god||CH('god')){lastHitT=clock;return;}d=d*CH('dmgTaken')/100/shipCls().shield*({easy:.6,normal:1,hard:1.35}[C.opt.difficulty]||1);if(d>3){if(lockOn){lockOn=null;lockT=0;lockCD=Math.max(lockCD,2.5);msg('HIT! TARGET LOCK LOST',1.2,'#ff2d55');}jamT=2.5;}const e0=P.energy;lastHitT=clock;const front=dot(fromDir,P.o.f)>0;if(front){P.shF-=d;if(P.shF<0){P.energy+=P.shF;P.shF=0;}}else{P.shA-=d;if(P.shA<0){P.energy+=P.shA;P.shA=0;}}
   {const pm=C.missions.find(x=>x.type==='passenger'&&!x.scared);if(pm&&d>4){pm.scared=true;radio('pax','Passenger','What was that?! We paid for a safe trip!',30);}}lastHit=.25;if(!C.opt.reduceMotion)FX.shake(Math.min(8,2+d*.2));if(typeof StarAudio!=='undefined'){if(P.energy<e0)StarAudio.hit();else StarAudio.shieldHit();}else env.noise(.15,.05,1800);G._hitFront=front;G._hitHull=P.energy<e0;if(P.energy<e0){P.hull=Math.min(1,Math.max((P.hull||0)+(e0-P.energy)*.012,(100-P.energy)/100*.92));P.cracks=P.cracks||[];while(P.cracks.length<Math.floor(P.hull*9))P.cracks.push(makeCrack());}if(P.energy<=0)die();}
  // shield arcs on every hit, and staged warnings as the ship heads towards destruction
  function drawHitArcs(ctx,full){const t=clock-(lastHitT||-9);if(t>.6)return;const a=1-t/.6,hull=G._hitHull,col=hull?'255,45,85':'63,224,255',front=G._hitFront!==false,y=front?0:(full?H:VH),g=ctx.createRadialGradient(CX,y,10,CX,y,W*.62);
@@ -624,8 +624,8 @@ function makeStarlane(env){
    if(T.role==='cargo'&&sh.locked&&dP<sh.m.rad+60){sh.dead=true;openMath('vault',ok=>{if(ok){const g=Math.random()<.5?12:13,n=3+Math.floor(Math.random()*4);C.cargo[g]=(C.cargo[g]||0)+n;msg(`CODE CRACKED! +${n}${GOODS[g][1]} ${GOODS[g][0].toUpperCase()}`,4,'#3cff6a');if(typeof StarAudio!=='undefined')StarAudio.pickup();}else msg('WRONG CODE — THE CANISTER SELF-DESTRUCTED',3,'#ff8a1c');});return;}
    if(T.role==='cargo'&&dP<sh.m.rad+40){if(has('scoop')&&cargoT()<C.cap){sh.dead=true;const k=sh.cargo!==undefined?sh.cargo:ri(Math.random,0,11);C.cargo[k]=(C.cargo[k]||0)+1;msg(`SCOOPED 1${GOODS[k][1]} ${GOODS[k][0].toUpperCase()}`,2,'#3cff6a');env.beep(1200,.15,'triangle',.04,1.5);}
     else if(has('scoop')&&cargoT()>=C.cap){sh.pos=add(sh.pos,mul(norm(sub(sh.pos,P.pos)),45));if(clock-(sh.fullN||-9)>3){sh.fullN=clock;msg('📦 HOLD FULL — NO ROOM FOR THIS CANISTER. SELL OR JETTISON CARGO FIRST',3,'#ffb020');}}
-    else if(dP<sh.m.rad+25){sh.dead=true;boom(sh);hurt(6,norm(toP).map(x=>-x));msg(has('scoop')?'CARGO HOLD FULL':'NO FUEL SCOOPS — CANISTER DESTROYED',2);}}
-   if(T.role==='rock'&&dP<sh.m.rad+25){hurt(25+P.speed*.1,mul(norm(toP),-1));sh.energy-=30;if(sh.energy<=0)kill(sh,false);P.speed*=.3;}
+    else if(dP<sh.m.rad+25){sh.dead=true;boom(sh);hurt(6,norm(toP).map(x=>-x),true);msg(has('scoop')?'CARGO HOLD FULL':'NO FUEL SCOOPS — CANISTER DESTROYED',2);}}
+   if(T.role==='rock'&&dP<sh.m.rad+25){hurt(25+P.speed*.1,mul(norm(toP),-1),true);sh.energy-=30;if(sh.energy<=0)kill(sh,false);P.speed*=.3;}
    return;}
   if(T.role==='missile'){sh.life-=dt;const tg=sh.target==='player'?{pos:P.pos}:sh.target;if(!tg||tg.dead||sh.life<=0){sh.dead=true;boom(sh);return;}const to=sub(tg.pos,sh.pos),d=len(to);steer(sh.o,norm(to),T.turn*dt);sh.speed=Math.min(T.speed,sh.speed+300*dt);sh.pos=add(sh.pos,mul(sh.o.f,sh.speed*dt));
    if(d<70){sh.dead=true;boom(sh);if(sh.target==='player'){hurt(45*CH('enemyDmg')/100,mul(norm(to),-1));msg('MISSILE HIT!',2,'#ff2d55');}else{tg.energy-=120;if(tg.energy<=0)kill(tg,sh.own==='player');}}return;}
@@ -1040,10 +1040,10 @@ function makeStarlane(env){
  const phoneCon=()=>C.opt.device==='phone'&&!seat&&!(show&&show.kind);
  function phoneKeys(ctx,Y){const all=deckKeys(),by={};for(const k of all)by[k.key]=k;
   const main=[...PHONE_KEYS.map(k=>by[k]).filter(Boolean),{key:'more',label:()=>G._more?'✕ LESS':'⋯ MORE',fn:()=>{G._more=!G._more;},led:()=>G._more?'#3fe0ff':null,title:'More switches',body:()=>'Missiles, E.C.M., time, views, VIEW, camera, shock pulse, escape pod, hold, tips and the menu.'}];
-  const icon={jump:'⚡',dock:'🛬',hyper:'🌌',chart:'🗺',missions:'📋',more:''},w=(W-16)/main.length,h=36;
+  const icon={jump:'⚡',dock:'🛬',hyper:'🌌',chart:'🗺',missions:'📋',more:''},w=(W-16)/main.length,h=42;
   main.forEach((k,i)=>{const x=8+i*w,kw=w-6;btns.push({x,y:Y,w:kw,h,label:'phone '+k.key,fn:()=>{k.fn();if(k.key!=='more')G._more=false;G._flash[k.key]=clock;}});
    const led=k.led();ctx.fillStyle=led?'rgba(30,70,90,.95)':'rgba(24,32,60,.95)';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,Y,kw,h,8);else ctx.rect(x,Y,kw,h);ctx.fill();ctx.strokeStyle=led||'#5d6aa3';ctx.lineWidth=led?2:1;ctx.stroke();
-   text(ctx,`${icon[k.key]?icon[k.key]+' ':''}${k.label()}`,x+kw/2,Y+10,'#eef2ff',14,'center');});
+   text(ctx,`${icon[k.key]?icon[k.key]+' ':''}${k.label()}`,x+kw/2,Y+12,'#eef2ff',15,'center');});
   if(G._more){const rest=all.filter(k=>!PHONE_KEYS.includes(k.key)),cols=6,rw=(W-16)/cols,rh=34,rows=Math.ceil(rest.length/cols),y0=Y-8-rows*(rh+4);ctx.fillStyle='rgba(4,8,20,.92)';ctx.fillRect(4,y0-6,W-8,rows*(rh+4)+8);
    rest.forEach((k,i)=>{const x=8+(i%cols)*rw,y=y0+Math.floor(i/cols)*(rh+4),kw=rw-6;btns.push({x,y,w:kw,h:rh,label:'more '+k.key,fn:()=>{k.fn();G._more=false;G._flash[k.key]=clock;}});
     const led=k.led();ctx.fillStyle='rgba(24,32,60,.97)';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,kw,rh,7);else ctx.rect(x,y,kw,rh);ctx.fill();ctx.strokeStyle=led||'#5d6aa3';ctx.lineWidth=1;ctx.stroke();text(ctx,k.label(),x+kw/2,y+10,'#dfe4ff',12,'center');});}}
@@ -1860,6 +1860,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   else if(canFly(o))button(ctx,B(x+16+bw,y,bw,24,'➡️ FLY THERE',()=>flyTo(o),{fs:11,bg:'rgba(20,80,60,.92)',border:'#3cff6a'}));
   else if(AS('fly')&&(adv||race))text(ctx,adv?'Not in adventures':'Not in races',x+16+bw+bw/2,y+6,'#6c7a9c',10,'center',false);}
  function drawFlyPill(ctx){if(!fly||show||overlay||mode!=='flight')return;const n=flyName(fly.o),lab=`🛑 STOP · ➡️ ${n.length>18?n.slice(0,17)+'…':n}`;button(ctx,B(CX-110,COCK()?96:44,220,26,lab,()=>flyStop('YOU HAVE CONTROL'),{fs:11,bg:'rgba(120,20,40,.9)',border:'#ff2d55'}));}
+ const flyThreat=()=>clock-(G._shotT||-99)<10||ships.some(x=>!x.dead&&((x.angry&&x.target==='player'&&!(x.lostT>0))||(x.type==='missile'&&x.target==='player'))&&len(sub(x.pos,P.pos))<12000);
  function flyStop(why,col){if(!fly)return;G._flyEnd=why||'(silent)';fly=null;if(why)msg(why,2.5,col||'#ffb020');}
  function flyTick(I,dt){const o=fly.o,isSt=o===station,mx=Math.max(1,P.max);let goal=o.pos,stop=0,slow=false;
   if(isSt){const f=station.o.f,Rs=(station.m&&station.m.rad)||600,E=add(station.pos,mul(f,2600));
@@ -1875,14 +1876,19 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   const dist=len(sub(goal,P.pos)),remain=isSt?dist:dist-stop;
   if(!isSt&&remain<=0){P.throttle=0;if(jump)jump=false;flyStop(`✓ ARRIVED: ${flyName(o)}`,'#3cff6a');return;}
   if(remain>25000&&!jump&&!massLock&&!slow)toggleJump();else if(jump&&(remain<9000||slow))jump=false;
-  steer(P.o,norm(sub(goal,P.pos)),1.4*dt);I.yaw=0;I.pitch=0;if(!rollLock&&!(isSt&&fly.ph==='align'))I.roll=rollToward(V(0,1,0))*.6;
-  const want=slow?(fly.ph==='in'?(dist<1500?50:70):0):Math.max(isSt&&remain<700?12:60,Math.min(mx,remain*.35));P.throttle+=(Math.min(1,want/mx)-P.throttle)*Math.min(1,dt*1.5);}
+  // keep clear of whatever is in the way: rocks, the station (unless it is the target), moons and the planet
+  const obs=ships.filter(sh=>!sh.dead&&sh.T&&sh.T.role==='rock'&&sh!==o).map(sh=>[sh.pos,(sh.m&&sh.m.rad)||60,true]);
+  if(station&&o!==station)obs.push([station.pos,((station.m&&station.m.rad)||600)+400,false]);for(const m of moons||[])if(m!==o&&m.pos)obs.push([m.pos,(m.R||m.rad||1500)+800,false]);if(planet&&o!==planet&&planet.R)obs.push([planet.pos,planet.R+1500,false]);
+  let dir=norm(sub(goal,P.pos)),rocky=false,close=false;for(const[pos,rr,isRock]of obs){const to=sub(pos,P.pos),dd=len(to),look=rr+2200;if(dd>look||dd>len(sub(goal,P.pos))+rr)continue;if(isRock)rocky=true;const tn=mul(to,1/dd),c=dot(tn,dir);if(dd<rr+700)close=true;
+   if(c>.5){let side=sub(dir,mul(tn,c));side=len(side)<.05?P.o.u:norm(side);dir=norm(add(mul(dir,.4),mul(side,1.2*(1-(dd-rr)/2200)+.5)));}}
+  steer(P.o,dir,1.4*dt);I.yaw=0;I.pitch=0;if(!rollLock&&!(isSt&&fly.ph==='align'))I.roll=rollToward(V(0,1,0))*.6;
+  const want=slow?(fly.ph==='in'?(dist<1500?50:70):0):Math.min(close?40:rocky?.3*mx:mx,Math.max(isSt&&remain<700?12:60,Math.min(mx,remain*.35)));P.throttle+=(Math.min(1,want/mx)-P.throttle)*Math.min(1,dt*1.5);}
  let faceT=null,dockAssisted=false,lvlSign=1,lvlPrev=null;
  const projOnto=(t,f)=>{const d=dot(t,f);return sub(t,mul(f,d));};
  function rollToward(t){const tp=projOnto(t,P.o.f),l=len(tp);if(l<.2)return 0;const tn=mul(tp,1/l),ang=v=>Math.acos(Math.max(-1,Math.min(1,dot(v,tn)))),a=ang(P.o.u);if(a<.01)return 0;const tryPos=ang(rot(P.o.u,P.o.f,-.02));return Math.max(-1,Math.min(1,a*2.2))*(tryPos<a?1:-1);}
  function inCorridor(){if(!station||!P)return false;const rel=sub(P.pos,station.pos),d=len(rel);if(d>4200||d<200)return false;return dot(mul(rel,1/d),station.o.f)>Math.cos(.55);}
  function assistTick(I,dt){if(show){if(P&&show.aim&&!show.aim.dead&&show.aim.pos)steer(P.o,norm(sub(show.aim.pos,P.pos)),2.6*dt);if(show.fire)I.fire=true;return;}if(!P||mode!=='flight'||tour){if(fly)fly=null;return;}const manualTurn=Math.abs(I.yaw)+Math.abs(I.pitch)>.25,manualRoll=Math.abs(I.roll)>.05;
-  if(fly){if(manualTurn||I.thr)flyStop('YOU HAVE CONTROL');else if(underAttack())flyStop('⚠ UNDER ATTACK — YOU HAVE CONTROL','#ff2d55');else if(!flyAllowed()||!fly.o||fly.o.dead||(fly.o!==station&&fly.o.max&&!ships.includes(fly.o)))flyStop(adv?'':'TARGET LOST');else{flyTick(I,dt);return;}}
+  if(fly){if(manualTurn||I.thr)flyStop('YOU HAVE CONTROL');else if(flyThreat())flyStop('⚠ UNDER ATTACK — YOU HAVE CONTROL','#ff2d55');else if(!flyAllowed()||!fly.o||fly.o.dead||(fly.o!==station&&fly.o.max&&!ships.includes(fly.o)))flyStop(adv?'':'TARGET LOST');else{flyTick(I,dt);return;}}
   // turn to target
   if(faceT&&(faceT.dead||!faceT.pos||manualTurn))faceT=null;if(faceT){const want=norm(sub(faceT.pos,P.pos));steer(P.o,want,1.6*dt);if(dot(P.o.f,want)>Math.cos(.02))faceT=null;}
   // docking assist: level the slot, match the spin, keep pointing at the station
