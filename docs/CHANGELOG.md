@@ -2,6 +2,21 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v28 — 18 November 2026
+Adventures by level, batches 2–5: **all 50 adventures done.**
+- Every one of the 135 adventure puzzles now has its own question at each level: younger (7–9), middle
+  (10–12), older (13–14) and adult — 398 levels in all, on the same topics, getting harder. Number puzzles
+  (sequences, primes, binary and hexadecimal, Caesar codes, ratios, fuel, loops, time zones, pulses, panels…)
+  change every time.
+- Every answer was solved twice: by its author and by an independent checker who saw only the questions. All
+  417 checked answers agreed; the checker’s notes led to clearer wording in 9 puzzles (an ordering that could go
+  two ways, “midnight” answers that could be 0 or 24, a few facts given as stated assumptions).
+- The password puzzle no longer offers “apollo” as an answer (it is now “starlane”).
+- Long answers now wrap onto two lines in adventure buttons, and long ordering puzzles (up to 8 steps) lay out
+  without overlapping the “Your order” list.
+- Tests: `advlevels` now covers all 50 adventures — 13,800 generated puzzles re-solved in Python each run, and
+  four different first puzzles for the four levels in every adventure.
+
 ## starlane-v27 — 18 November 2026
 Adventures by level, batch 1 of 5.
 - **Adventure puzzles now depend on the level chosen at the start.** In the first 10 adventures (The Ticking

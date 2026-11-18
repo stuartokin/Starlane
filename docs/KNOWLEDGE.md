@@ -220,7 +220,9 @@ the Twin-sticks tip once (`C.opt.twinTip`).
 - `advStart` uses `advResolve(def)`: a copy of the adventure with each puzzle resolved for `AGE()`, so the rest
   of the adventure code is unchanged. `C.opt.advAge` can now be `adult` (the site's adult band sets it; the
   Adventure Log has an Adult button). `raceQ` and the TREND tiers treat `adult` as adult.
-- Batches (Stuart, 18 Nov): 1 = adventures 1–10 (done, v27); 2 = 11–20; 3 = 21–30; 4 = 31–40; 5 = 41–50.
+- Batches (Stuart, 18 Nov): 1 = adventures 1–10 (v27); 2–5 = adventures 11–50 (v28). All 50 are done.
+- `button()` takes `wrap:true` for two-line labels (adventure answers and ordering steps); the ordering screen's
+  "Your order" list moves down for 7–8 steps and shrinks or trims long steps to fit its column.
   Process per batch: write all four levels (generated numbers where it suits), export the questions without
   answers, have an independent agent solve them, compare, fix anything ambiguous, run `advlevels`.
 
