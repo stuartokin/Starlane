@@ -34,6 +34,11 @@ time once. Read before making changes.
     Add a hook rather than poking private state, and never remove one without updating the rig.
 12. **The sandbox can be wiped between sessions.** Keep the rig and docs in the repo, not only on a scratch disk.
 
+- **Cloud sessions: match Python Playwright to the pre-installed browser.** `pip install -r tests/requirements.txt`
+  pulls the newest Playwright, which looks for a browser build that isn't there ("Executable doesn't exist at
+  …chromium_headless_shell-NNNN"). Install the version the global Node Playwright reports
+  (`node -e "console.log(require('playwright/package.json').version)"`), e.g. `pip install playwright==1.63.0`.
+
 ## Code and architecture
 
 13. **One game, many hosts — talk through sockets.** `StarlaneQuestions` (questions in, answers reported out)

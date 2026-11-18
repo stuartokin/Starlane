@@ -8,7 +8,7 @@
    on the device back to the built-in questions (their banks are kept but switched off).
    The tab remembers being unlocked with the derived key, which only the right password produces. */
 window.StarlaneAdmin = (() => {
- const SALT = 'starlane-admin-v1', ITER = 200000, CHECK = '__ADMIN__', DEV = 'starlane-admin-device', TAB = 'starlane-admin-ok';
+ const SALT = 'starlane-admin-v1', ITER = 200000, CHECK = 'cecc0704e03afda6a63b142a7b78762b1fd96eddd7ff1d8ee347734f5b7b5f43', DEV = 'starlane-admin-device', TAB = 'starlane-admin-ok';
  const enc = new TextEncoder(), hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
  async function derive(code, salt){ const base = await crypto.subtle.importKey('raw', enc.encode(String(code).trim()), 'PBKDF2', false, ['deriveBits']);
   return hex(await crypto.subtle.deriveBits({name: 'PBKDF2', salt: enc.encode(salt), iterations: ITER, hash: 'SHA-256'}, base, 256)); }

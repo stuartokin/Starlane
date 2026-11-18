@@ -2,7 +2,7 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
-## starlane-v29 — prepared 18 November 2026 (publish once the admin password is set)
+## starlane-v29 — 18 November 2026
 **Question banks** (Stuart’s design, 18 Nov). Guide: `docs/QUESTION-BANKS.md`.
 - **📚 Question banks (grown-ups)** on the launch page opens a separate page, locked by an **admin password**:
   a starter password Stuart gives out (only a scrambled check is in the repo), which a family can replace with their

@@ -10,6 +10,10 @@ pip install -r tests/requirements.txt
 python -m playwright install chromium
 ```
 
+In a cloud session Chromium is already installed: skip the second line and pin Python Playwright to the
+version of the global Node one (`node -e "console.log(require('playwright/package.json').version)"`), e.g.
+`pip install playwright==1.63.0`, or it looks for a browser build that isn't there.
+
 Put the two repos side by side so the rig can serve them as GitHub Pages does:
 
 ```
