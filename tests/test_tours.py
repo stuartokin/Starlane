@@ -7,7 +7,7 @@ from rig import *
 D = "Arcade._game()._dbg"
 DEV = {'laptop': (1280, 800, False), 'fold': (1000, 700, True)}
 import re
-KEYWORDS = re.compile(r"(?i:\bpress\b|\barrow|\bmouse\b|\bclick|\bnumber keys)|\bhold [A-Z]\b|\bEnter\b|\bShift\b|\bEscape\b|\bTab switches")
+KEYWORDS = re.compile(r"(?i:\bpress\b|\barrow keys?\b|\barrows\b|\b(?:left|right|up|down) arrow\b|\bmouse\b|\bclick|\bnumber keys)|\bhold [A-Z]\b|\bEnter\b|\bShift\b|\bEscape\b|\bTab switches")
 
 async def one(p, tid, dev, sem, res):
     async with sem:
