@@ -2,6 +2,20 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v25 — 18 November 2026
+Training, part 3: **new tours and three paths.**
+- **7 new tours** (24 in all): 🕹️ Your controls (touch layouts or keys, flight assists), 🧮 Maths puzzles (answer
+  one, read the explanation, the Academy and the Navigator’s Cup), ➡️ Fly there (radar card, FLY THERE, STOP),
+  🎛️ Cockpit displays (VIEW, the battle display), 🗺️ Adventures (the Adventure Log), 🎨 Your ship and your record
+  (paint, Career record and medals, difficulty), ⚠️ Hazards and other galaxies (a real black hole, minefields,
+  rock fields, the galactic hyperdrive).
+- **Pause → TOURS shows three paths:** 🟢 Beginner (8), 🟡 Pilot (9), 🔴 Expert (7), with ✓ on tours you have
+  finished (kept with your commander) and ▶ on the one to do next. "▶ NEXT TOUR" follows the same order.
+- Fixed: the station screen's ⏸ MENU button had no name, so the tours could never press it (the "Saving and
+  settings" tour said "click MENU" and quietly carried on).
+- Tests: the `tours` suite plays all 24 tours on both devices and now fails if a step's button is never found
+  (`NOCLICK`); a finished tour is ticked, shown on the page and saved.
+
 ## starlane-v24 — 18 November 2026
 Training, part 2: **🙋 HAVE A GO.**
 - In the tours, Nova now explains a step and then it is **your turn**: the step waits until you do it (press the

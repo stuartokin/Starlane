@@ -212,6 +212,15 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v25` (new tours and paths):**
+- 24 tours. `TOUR_PATHS` (Beginner / Pilot / Expert) sets the order; `TOURS` is sorted to match, so ▶ NEXT TOUR
+  follows the paths. `renderTours` draws three columns, ✓ from `C.toursDone` (written into `tour.real.C` when a
+  tour finishes; `tourEnd` persists unless in test mode) and ▶ on the first unfinished tour.
+- Step options added: `demo()` (Nova only, once, 1.2 s into the step), `auto:true` (always Nova). A tour with
+  `fly:true` (➡️ Fly there) lets `flyAllowed` and `assistTick` run during the tour; others keep assists off.
+- `tour.log` records `NOCLICK@i` when a `click`/`clickAt` step ended without its button being pressed.
+- The station screen's ⏸ MENU button is now in `btns` with the label `⏸ MENU` (it had none).
+
 **Since `starlane-v24` (🙋 HAVE A GO in tours):**
 - `C.opt.tourTry` (default on; `tryOn()`). At each step `youStart(st)` sets `tour.youNow` when `youable(st)`: the
   step has `you`, `tap`, `tapFn`, `click`, `clickAt`, `hold`, `steer` or `aim`, and is not `auto:true` (Nova flies:

@@ -152,6 +152,12 @@ time once. Read before making changes.
     cockpit and transitions failed once in a full run and passed alone (timing under load). The cheats escape-button
     check failed every time: the ship, flung by the emergency escape, crashed during an 11 s wait, which reopened
     the test screen. The fix was in the test (stop the ship, invincible), found by printing overlay and mode.
+21w8. **A step that can't fail can't tell you it's broken.** The station's ⏸ MENU was pushed to `btns` with no
+    label, so the tours' `click:'MENU$'` never matched. Steps without an `until` just moved on, so "Saving and
+    settings" passed every test for months. Now a click step that never clicks logs `NOCLICK`.
+21w9. **Never put `//` comments in the middle of a long one-line function.** The game code is written as long
+    lines; a `// note` added mid-line silently commented out the rest (`manualTurn is not defined`). Put notes at
+    the very end of a line, or on their own line.
 21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
     `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest
