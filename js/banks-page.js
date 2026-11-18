@@ -6,20 +6,24 @@
 const $ = id => document.getElementById(id), B = window.StarlaneBanks, A = window.StarlaneAdmin;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 function toast(m){ const t = $('chToast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2800); }
-const LV = {young: 'Younger (7–9)', mid: 'Middle (10–12)', older: 'Older (13–14)', adult: 'Adult'};
+const LV = B.AGE_LABEL;
+// how the AI should pitch each age (UK school years)
+const PITCH = {'7-8': 'children aged 7–8 (UK Year 3)', '9-10': 'children aged 9–10 (UK Years 4–5)', '11-12': 'children aged 11–12 (UK Years 6–7, up to 11+ and selective-school entrance standard)',
+ '13-14': 'children aged 13–14 (UK Years 8–9, up to 13+ Common Entrance standard)', adult: 'a clever adult with no specialist knowledge'};
 const TY = {one: 'one answer', several: 'several answers', number: 'number', order: 'order', template: 'number (made fresh each time)'};
 const MO = {quick: 'quick puzzles', academy: 'Academy and Cup', gates: 'race maths gates', adventure: 'adventure puzzles'};
 const SLOTS = (() => { try { return B.slots(); } catch(e) { return {}; } })();
 
 // ---- pilots on this device (the game's launch page keeps the list; the first pilot uses the original storage) ----
 const KEY = 'starlane-standalone-v1', PKEY = 'starlane-pilots-v1';
-const BAND = {'7-8': ['Ages 7–8', 'young'], '9-10': ['Ages 9–10', 'young'], '11-12': ['Ages 11–12', 'mid'], '13-14': ['Ages 13–14', 'older'], adult: ['Adult', 'adult'],
- 'x-tiffin1': ['Exam practice: Tiffin 1', 'mid'], 'x-tiffin2': ['Exam practice: Tiffin 2', 'mid'], 'x-grammar11': ['Exam practice: 11+', 'mid'], 'x-iseb': ['Exam practice: ISEB', 'mid'], 'x-ce13': ['Exam practice: 13+ CE', 'older']};
+const BAND = {'7-8': 'Ages 7–8', '9-10': 'Ages 9–10', '11-12': 'Ages 11–12', '13-14': 'Ages 13–14', adult: 'Adult',
+ 'x-tiffin1': 'Exam practice: Tiffin 1 (ages 11–12 questions)', 'x-tiffin2': 'Exam practice: Tiffin 2 (ages 11–12 questions)', 'x-grammar11': 'Exam practice: 11+ (ages 11–12 questions)',
+ 'x-iseb': 'Exam practice: ISEB (ages 11–12 questions)', 'x-ce13': 'Exam practice: 13+ CE (ages 13–14 questions)'};
 const pkey = id => id === 'p1' ? KEY : KEY + ':' + id;
 function pilots(){ let P = null; try { P = JSON.parse(localStorage.getItem(PKEY) || 'null'); } catch(e) {}
  const list = P && Array.isArray(P.list) && P.list.length ? P.list : [{id: 'p1', name: ''}];
  return list.map(p => { let pr = null; try { pr = (JSON.parse(localStorage.getItem(pkey(p.id)) || 'null') || {}).pilot; } catch(e) {}
-  const b = BAND[(pr && pr.band) || '11-12'] || BAND['11-12']; return {id: p.id, name: (pr && pr.name) || p.name || 'Pilot', band: b[0], level: b[1]}; }); }
+  const band = BAND[pr && pr.band] ? pr.band : '11-12'; return {id: p.id, name: (pr && pr.name) || p.name || 'Pilot', band: BAND[band], level: B.ageOfBand(band)}; }); }
 
 // ---- lock ----
 function lockUI(){ const own = A.mode() === 'own';
@@ -50,7 +54,7 @@ function drawPilots(){ const banks = B.list(), box = $('bkPilots');
   return `<div class="pilot" data-pid="${esc(p.id)}"><div><b>${esc(p.name)}</b><div class="meta">${esc(p.band)}</div></div>
    <select data-bank aria-label="Bank for ${esc(p.name)}"><option value="">— no bank (built-in questions) —</option>${banks.map(b => `<option value="${esc(b.id)}" ${s.bank === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select>
    <div class="seg" role="group" aria-label="Mode">${[['builtin', 'Built-in'], ['mixed', 'Mixed'], ['only', 'Only this bank']].map(([k, l]) => `<button type="button" data-mode="${k}" class="${(s.bank ? s.mode : 'builtin') === k ? 'on' : ''}">${l}</button>`).join('')}</div>
-   <div class="meta">${s.bank && s.mode !== 'builtin' ? (lvCount(B.getBank(s.bank), p.level) ? `${lvCount(B.getBank(s.bank), p.level)} questions at this pilot’s level` : '⚠ no questions at this pilot’s level — built-in will be used') : ''}</div></div>`; }).join('');
+   <div class="meta">${s.bank && s.mode !== 'builtin' ? (lvCount(B.getBank(s.bank), p.level) ? `${lvCount(B.getBank(s.bank), p.level)} questions for ${LV[p.level]}` : `⚠ no questions for ${LV[p.level]} — built-in will be used`) : ''}</div></div>`; }).join('');
  box.querySelectorAll('.pilot').forEach(row => { const pid = row.dataset.pid, sel = row.querySelector('[data-bank]');
   sel.onchange = () => { const cur = B.pilotSetting(pid); B.setPilot(pid, sel.value, sel.value ? (cur.mode === 'builtin' ? 'mixed' : cur.mode) : 'builtin'); drawPilots(); toast('Saved'); };
   row.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { if (!sel.value && b.dataset.mode !== 'builtin') { toast('Choose a bank first'); return; } B.setPilot(pid, sel.value, b.dataset.mode); drawPilots(); toast('Saved'); }); }); }
@@ -58,7 +62,7 @@ const lvCount = (b, lv) => b ? b.questions.filter(q => q.level.includes(lv)).len
 
 // ---- banks ----
 const summary = b => { const lv = [...new Set(b.questions.flatMap(q => q.level))], ty = [...new Set(b.questions.map(q => q.type))], mo = [...new Set(b.questions.flatMap(q => q.moments))];
- return `${b.questions.length} questions · ${lv.map(l => LV[l]).join(', ')} · ${ty.map(t => TY[t]).join(', ')} · for ${mo.map(m => MO[m]).join(', ')} · ${b.source === 'gemini' ? 'made with Gemini' : 'imported'} ${new Date(b.added).toLocaleDateString('en-GB')}${b.second ? ` · second opinion: ${b.second.agreed} agreed, ${b.second.dropped} dropped` : ''}${b.author ? ` · by ${esc(b.author)}` : ''}`; };
+ return `${b.questions.length} question${b.questions.length === 1 ? '' : 's'} · ${lv.map(l => LV[l]).join(', ')} · ${ty.map(t => TY[t]).join(', ')} · for ${mo.map(m => MO[m]).join(', ')} · ${b.source === 'gemini' ? 'made with Gemini' : 'imported'} ${new Date(b.added).toLocaleDateString('en-GB')}${b.second ? ` · second opinion: ${b.second.agreed} agreed, ${b.second.dropped} dropped` : ''}${b.author ? ` · by ${esc(b.author)}` : ''}`; };
 function drawList(){ const L = B.list(), box = $('bkList');
  if (!L.length) { box.innerHTML = '<p class="note">No banks yet. Add one below, or make one with Gemini.</p>'; return; }
  box.innerHTML = L.map(b => `<div class="bank" data-id="${esc(b.id)}"><div class="grow"><b>${esc(b.name)}</b>${b.reviewed ? '<span class="tag ok">reviewed</span>' : '<span class="tag new">🆕 not yet reviewed</span>'}<div class="meta">${summary(b)}</div></div>
@@ -103,9 +107,9 @@ async function linkImport(){ const m = location.hash.match(/[#&]bank=([\w-]+)/);
 
 // ---- the bank kit ----
 const momentsOf = box => [...$(box).querySelectorAll('input:checked')].map(i => i.value);
-function buildPrompt(o){ const types = o.moments.includes('academy') ? '"one", "several", "number" or "template"' : o.moments.includes('quick') ? '"one", "number" or "template"' : '"number" or "template"';
+function buildPrompt(o){ o = {...o, level: B.ages(o.level)[0] || '11-12'}; const types = o.moments.includes('academy') ? '"one", "several", "number" or "template"' : o.moments.includes('quick') ? '"one", "number" or "template"' : '"number" or "template"';
  return `You are writing questions for Starlane Trader, a space trading game for children and families. Write ${o.count} questions about: ${o.topic}.
-Level: ${o.level} (${LV[o.level]}). Use: ${o.moments.join(', ')}.
+Ages: ${LV[o.level]} — write every question for ${PITCH[o.level]}. Use: ${o.moments.join(', ')}.
 
 Reply with ONLY this JSON (no other text):
 {"starlane_bank": 1, "name": "<a short name for the set>", "author": "<your name or blank>", "about": "<one sentence>",
@@ -122,14 +126,14 @@ Rules (questions that break them are dropped):
 - Questions: 5–240 characters${o.moments.includes('gates') ? ' (race maths gates: at most 70 characters, whole-number answers)' : ''}. Options: 3–6, all different, at most 90 characters each. Explanations: 5–400 characters.
 - "several" questions must say how many to pick ("Select the TWO …") and have at least 2 right and 1 wrong option.
 - "template": numbers in {braces} come from "vars" ([min, max] whole numbers, or a list of numbers); "answer" is a formula using only the var names, numbers, + - * / ^ and brackets. Never divide by something that can be 0.
-- Suitable for ${LV[o.level]}: kind, age-appropriate, British English, no brand names, no scary or unkind content.
+- Pitched for ${PITCH[o.level]}: kind, age-appropriate, British English, no brand names, no scary or unkind content.
 - Only mention "Apollo" when the question is about the Moon landings.`; }
 function kitDraw(){ $('kPrompt').textContent = buildPrompt({topic: $('kTopic').value || 'your topic', level: $('kLevel').value, count: +$('kCount').value, moments: momentsOf('kMoments')}); }
 const EXAMPLE = {starlane_bank: 1, name: 'Example: times tables', author: 'Starlane', about: 'A small example bank showing each kind of question.', questions: [
- {type: 'one', level: 'young', moments: ['quick', 'academy'], topic: 'times tables', q: 'What is 6 × 7?', options: ['36', '42', '48', '49'], answer: 1, explain: '6 × 7 = 42. Six lots of seven: 7, 14, 21, 28, 35, 42.'},
- {type: 'several', level: 'mid', moments: ['academy'], topic: 'multiples', q: 'Select the THREE multiples of 6.', options: ['18', '24', '27', '36', '40'], answer: [0, 1, 3], explain: '18 = 6 × 3, 24 = 6 × 4 and 36 = 6 × 6. 27 and 40 do not divide by 6.'},
- {type: 'number', level: 'mid', moments: ['quick', 'gates'], topic: 'times tables', q: 'What is 12 × 9?', answer: 108, explain: '12 × 9 = 108 (12 × 10 = 120, take away 12).'},
- {type: 'template', level: 'young', moments: ['quick', 'gates'], topic: 'times tables', q: 'What is {a} × {b}?', vars: {a: [2, 10], b: [2, 5]}, answer: 'a*b', explain: '{a} × {b} = {answer}.'}]};
+ {type: 'one', level: '7-8', moments: ['quick', 'academy'], topic: 'times tables', q: 'What is 6 × 7?', options: ['36', '42', '48', '49'], answer: 1, explain: '6 × 7 = 42. Six lots of seven: 7, 14, 21, 28, 35, 42.'},
+ {type: 'several', level: '9-10', moments: ['academy'], topic: 'multiples', q: 'Select the THREE multiples of 6.', options: ['18', '24', '27', '36', '40'], answer: [0, 1, 3], explain: '18 = 6 × 3, 24 = 6 × 4 and 36 = 6 × 6. 27 and 40 do not divide by 6.'},
+ {type: 'number', level: '9-10', moments: ['quick', 'gates'], topic: 'times tables', q: 'What is 12 × 9?', answer: 108, explain: '12 × 9 = 108 (12 × 10 = 120, take away 12).'},
+ {type: 'template', level: ['7-8', '9-10'], moments: ['quick', 'gates'], topic: 'times tables', q: 'What is {a} × {b}?', vars: {a: [2, 10], b: [2, 5]}, answer: 'a*b', explain: '{a} × {b} = {answer}.'}]};
 function download(name, obj){ const blob = new Blob([JSON.stringify(obj, null, 1)], {type: 'application/json'}), u = URL.createObjectURL(blob), l = document.createElement('a'); l.href = u; l.download = name; l.click(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
 
 // ---- Gemini (the grown-up's own key, kept on this device) ----
@@ -170,9 +174,15 @@ async function generate(){ const msg = $('gMsg'), key = $('gKey').value.trim(), 
  finally { $('gGo').disabled = false; } }
 
 function drawAll(){ drawPw(); drawPilots(); drawList(); }
+// 👁 show / hide on every password and key box
+function eyes(){ document.querySelectorAll('input[type=password]').forEach(inp => { if (inp.parentElement.classList.contains('pw')) return;
+  const w = document.createElement('span'), b = document.createElement('button'); w.className = 'pw'; if (inp.style.maxWidth) { w.style.maxWidth = inp.style.maxWidth; inp.style.maxWidth = ''; } inp.parentNode.insertBefore(w, inp); w.appendChild(inp);
+  b.type = 'button'; b.className = 'eye'; b.textContent = '👁'; b.title = b.ariaLabel = 'Show what you typed'; b.setAttribute('aria-pressed', 'false');
+  b.onclick = () => { const show = inp.type === 'password'; inp.type = show ? 'text' : 'password'; b.textContent = show ? '🙈' : '👁'; b.title = b.ariaLabel = show ? 'Hide it again' : 'Show what you typed'; b.setAttribute('aria-pressed', String(show)); inp.focus(); };
+  w.appendChild(b); }); }
 window.addEventListener('DOMContentLoaded', async () => {
  try { const v = window.STARLANE_VERSION; if (v) $('bkVer').textContent = `Version ${v.v}`; } catch(e) {}
- document.querySelectorAll('dialog [data-close]').forEach(b => b.onclick = () => b.closest('dialog').close());
+ eyes(); document.querySelectorAll('dialog [data-close]').forEach(b => b.onclick = () => b.closest('dialog').close());
  lockUI(); $('bkLockForm').addEventListener('submit', e => { e.preventDefault(); unlock($('bkCode').value); }); $('bkForgot').onclick = forgot;
  $('bkPwSet').onclick = setPw;
  $('bkPaste').onclick = () => { $('pasteText').value = ''; $('dlgPaste').showModal(); };

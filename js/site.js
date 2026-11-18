@@ -46,6 +46,7 @@ const BANDS=[['7-8','Ages 7–8','young'],['9-10','Ages 9–10','young'],['11-12
  ['x-tiffin1','Exam practice: Tiffin Stage 1','mid'],['x-tiffin2','Exam practice: Tiffin Stage 2','mid'],['x-grammar11','Exam practice: 11+ grammar','mid'],['x-iseb','Exam practice: ISEB Pre-Test (Eton, Harrow…)','mid'],['x-ce13','Exam practice: 13+ Common Entrance','older'],
  ['adult','Adult — tough (really test yourself!)','adult']];
 const bandIndex=()=>{const b=window.stats.pilot&&window.stats.pilot.band;const i=BANDS.findIndex(x=>x[0]===b);return i<0?2:i;};
+window.STARLANE_BAND=()=>BANDS[bandIndex()][0];
 window.STARLANE_LEVEL=()=>{const i=bandIndex();return i<4?i:(/adult|ce13/.test(BANDS[i][0])?3:2);};
 // where the maths comes from: the built-in pack, the adult set, or ApolloMaths' exam engine (in a hidden frame), falling back to the pack
 // question banks (since v29): the current pilot's bank answers first, by its mode; anything it can't answer falls
@@ -75,7 +76,9 @@ window.StarlaneSite.probe=n=>{const SQ=window.StarlaneQuestions,out=[],kinds=['f
 
 /* ---------- the launch screen ---------- */
 function launchUI(){pilotPicker();try{const v=window.STARLANE_VERSION;if(v&&get('slVer'))get('slVer').textContent=`· Version ${v.v} (${v.date})`;}catch(e){}const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';get('pilotDiff').value=diffOf();
- get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';}
+ get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';bankLine();}
+// which questions this pilot gets (question banks, since v30): shown under the training level
+function bankLine(){const el=get('pilotBank');if(!el)return;let d={text:'📚 Questions: built-in',kind:'builtin'};try{if(window.StarlaneBanks){const p=window.stats.pilot,b0=p&&p.band,sel=get('pilotBand');if(p&&sel)p.band=sel.value;d=StarlaneBanks.describe();if(p)p.band=b0;}}catch(e){}el.textContent=d.text;el.classList.toggle('on',d.kind==='mixed'||d.kind==='only');}
 function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value,diff:get('pilotDiff').value};window.save();if(PIL){const p=PIL.list.find(p=>p.id===PIL.cur);if(p&&p.name!==n){p.name=n;pilSave();}}launchUI();}
 // the pilot picker: switching pilots reloads the page with that pilot's own storage
 function pilotPicker(){const sel=get('pilotPick'),nb=get('pilotNew');if(!sel)return;if(!PIL){sel.closest('.sl-pilots').hidden=true;return;}
@@ -115,6 +118,6 @@ document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&(e.key==='G'||
 let taps=[];document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#arcHud'))return;const now=Date.now();taps=taps.filter(t=>now-t<900);taps.push(now);if(taps.length>=3){taps=[];askCode();}},true);
 
 /* ---------- start-up ---------- */
-window.addEventListener('DOMContentLoaded',()=>{if(PROBE){document.body.classList.add('sl-hosted');window.StarlaneSite.ready=true;return;}if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();cheatGo().then(m=>{if(m)setTimeout(()=>play({cheats:m}),50);});get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};
+window.addEventListener('DOMContentLoaded',()=>{if(PROBE){document.body.classList.add('sl-hosted');window.StarlaneSite.ready=true;return;}if(HOST){document.body.classList.add('sl-hosted');try{const hb=HOST.bank&&HOST.bank();if(hb)window.bank=hb;}catch(e){}window.StarlaneSite.ready=true;play();return;}window.StarlaneSite.ready=true;launchUI();get('playBtn').onclick=()=>play();cheatGo().then(m=>{if(m)setTimeout(()=>play({cheats:m}),50);});get('trailerBtn').onclick=()=>play({show:'trailer'});get('overviewBtn').onclick=()=>play({show:'overview'});get('pilotSave').onclick=()=>{savePilot();toast('Pilot details saved');};get('pilotBand').addEventListener('change',bankLine);
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});});
 })();

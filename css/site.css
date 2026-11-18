@@ -28,4 +28,4 @@ body.sl-hosted .sl-launch{display:none}
 body.sl-hosted{background:#000}
 
 /* pilots on this device; the grown-ups' question-bank link (since v29) */
-.sl-pilots{display:flex;gap:8px;align-items:end}.sl-pilots label{flex:1}.sl-banks{justify-self:start;color:#3fe0ff;font-size:13px;text-decoration:none}.sl-banks:hover{text-decoration:underline}
+.sl-pilots{display:flex;gap:8px;align-items:end}.sl-pilots label{flex:1}.sl-qbank{margin:-4px 0 0;color:#9aa6cc;font-size:13px}.sl-qbank.on{color:#7fd8ff;font-weight:600}.sl-banks{justify-self:start;color:#3fe0ff;font-size:13px;text-decoration:none}.sl-banks:hover{text-decoration:underline}

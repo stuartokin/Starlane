@@ -2,6 +2,20 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v30 — 18 November 2026
+Question banks, Stuart's follow-ups (18 Nov).
+- **👁 Show password:** every password and key box on the question-bank page (admin password, your own password,
+  the Gemini key) has an eye to show or hide what you typed.
+- **Ages match the pilots:** banks, the Gemini generator and the bank kit use the same ages as the pilots' training
+  levels — Ages 7–8, 9–10, 11–12, 13–14 and Adult (exam practice shown under its age: 11+/ISEB/Tiffin → 11–12,
+  13+ CE → 13–14). The AI is told the exact age and UK school year. A 9–10 pilot now gets 9–10 questions, not 7–8
+  ones. Banks made before v30 still work.
+- **Where to get a Gemini key:** “❓ How do I get a Gemini API key?” links to Google AI Studio, the pricing and the
+  models pages, and to the free chats (Gemini, ChatGPT, Claude) for the bank kit, which needs no key.
+- **Which questions are in use:** the launch page (under the training level) and Pause (GAME tab, bottom left) show
+  “📚 Questions: built-in” or the bank's name and mode, or that the bank has none for this pilot's age.
+- Tests: `banks` suite now 42 checks (ages, old names, exam ages, 👁, key help, launch page and Pause lines).
+
 ## starlane-v29 — 18 November 2026
 **Question banks** (Stuart’s design, 18 Nov). Guide: `docs/QUESTION-BANKS.md`.
 - **📚 Question banks (grown-ups)** on the launch page opens a separate page, locked by an **admin password**:

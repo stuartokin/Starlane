@@ -3,7 +3,9 @@
      {"starlane_bank": 1, "name": "...", "author": "...", "about": "...", "questions": [ ... ]}
    Each question:
      type     "one" | "several" | "number" | "order" | "template"
-     level    "young" (7–9) | "mid" (10–12) | "older" (13–14) | "adult" — or a list of them
+     level    the ages it suits, the same as the pilots' training levels: "7-8" | "9-10" | "11-12" | "13-14" | "adult",
+              or a list of them (since v30). Exam-practice pilots use "11-12" (Tiffin, 11+, ISEB) or "13-14" (13+ CE).
+              The older names still work: "young" = 7-8 and 9-10, "mid" = 11-12, "older" = 13-14.
      moments  where it may be used: "quick" (fuel, trade, repair… puzzles), "academy" (Academy and Navigator’s Cup),
               "gates" (maths gates in races), "adventure" (an adventure puzzle slot — then "slot": "canister/2")
      q        the question (5–240 characters); explain: why the answer is right (5–400 characters)
@@ -20,7 +22,16 @@
    mode "builtin" | "mixed" | "only". If a bank has nothing suitable, the built-in questions are used.
    Inside ApolloMaths the banks are never used: Starlane asks ApolloMaths for the questions for the child’s plan. */
 window.StarlaneBanks = (() => {
- const STORE = 'starlane-banks-v1', LEVELS = ['young', 'mid', 'older', 'adult'], TYPES = ['one', 'several', 'number', 'order', 'template'];
+ const STORE = 'starlane-banks-v1', LEVELS = ['7-8', '9-10', '11-12', '13-14', 'adult'],
+  OLD = {young: ['7-8', '9-10'], mid: ['11-12'], older: ['13-14']},
+  AGE_LABEL = {'7-8': 'Ages 7–8', '9-10': 'Ages 9–10', '11-12': 'Ages 11–12', '13-14': 'Ages 13–14', adult: 'Adult'};
+ // a level as written in a bank (or an older name) → the list of ages it means
+ const ages = l => { const k = String(l == null ? '' : l).toLowerCase().replace(/ages?\s*/, '').replace(/[–—]/g, '-').replace(/\s+/g, '');
+  return OLD[k] ? OLD[k] : LEVELS.includes(k) ? [k] : []; };
+ const agesOf = list => [...new Set([].concat(list || []).flatMap(ages))].sort((a, b) => LEVELS.indexOf(a) - LEVELS.indexOf(b));
+ // a pilot's training level (band) → the age its bank questions come from
+ const ageOfBand = b => b === 'x-ce13' ? '13-14' : /^x-/.test(b || '') ? '11-12' : LEVELS.includes(b) ? b : '11-12';
+ TYPES = ['one', 'several', 'number', 'order', 'template'];
  const MOMENTS = {quick: ['one', 'number', 'template'], academy: ['one', 'several', 'number', 'template'], gates: ['number', 'template'], adventure: ['one', 'several', 'number', 'order']};
  const LIM = {q: 240, explain: 400, option: 90, item: 60, name: 60, questions: 2000};
  const WORDS = {two: 2, three: 3, four: 4, five: 5, six: 6};
@@ -53,7 +64,7 @@ window.StarlaneBanks = (() => {
   const why = m => { throw Error(m); };
   if (!x || typeof x !== 'object') why('not a question object');
   const type = x.type; if (!TYPES.includes(type)) why(`unknown type "${type}"`);
-  const levels = [].concat(x.level || []).filter(l => LEVELS.includes(l)); if (!levels.length) why('needs a level: young, mid, older or adult');
+  const levels = agesOf(x.level); if (!levels.length) why('needs a level (the ages): 7-8, 9-10, 11-12, 13-14 or adult');
   let moments = [].concat(x.moments || (type === 'order' ? ['adventure'] : ['quick', 'academy'])).filter(m => MOMENTS[m] && MOMENTS[m].includes(type === 'template' ? 'template' : type));
   if (!moments.length) why(`a ${type} question cannot be used in ${[].concat(x.moments || []).join(', ') || 'those places'}`);
   const q = clean(x.q), explain = clean(x.explain);
@@ -112,7 +123,8 @@ window.StarlaneBanks = (() => {
   return {bank: {starlane_bank: 1, name, author: clean(b.author).slice(0, 60), about: clean(b.about).slice(0, 300), questions: out}, accepted: out.length, dropped}; }
 
  // ---- storage on this device ----
- const load = () => { try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s && s.banks && s.pilots) return s; } catch(e) {} return {banks: {}, pilots: {}}; };
+ const load = () => { try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s && s.banks && s.pilots) {
+  for (const b of Object.values(s.banks)) for (const q of b.questions || []) q.level = agesOf(q.level); return s; } } catch(e) {} return {banks: {}, pilots: {}}; };
  const store = s => { localStorage.setItem(STORE, JSON.stringify(s)); };
  function addBank(bank, meta = {}){ const s = load(), id = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   s.banks[id] = {...bank, id, added: new Date().toISOString(), source: meta.source || 'import', reviewed: !!meta.reviewed, second: meta.second || null}; store(s); return id; }
@@ -128,9 +140,20 @@ window.StarlaneBanks = (() => {
  function active(){ try { if (window.StarlaneSite && StarlaneSite.hosted) return null; const pid = window.StarlanePilots ? StarlanePilots.cur : 'p1', set = pilotSetting(pid);
   if (!set.bank || set.mode === 'builtin') return null; const b = getBank(set.bank); return b && b.questions.length ? {bank: b, mode: set.mode} : null; } catch(e) { return null; } }
  const recent = [];
+ // the age to take questions for: the pilot's training level on this site (exact), else what the caller passed
+ function currentAge(level){ try { if (window.STARLANE_BAND) return [ageOfBand(STARLANE_BAND())]; } catch(e) {} const a = ages(level); return a.length ? a : ['11-12']; }
+ // what the game shows players (launch page, Pause): which questions this pilot gets
+ function describe(){ try { if (window.StarlaneSite && StarlaneSite.hosted) return {kind: 'plan', text: '📚 Questions: your learning plan'};
+  const pid = window.StarlanePilots ? StarlanePilots.cur : 'p1', set = pilotSetting(pid), b = set.bank && set.mode !== 'builtin' ? getBank(set.bank) : null;
+  if (!b) return {kind: 'builtin', text: '📚 Questions: built-in'};
+  const age = currentAge()[0], n = b.questions.filter(q => q.level.includes(age)).length, how = set.mode === 'only' ? 'only this bank' : 'mixed with built-in';
+  return {kind: n ? set.mode : 'none', name: b.name, count: n, text: n ? `📚 Questions: “${b.name}” (${how})` : `📚 Questions: built-in (“${b.name}” has none for ${AGE_LABEL[age]})`}; }
+  catch(e) { return {kind: 'builtin', text: '📚 Questions: built-in'}; } }
  // pick a question for a moment and level: returns a concrete question (templates filled in) or null
+ // level: the pilot's age ("7-8"…"adult"); the game passes its own band or tier and it is turned into an age here
  function pick(moment, level, opts = {}){ const a = active(); if (!a) return null; if (a.mode === 'mixed' && Math.random() < .5 && !opts.always) return null;
-  const types = opts.types || MOMENTS[moment] || [], pool = a.bank.questions.filter(x => x.moments.includes(moment) && x.level.includes(level) && (types.includes(x.type) || (x.type === 'template' && types.includes('template'))) && (!opts.slot || x.slot === opts.slot));
+  const want = currentAge(level);
+  const types = opts.types || MOMENTS[moment] || [], pool = a.bank.questions.filter(x => x.moments.includes(moment) && want.some(w => x.level.includes(w)) && (types.includes(x.type) || (x.type === 'template' && types.includes('template'))) && (!opts.slot || x.slot === opts.slot));
   if (!pool.length) return null; const fresh = pool.filter(x => !recent.includes(x.q)), list = fresh.length ? fresh : pool, x = list[R(0, list.length - 1)];
   recent.push(x.q); if (recent.length > 30) recent.shift();
   if (x.type === 'template') { const t = makeTemplate(x); return {...x, type: 'number', q: t.q, answer: t.answer, explain: t.explain, decimals: x.decimals || 0, bankName: a.bank.name}; }
@@ -154,5 +177,5 @@ window.StarlaneBanks = (() => {
   return out; }
 
  return {validate, checkQuestion, makeTemplate, formula, addBank, list, getBank, updateBank, removeBank, pilotSetting, setPilot, resetAllToBuiltIn,
-  active, pick, forMaths, slots, LEVELS, TYPES, MOMENTS, LIM, STORE};
+  active, pick, forMaths, slots, describe, ages, agesOf, ageOfBand, AGE_LABEL, LEVELS, TYPES, MOMENTS, LIM, STORE};
 })();

@@ -212,6 +212,17 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v30` (question banks by the pilots' ages):**
+- Bank levels are the pilots' bands: `7-8`, `9-10`, `11-12`, `13-14`, `adult` (`StarlaneBanks.LEVELS`). `ages()` /
+  `agesOf()` turn old names (`young` → 7-8 + 9-10, `mid` → 11-12, `older` → 13-14) and labels ("Ages 9–10") into
+  ages; `load()` converts stored banks. `ageOfBand()` maps exam bands (x-ce13 → 13-14, other x-… → 11-12).
+- `pick(moment, level)` ignores the caller's tier when `window.STARLANE_BAND` exists (site.js: the pilot's band) and
+  uses that exact age, so `raceQ`, `advResolve` and `questionSource` needed no change.
+- `StarlaneBanks.describe()` → `{kind: builtin|mixed|only|none|plan, text}`: the launch page line `#pilotBank`
+  (`bankLine()` in site.js, refreshed when the level changes) and the Pause GAME tab (bottom left, starlane.js).
+- `banks-page.js`: `eyes()` adds a 👁 button (`.pw` wrapper, `.eye`) to every password input; the Gemini section has
+  `#gHelp` (where to get a key). `buildPrompt` tells the AI the exact age (`PITCH`, UK school years).
+
 **Since `starlane-v29` (question banks — guide in `docs/QUESTION-BANKS.md`):**
 - **Files:** `js/qbank.js` (`StarlaneBanks`: contract v1, validator, safe template formulas, storage, `pick`,
   `forMaths`, `slots`), `js/admin-lock.js` (`StarlaneAdmin`), `banks.html` + `js/banks-page.js` (the grown-ups'

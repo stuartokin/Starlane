@@ -209,6 +209,9 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   question for young / mid / older / **adult** (adult = clever adult, no specialist knowledge), numbers generated so
   replays differ, every answer re-solved and a new `adventures-levels` test. Stuart agreed: 5 batches of 10
   adventures, one release each.
+- **v30 — question-bank follow-ups (18 Nov 2026, Stuart's list):** 👁 on password boxes; bank ages = pilot ages
+  (Stuart chose the same five ages, over relabelling); Gemini key help link; "📚 Questions: …" on the launch page
+  (under the pilot) and in Pause (Stuart chose Pause only, not a badge in flight). Done in `starlane-v30`.
 - **v29 — question banks: published 18 Nov 2026** (`starlane-v29`). Starter admin password set from
   `STARLANE_ADMIN_CODE` with `tools/set_admin_code.py`; full rig passed with the real password. Stuart gives the
   starter password out himself.

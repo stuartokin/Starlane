@@ -39,6 +39,9 @@ time once. Read before making changes.
   …chromium_headless_shell-NNNN"). Install the version the global Node Playwright reports
   (`node -e "console.log(require('playwright/package.json').version)"`), e.g. `pip install playwright==1.63.0`.
 
+- **Tests must click buttons by what they are, not by position.** Adding a 👁 button inside the admin lock form
+  made `#bkLockForm button` hit the eye instead of Unlock. Use `button[type=submit]` or an id.
+
 ## Code and architecture
 
 13. **One game, many hosts — talk through sockets.** `StarlaneQuestions` (questions in, answers reported out)

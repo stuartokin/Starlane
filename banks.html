@@ -30,6 +30,10 @@
  .q{border-top:1px solid #1d2650;padding:8px 0}.q .lv{font-size:12px;color:#7fd8ff}.q .ans{color:#3cff6a}.q .x{float:right}
  .kit{white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px;background:#050a1c;border:1px solid #1d2650;border-radius:10px;padding:10px;max-height:300px;overflow:auto}
  .msg{min-height:1.2em;font-size:13px}.msg.bad{color:#ff8a8a}.msg.good{color:#3cff6a}
+ .pw{position:relative;display:flex;flex:1 1 180px;min-width:0}.pw>input{flex:1;min-width:0;padding-right:44px}
+ .pw>.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:32px;padding:0;border:0;background:transparent;font-size:18px;line-height:1;cursor:pointer;color:#c8d0ff;letter-spacing:0}
+ .pw>.eye:focus-visible{outline:2px solid #3fe0ff;border-radius:6px}
+ .help{color:#3fe0ff}
  @media(max-width:640px){.pilot,.grid3{grid-template-columns:1fr}}
 </style>
 </head>
@@ -53,7 +57,7 @@
  <section class="ch-card" id="bkPw">
   <h2>🔑 Your password</h2>
   <p id="bkPwText" class="note"></p>
-  <div class="row2"><input id="bkPw1" class="in" type="password" placeholder="New password (6+ characters)" style="max-width:240px"><input id="bkPw2" class="in" type="password" placeholder="Type it again" style="max-width:240px"><button id="bkPwSet" type="button">Set my own password</button></div>
+  <div class="row2"><input id="bkPw1" class="in" type="password" placeholder="New password (6+)" style="max-width:240px"><input id="bkPw2" class="in" type="password" placeholder="Type it again" style="max-width:240px"><button id="bkPwSet" type="button">Set my own password</button></div>
   <p id="bkPwMsg" class="msg"></p>
  </section>
 
@@ -78,7 +82,7 @@
   <h2>✨ Make a bank with Gemini</h2>
   <div class="grid3">
    <label>Topic <input id="gTopic" class="in" maxlength="80" placeholder="e.g. Fractions and decimals"></label>
-   <label>Ages <select id="gLevel"><option value="young">Younger (7–9)</option><option value="mid" selected>Middle (10–12)</option><option value="older">Older (13–14)</option><option value="adult">Adult</option></select></label>
+   <label>Ages <select id="gLevel"><option value="7-8">Ages 7–8</option><option value="9-10">Ages 9–10</option><option value="11-12" selected>Ages 11–12 (11+, ISEB, Tiffin)</option><option value="13-14">Ages 13–14 (13+ Common Entrance)</option><option value="adult">Adult</option></select></label>
    <label>How many <select id="gCount"><option>10</option><option selected>20</option><option>40</option></select></label>
   </div>
   <div class="row2 chips" id="gMoments"><span class="meta">Use for:</span><label><input type="checkbox" value="quick" checked> quick puzzles</label><label><input type="checkbox" value="academy" checked> Academy and Cup</label><label><input type="checkbox" value="gates"> race maths gates</label></div>
@@ -86,14 +90,23 @@
    <label class="lab" style="width:220px">Model <input id="gModel" class="in" value="gemini-2.5-flash"></label></div>
   <div class="row2"><label class="chips"><label><input id="gSecond" type="checkbox" checked> ✔ Second opinion (recommended)</label></label><button id="gGo" class="ch-go" type="button">✨ Generate</button><button id="gForget" type="button">Forget my key</button></div>
   <p id="gMsg" class="msg"></p>
+  <details class="note" id="gHelp"><summary class="help">❓ How do I get a Gemini API key?</summary>
+   <ol>
+    <li>Go to <a class="help" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio → API keys ↗</a> and sign in with a Google account.</li>
+    <li>Choose <b>Create API key</b>, then copy it and paste it in the box above.</li>
+    <li>There is a free tier with daily limits, which is plenty for a few banks. Google’s <a class="help" href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">pricing page ↗</a> has the details.</li>
+   </ol>
+   <p>Your key stays on this device and is only sent to Google. The model box can stay as it is; other model names are on <a class="help" href="https://ai.google.dev/gemini-api/docs/models" target="_blank" rel="noopener">Google’s models page ↗</a>.
+   No key? Use <b>📖 The bank kit</b> above instead: it works with the free chat in <a class="help" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini ↗</a>, <a class="help" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT ↗</a> or <a class="help" href="https://claude.ai/" target="_blank" rel="noopener">Claude ↗</a>, with no key needed.</p>
+  </details>
  </section>
 </main>
 
 <dialog id="dlgPaste"><h2>📋 Paste a bank</h2><p class="note">Paste the whole answer from the AI (from { to }).</p><textarea id="pasteText"></textarea><div class="row2"><button id="pasteGo" class="ch-go" type="button">Check and import</button><button type="button" data-close>Cancel</button></div></dialog>
 <dialog id="dlgReview"><h2 id="rvTitle"></h2><p class="note">Remove any question with ✕. Changes are saved straight away.</p><div id="rvList"></div><div class="row2"><button id="rvOk" class="ch-go" type="button">✔ Mark as reviewed</button><button type="button" data-close>Close</button></div></dialog>
 <dialog id="dlgKit"><h2>📖 The bank kit</h2>
- <p class="note">1. Fill in the blanks. 2. Copy the prompt into Gemini, ChatGPT, Claude or another AI. 3. Paste its answer with “📋 Paste text”. Every question is checked before it is used.</p>
- <div class="grid3"><label>Topic <input id="kTopic" class="in" value="Times tables"></label><label>Ages <select id="kLevel"><option value="young">Younger (7–9)</option><option value="mid" selected>Middle (10–12)</option><option value="older">Older (13–14)</option><option value="adult">Adult</option></select></label><label>How many <select id="kCount"><option>10</option><option selected>20</option><option>40</option></select></label></div>
+ <p class="note">1. Fill in the blanks. 2. Copy the prompt into <a class="help" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>, <a class="help" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>, <a class="help" href="https://claude.ai/" target="_blank" rel="noopener">Claude</a> or another AI (no key needed). 3. Paste its answer with “📋 Paste text”. Every question is checked before it is used.</p>
+ <div class="grid3"><label>Topic <input id="kTopic" class="in" value="Times tables"></label><label>Ages <select id="kLevel"><option value="7-8">Ages 7–8</option><option value="9-10">Ages 9–10</option><option value="11-12" selected>Ages 11–12 (11+, ISEB, Tiffin)</option><option value="13-14">Ages 13–14 (13+ Common Entrance)</option><option value="adult">Adult</option></select></label><label>How many <select id="kCount"><option>10</option><option selected>20</option><option>40</option></select></label></div>
  <div class="row2 chips" id="kMoments"><span class="meta">Use for:</span><label><input type="checkbox" value="quick" checked> quick puzzles</label><label><input type="checkbox" value="academy" checked> Academy and Cup</label><label><input type="checkbox" value="gates"> race maths gates</label><label><input type="checkbox" value="adventure"> adventure puzzles</label></div>
  <div class="kit" id="kPrompt"></div>
  <div class="row2"><button id="kCopy" class="ch-go" type="button">📋 Copy the prompt</button><button id="kExample" type="button">⬇ Example bank</button><button id="kSlots" type="button">⬇ Adventure puzzle slots</button><button type="button" data-close>Close</button></div>
