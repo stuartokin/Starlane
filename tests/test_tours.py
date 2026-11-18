@@ -44,6 +44,12 @@ async def player(p, R):
     R.check(await step_is(pg, 1), 'have a go: pressing ↓ in the market completes "choose a product"')
     await pg.wait_for_timeout(1200); await pg.keyboard.press('ArrowRight')
     R.check(await step_is(pg, 2), 'have a go: pressing → buys a tonne and completes the step', await pg.evaluate(f"{D}.tour.log"))
+    R.check(await step_is(pg, 3), 'have a go: a step with nothing to do just moves on')
+    await pg.wait_for_timeout(13500)
+    R.check(await pg.evaluate(f"{D}.youNow&&{D}.tour.i===3&&/SHOW ME/.test({D}.tour.text||'')"), 'have a go: after a while Nova offers 👀 SHOW ME', await pg.evaluate(f"[{D}.tour.i,{D}.tour.text]"))
+    await pg.evaluate(f"{D}.btns.find(b=>b.label==='👀 SHOW ME').fn()"); await pg.wait_for_timeout(300)
+    R.check(await pg.evaluate(f"!{D}.youNow&&{D}.tour.i===3"), '👀 SHOW ME hands the step to Nova')
+    R.check(await step_is(pg, 4, 30000), '… and Nova finishes it (sells one back)')
     await pg.evaluate(f"{D}.tourEnd()"); await pg.wait_for_timeout(500)
     # flying: launch, speed up, steer, then the jump drive and time
     await pg.evaluate(f"(()=>{{const d={D};d.tourStart('jump');}})()"); await pg.wait_for_timeout(1500)
@@ -62,11 +68,6 @@ async def player(p, R):
     R.check(await step_is(pg, 2), 'have a go: holding W speeds up and completes the step')
     await pg.wait_for_timeout(800); await pg.keyboard.down('ArrowRight'); await pg.wait_for_timeout(2500); await pg.keyboard.up('ArrowRight')
     R.check(await step_is(pg, 3), 'have a go: turning the ship completes the steering step')
-    await pg.wait_for_timeout(13500)
-    R.check(await pg.evaluate(f"{D}.youNow&&/SHOW ME/.test(({D}.aiLineNow||{{}}).text||'')"), 'have a go: after a while Nova offers 👀 SHOW ME', await pg.evaluate(f"({D}.aiLineNow||{{}}).text"))
-    await pg.evaluate(f"{D}.btns.find(b=>b.label==='👀 SHOW ME').fn()"); await pg.wait_for_timeout(300)
-    R.check(await pg.evaluate(f"!{D}.youNow&&{D}.tour.i===3"), '👀 SHOW ME hands the step to Nova')
-    R.check(await step_is(pg, 4, 30000), '… and Nova finishes it')
     R.check(not pg.errors, 'have a go, laptop: no page errors', pg.errors[:3]); await pg.close_all()
     # Fold, touch: tap BUY 1 in the market, tap JUMP on the console
     pg = await browser(p, 1000, 700, True); await open_site(pg); await register(pg); await launch_game(pg)
@@ -98,7 +99,7 @@ async def main(p):
     # the touch panel and a finger on the JUMP button
     pg = await browser(p, 1000, 700, True); await open_site(pg); await register(pg); await launch_game(pg)
     await until(pg, f"{D}.mode==='docked'", 20000); await pg.touchscreen.tap(500, 350)
-    await pg.evaluate(f"{D}.tourQuick(true);{D}.tourStart('jump')")
+    await pg.evaluate(f"{D}.C.opt.tourTry=false;{D}.tourQuick(true);{D}.tourStart('jump')")
     await until(pg, f"{D}.tour&&{D}.tour.i===2&&!!{D}.tour.tapAt", 60000, 200)
     ta = await pg.evaluate(f"{D}.tour.tapAt")
     R.check(bool(ta) and ta['y'] > 400, 'touch screen: a finger taps the JUMP button on the console', ta)

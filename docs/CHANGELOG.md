@@ -2,6 +2,20 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v24 — 18 November 2026
+Training, part 2: **🙋 HAVE A GO.**
+- In the tours, Nova now explains a step and then it is **your turn**: the step waits until you do it (press the
+  key, tap or click the button, speed up, steer, aim, fire, buy…) and says "✔ WELL DONE".
+- What to press glows: the button on screen (on touch screens and in the station), and the key blinks in the
+  keyboard picture.
+- Stuck? **👀 SHOW ME** lets Nova do that step for you. After about 12 seconds Nova offers it.
+- Nova still flies the fiddly bits (the docking corridor, star skimming), and steps with nothing to do just carry on.
+- **🙋 HAVE A GO: ON/OFF** on Pause → TOURS. Off, the tours play as before (Nova does everything).
+- On your turn the game's own controls work (the side touch controls appear in full screen).
+- Tests: the `tours` suite runs the laptop in watch mode and the Fold in HAVE A GO (pressing 👀 SHOW ME at every
+  turn: 71 turns), and a player test does real steps: ↓ and → in the market, L, aiming, J, holding W, steering,
+  waiting for the hint, 👀 SHOW ME, and tapping BUY 1 on the Fold.
+
 ## starlane-v23 — 18 November 2026
 Training, part 1 (from the 18 Nov training review): tours and guided flight speak touch.
 - **Guided flight on touch screens** now matches the controls you have: 🕹 Simple ("tap FAST", "the joystick on

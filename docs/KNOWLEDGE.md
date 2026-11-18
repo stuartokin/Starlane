@@ -212,6 +212,22 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v24` (🙋 HAVE A GO in tours):**
+- `C.opt.tourTry` (default on; `tryOn()`). At each step `youStart(st)` sets `tour.youNow` when `youable(st)`: the
+  step has `you`, `tap`, `tapFn`, `click`, `clickAt`, `hold`, `steer` or `aim`, and is not `auto:true` (Nova flies:
+  the docking corridor) or `noYou()` (e.g. roll with Simple touch controls).
+- On the player's turn `tourTick` only calls `youTick`: it tracks held keys, views seen, camera, boost and chart
+  modes, offers 👀 SHOW ME after 12 s (spoken and added to `tour.text`), and moves on when `youDone(st)`:
+  `st.you()` if given, else every tapped key pressed (`youPressed`: the key, the console flash `G._flash[id]`, or
+  the touch button label), the `click` button clicked, a `hold` key held 0.4 s, `steer` turned 10°, then `until`.
+  `tour.y0` snapshots the state at the step's start (filled in for flight once flying).
+- Input on the player's turn: `G.onKey` passes keys to the game (Escape still ends the tour) and records them;
+  `G.onPointer` records button labels and passes taps on; the render keeps the game's buttons (normally cleared
+  during tours); `tdUpdate` shows the side touch controls.
+- `showMe()` gives the step back to Nova (demo from the start of the step). `tour.log` has `you` for steps the
+  player did. Glow: `youWant(st)` keys → `tourTapRect`, plus the `click` button and the `clickAt` point.
+- Test hooks: `showMe()`, `youNow`.
+
 **Since `starlane-v23` (tours and guided flight on touch):**
 - `tctl()` describes the touch controls in use: side controls (`TD.on`, or `G._tdSeen` once they have shown on this
   device) by layout (`simple` auto speed, `twin`, `classic`), otherwise the in-picture joystick and SPEED slider.

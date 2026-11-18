@@ -182,8 +182,8 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
     ends test mode and goes to the cheat page in the same tab. The site also runs at `horizonqltd.com/Starlane/`,
     which keeps its own saves and cheat settings, separate from `stuartokin.github.io`.
 - **18 Nov 2026 — training review.** Stuart (18 Nov): go ahead in the proposed order: (3) guided flight for Simple,
-  (2) device-aware wording and touch display, (6) a `tours` suite — **done in `starlane-v23`**; then (1) hands-on
-  "your turn" steps; then (4) new tours for the gaps and (5) Beginner / Pilot / Expert paths. Open question for
+  (2) device-aware wording and touch display, (6) a `tours` suite — **done in `starlane-v23`**; (1) hands-on "your turn" steps — **done in
+  `starlane-v24` (🙋 HAVE A GO)**; next (4) new tours for the gaps and (5) Beginner / Pilot / Expert paths. Open question for
   Stuart: should finishing a tour pay a small credit reward, as guided flight does?
   Original review: All 17 tours were played to the
   end on a laptop and at Fold size (touch): all finish, no errors; facts and prices are current. Findings:
