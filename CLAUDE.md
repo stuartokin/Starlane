@@ -31,7 +31,7 @@ Before changing anything, read in this order:
   - API keys live only in GitHub secrets.
 - **Bump `CACHE` in `sw.js`** (`starlane-vN`) **and `js/version.js`** on every release, or players' devices keep the old files. The version shows in Pause, on the launch page and on the cheat page (`test_static` checks the two match).
 - **Keep the debug hooks** on `Arcade._game()._dbg` working — tests and the automated workflows use them.
-- **Run the rig**: `python tests/run_all.py` (about 9 minutes). Everything must pass before shipping.
+- **Run the rig**: `python tests/run_all.py` (about 35 minutes). Everything must pass before shipping.
 - **No “Apollo” shown to players.** Questions from ApolloMaths are personalised to each child; standalone
   pilots see their own name. Only Moon-landing history (Apollo 11) may mention Apollo. `test_static` checks it.
 - Children use this. Keep content age-appropriate, accurate, and kind; explain every answer.

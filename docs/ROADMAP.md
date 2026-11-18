@@ -174,6 +174,13 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   `STARLANE_CODE`: `tools/set_code.py` set the check value, the full rig passed with the real code, published.
   Stuart now unlocks test mode and the cheat page with his **new** code; the old one no longer works. To change
   the code: update `STARLANE_CODE` on Default, start a new session, say "update the code".
+- **18 Nov 2026 — test mode and cheat page review** (`starlane-v22`), from Stuart's Fold screenshot. Decisions
+  (Stuart, 18 Nov): fix all six proposals — readable Cancel and tap-outside, PLACES stays on the test screen, ▶ on
+  buttons that start play, Apply returns to the cheat page, the cheat tab acts on the game tab that opened it,
+  and a test that presses every button.
+  - Noted, not changed: Pause → ⚙ BACK TO THE CHEAT PAGE (in a practice copy started from the cheat page) still
+    ends test mode and goes to the cheat page in the same tab. The site also runs at `horizonqltd.com/Starlane/`,
+    which keeps its own saves and cheat settings, separate from `stuartokin.github.io`.
 - **Cut-scene ideas for Stuart (not built):**
   - an escape-capsule scene (it reuses "DOCKING…" today);
   - a galactic-jump scene (none today);

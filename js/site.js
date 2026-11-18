@@ -73,7 +73,7 @@ function play(opts={}){if(!HOST){savePilot();questionSource();}if(typeof Arcade=
   const f=document.querySelector('[data-arc=full]');if(f&&!dlgEl.classList.contains('arc-full'))f.click();};go();
  clearInterval(watching);watching=setInterval(()=>{const s=Arcade.status&&Arcade.status(),g=Arcade._game&&Arcade._game(),d=g&&g._dbg;
   if(!started){if(s&&s.view==='game'&&d){started=true;try{d.C.opt.advAge=BANDS[bandIndex()][2];const p=window.stats.pilot;if(p&&DIFFS.includes(p.diff)&&d.C.opt.difficulty!==p.diff){d.C.opt.difficulty=p.diff;if(d.persistNow)d.persistNow();}}catch(e){}
-     if(opts.cheats){const how=opts.cheats;setTimeout(()=>{try{if(g.intro&&typeof g.tap==='function')g.tap();d.C.introSeen=true;if(d.overlay==='intro')d.set('overlay',null);const cs=window.StarlaneSite.cheats();if(cs){if(how==='play')g.cheatPlay(cs);else g.cheatApply(cs);}}catch(e){}},500);}
+     if(opts.cheats){const how=opts.cheats;setTimeout(()=>{try{if(g.intro&&typeof g.tap==='function')g.tap();d.C.introSeen=true;if(d.overlay==='intro')d.set('overlay',null);const cs=window.StarlaneSite.cheats();if(cs){if(how==='play')g.cheatPlay(cs);else{g.cheatApply(cs);setTimeout(()=>{try{location.replace('cheats.html#applied');}catch(e){}},900);}}}catch(e){}},500);}
      if(opts.show){try{if(g.intro&&typeof g.tap==='function')g.tap();d.startShow(opts.show);showOn=true;}catch(e){}setTimeout(()=>dlgEl.classList.remove('sl-booting'),120);}else dlgEl.classList.remove('sl-booting');}
    else if(!dlgEl.open)backToLaunch();return;}
   if(!dlgEl.open||(s&&s.view!=='game')){backToLaunch();return;}
@@ -84,7 +84,7 @@ function play(opts={}){if(!HOST){savePilot();questionSource();}if(typeof Arcade=
 function gameNow(){const g=typeof Arcade!=='undefined'&&Arcade._game&&Arcade._game();return g&&typeof g.testMode==='function'&&get('arcCanvas')&&get('arcCanvas').offsetParent?g:null;}
 function askCode(){const g=gameNow();if(!g)return;if(g.inTest&&g.inTest()){g.testMode();return;}if(HOST){try{HOST.requestTest(()=>{const g2=gameNow();if(g2&&!(g2.inTest&&g2.inTest()))g2.testMode();});}catch(e){}return;}
  let box=get('slCode');if(!box){box=document.createElement('div');box.id='slCode';box.innerHTML=`<div class="sl-code-card"><h3>🧪 Test mode</h3><p>Enter the test code</p><input id="slCodeIn" type="password" inputmode="numeric" autocomplete="off" maxlength="16"><div class="sl-code-btns"><button id="slCodeOk" type="button">Open</button><button id="slCodeNo" type="button" class="ghost">Cancel</button></div><p id="slCodeMsg" class="msg"></p></div>`;
-  get('arcade').appendChild(box);get('slCodeNo').onclick=()=>box.classList.remove('on');
+  get('arcade').appendChild(box);get('slCodeNo').onclick=()=>box.classList.remove('on');box.addEventListener('click',e=>{if(e.target===box)box.classList.remove('on');});
   const ok=async()=>{get('slCodeMsg').textContent='Checking…';const k=window.StarlaneLock?await StarlaneLock.tryCode(get('slCodeIn').value):null;if(k){get('slCodeMsg').textContent='';box.classList.remove('on');const g2=gameNow();if(g2)g2.testMode();}else{get('slCodeMsg').textContent='Not quite — try again.';get('slCodeIn').select();}};
   get('slCodeOk').onclick=ok;get('slCodeIn').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')ok();if(e.key==='Escape')box.classList.remove('on');});}
  get('slCodeIn').value='';get('slCodeMsg').textContent='';box.classList.add('on');setTimeout(()=>get('slCodeIn').focus(),30);}

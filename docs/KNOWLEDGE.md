@@ -212,6 +212,17 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v22` (test mode and the cheat page):**
+- `testRow` items are `[label, fn, on, go]`. `go` buttons start play and close the test screen; `button()` draws a
+  green ▶ for `b.go`, and `B()` records `go:true` in `btns` (the `testmenu` suite checks every button against it).
+- PLACES buttons are wrapped in `tStay(fn)`: after `tDock` they put `overlay='test'` back and set `testMsg`.
+- `window.StarlaneGame = G` (set in starlane.js). The cheat page's `openerGame()` uses `window.opener.StarlaneGame`
+  when the game tab that opened it is still showing the game. Then ▶ Play calls `cheatPlay` there and closes the
+  cheat tab, and ✅ Apply calls `cheatApply` there. (`Arcade` is a top-level `const`, so it is not on `window`.)
+- Without an opener, ✅ Apply still goes to `./?cheats=apply`; `site.js` applies, then `location.replace('cheats.html#applied')`
+  and the page shows "✅ Applied".
+- The code box closes on a tap on its backdrop; `#slCode .sl-code-btns button.ghost` overrides `.arcade .ghost`.
+
 **Since `starlane-v20`:**
 - `cutLook()` (`'3d'|'console'|'clear'`) picks the cockpit for scenes drawn outside flight.
   - Hyperspace, 3D cockpit: `renderFlight(ctx)`, then the tunnel drawn with `lighter` over a darkened windscreen

@@ -137,6 +137,13 @@ time once. Read before making changes.
     (PBKDF2) so short codes can't be guessed in seconds.
 21y. **Environment variables load when a session starts.** Stuart added `STARLANE_CODE` mid-session, and the
     running session couldn't see it. Changes to the cloud environment need a new session (or a reconnect).
+21w2. **Check what each button does, not just that it draws.** Test mode's PLACES buttons reused `tDock()`,
+    which closes every overlay, so each one threw Stuart out of the test screen. A sweep that presses every button
+    and records where it leaves you (`testmenu`) found all of them in one run. Mark buttons that leave a screen.
+21w3. **Shared CSS classes leak into overlays.** The code box's Cancel used `.ghost`, which the arcade styles as white,
+    so it rendered white on white. Scope overlay buttons with an ID selector, and test computed colours.
+21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
+    `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest
     Playwright, which wants a newer Chromium than the one pre-installed in `/opt/pw-browsers`. Install the
     version that matches it (the Node one: `node -e "console.log(require('playwright/package.json').version)"`,

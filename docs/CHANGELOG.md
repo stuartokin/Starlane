@@ -2,6 +2,22 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v22 — 18 November 2026
+From Stuart's review of test mode and the cheat page ("buttons that drop you out to the game").
+- **Test-mode code box:** the Cancel button was white on white (the arcade's `.ghost` style); it is now readable.
+  A tap outside the box closes it.
+- **Test screen, 🌍 PLACES:** choosing a galaxy, a nearby system or a special place no longer throws you back into
+  the game. The practice copy moves there and the test screen stays open with "Now docked at …".
+- **Buttons that start play are marked ▶** (all scenarios, the adventures, Adventure Log, Academy), with a note
+  under them. Every other button keeps you on the test screen.
+- **Cheat page:**
+  - ✅ Apply now comes back to the cheat page with "✅ Applied", instead of leaving you in the game.
+  - Opened from the game (test mode → ⚙ Open the cheat page), ▶ Play and ✅ Apply act on that game tab: Play
+    closes the cheat tab and starts the practice copy there; Apply changes the real commander there and keeps the
+    cheat page open. No more second copy of the game.
+- Tests: new `testmenu` suite (presses all 122 test-screen buttons, real taps on PLACES at Fold size); cheat-tab
+  checks in `cheats`; code-box checks in `site`.
+
 ## starlane-v21 — 17 November 2026
 - **Stronger lock on test mode and the cheat page.**
   - The code is checked by `js/lock.js` with a slow, salted check (PBKDF2-SHA-256, 200,000 rounds, then

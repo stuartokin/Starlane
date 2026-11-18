@@ -23,6 +23,11 @@ async def main(p):
     if inp:
         await inp.fill('00000000'); await inp.press('Enter'); await pg.wait_for_timeout(400)
         R.check(not await pg.evaluate("Arcade._game().inTest()"), 'a wrong code is refused')
+        # Cancel must be readable (the arcade's white .ghost style once made it white on white)
+        cc = await pg.evaluate("(()=>{const s=getComputedStyle(document.getElementById('slCodeNo'));return [s.backgroundColor,s.color]})()")
+        R.check(cc[0] != cc[1] and 'rgb(255, 255, 255)' not in cc[0], 'the code box Cancel button is readable', cc)
+        await pg.mouse.click(5, 5); await pg.wait_for_timeout(200)
+        R.check(not await pg.evaluate("document.getElementById('slCode').classList.contains('on')"), 'a tap outside the code box closes it')
         code = os.environ.get('STARLANE_CODE')
         if code:
             await pg.evaluate("document.dispatchEvent(new KeyboardEvent('keydown',{key:'G',ctrlKey:true,shiftKey:true,bubbles:true}))"); await pg.wait_for_timeout(400)

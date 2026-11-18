@@ -62,6 +62,19 @@ function linkFromHash(){ const m = location.hash.match(/[#&]s=([\w-]+)/); if (!m
 async function copyLink(){ const url = location.origin + location.pathname + '#s=' + b64(JSON.stringify({name:st.name, rules:diffRules(st.rules), form:st.form}));
  try { await navigator.clipboard.writeText(url); toast('Link copied — open it on another device to load these settings'); } catch(e) { window.prompt('Copy this link:', url); } }
 
+// the game in the tab that opened this page (test mode → ⚙ Open the cheat page), if it is still running
+function openerGame(){ try { const o = window.opener; if (!o || o.closed) return null;
+ const g = o.StarlaneGame, cv = o.document.getElementById('arcCanvas');
+ return g && typeof g.cheatPlay === 'function' && cv && cv.offsetParent ? g : null; } catch(e) { return null; } }
+const savedNow = () => { try { return JSON.parse(localStorage.getItem(D.KEY) || 'null'); } catch(e) { return null; } };
+function play(){ save(); const g = openerGame();
+ if (!g) { location.href = './?cheats=play'; return; }
+ if (!g.cheatPlay(savedNow())) { toast('Your game is busy (a movie or a jump). Try again in a moment.'); return; }
+ try { window.opener.focus(); } catch(e) {} window.close(); toast('Playing in your game tab'); }
+function apply(){ save(); const g = openerGame();
+ if (!confirm('Apply these settings to the real commander' + (g ? ' in your game tab' : ' saved on this device') + '?\n\nCommander changes (credits, ship, equipment…) are made now. The rules stay on until you remove them (test mode → ✨ CHEATS → 🧹 Remove custom rules).')) return;
+ if (!g) { location.href = './?cheats=apply'; return; }   // the game applies them, then comes back here (#applied)
+ g.cheatApply(savedNow()); toast('✅ Applied to the commander in your game tab'); }
 // back to the game: close this tab if the game opened it, otherwise go to the launch page
 function back(e){ if (e) e.preventDefault(); try { if (window.opener && !window.opener.closed) { window.close(); return; } } catch(err) {} location.href = './'; }
 function unlocked(){ $('chLock').hidden = true; $('chMain').hidden = false; $('chBar').hidden = false;
@@ -69,8 +82,9 @@ function unlocked(){ $('chLock').hidden = true; $('chMain').hidden = false; $('c
  $('chPresets').innerHTML = D.presets.map((p, n) => `<button type="button" data-p="${n}">${esc(p[1])}</button>`).join('');
  $('chPresets').querySelectorAll('button').forEach(b => b.onclick = () => preset(D.presets[+b.dataset.p]));
  $('chName').addEventListener('input', () => { st.name = $('chName').value.trim().slice(0, 40); save(); });
- $('chPlay').onclick = () => { save(); location.href = './?cheats=play'; };
- $('chApply').onclick = () => { save(); if (confirm('Apply these settings to the real commander saved on this device?\n\nCommander changes (credits, ship, equipment…) are made now. The rules stay on until you remove them (test mode → ✨ CHEATS → 🧹 Remove custom rules).')) location.href = './?cheats=apply'; };
+ $('chPlay').onclick = play;
+ $('chApply').onclick = apply;
+ if (location.hash === '#applied') { try { history.replaceState(null, '', location.pathname); } catch(e) {} toast('✅ Applied to your commander on this device'); }
  $('chLink').onclick = copyLink;
  $('chBack').onclick = back;
  $('chReset').onclick = () => { if (confirm('Put every setting back to the normal game?')) preset(D.presets[0]); }; }
@@ -85,5 +99,5 @@ window.addEventListener('DOMContentLoaded', () => {
   else { $('chLockMsg').textContent = 'Not quite — try again.'; $('chCode').select(); } });
  $('chCode').focus();
  L.okKey(k0).then(ok => { if (ok) unlocked(); }); });
-window.StarlaneCheatPage = {get state(){ return st; }, save, toGame, unlocked};
+window.StarlaneCheatPage = {get state(){ return st; }, save, toGame, unlocked, openerGame};
 })();
