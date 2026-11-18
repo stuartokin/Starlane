@@ -30,7 +30,7 @@ try{if(typeof Storage!=='undefined'&&!Storage.profiles)Storage.profiles=()=>[];}
 /* ---------- training level and the question socket ---------- */
 const BANDS=[['7-8','Ages 7–8','young'],['9-10','Ages 9–10','young'],['11-12','Ages 11–12','mid'],['13-14','Ages 13–14','older'],
  ['x-tiffin1','Exam practice: Tiffin Stage 1','mid'],['x-tiffin2','Exam practice: Tiffin Stage 2','mid'],['x-grammar11','Exam practice: 11+ grammar','mid'],['x-iseb','Exam practice: ISEB Pre-Test (Eton, Harrow…)','mid'],['x-ce13','Exam practice: 13+ Common Entrance','older'],
- ['adult','Adult — tough (really test yourself!)','older']];
+ ['adult','Adult — tough (really test yourself!)','adult']];
 const bandIndex=()=>{const b=window.stats.pilot&&window.stats.pilot.band;const i=BANDS.findIndex(x=>x[0]===b);return i<0?2:i;};
 window.STARLANE_LEVEL=()=>{const i=bandIndex();return i<4?i:(/adult|ce13/.test(BANDS[i][0])?3:2);};
 // where the maths comes from: the built-in pack, the adult set, or ApolloMaths' exam engine (in a hidden frame), falling back to the pack

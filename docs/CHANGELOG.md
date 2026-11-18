@@ -2,6 +2,23 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v27 — 18 November 2026
+Adventures by level, batch 1 of 5.
+- **Adventure puzzles now depend on the level chosen at the start.** In the first 10 adventures (The Ticking
+  Canister to The Locked Armoury, 28 puzzles) each level gets its own question on the same topic: younger
+  (7–9), middle (10–12), older (13–14) and a new **adult** level (a clever adult, no specialist knowledge —
+  any rule needed is given in the question). For example, the acid puzzle asks a 7-year-old which item is an
+  alkali, and an adult how many times more hydrogen ions pH 2 has than pH 5.
+- **Numbers change on replay** in the number puzzles (sequences, primes, binary, hexadecimal, Moon weights,
+  bulbs and energy).
+- The "Adult — tough" pilot level now gives adult adventure puzzles (it used to give the 13+ ones). The Adventure
+  Log's Puzzle level has an **Adult** button. Adventures 11–50 still use their original puzzles (adult gets the
+  13+ version) until their batches are done.
+- Accuracy: every answer was solved twice — by its author and by an independent checker who did not see the
+  answers; two orderings that could fairly go two ways were rewritten.
+- Tests: new `advlevels` suite — shape of every level, 4,000 generated puzzles re-solved in Python, every level a
+  different question, and in the game each level gets its own puzzle.
+
 ## starlane-v26 — 18 November 2026
 From Stuart's list (18 Nov).
 - **Five new kinds of station race**, on the MISSIONS board alongside the gate race:

@@ -205,7 +205,7 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   Beginner / Pilot / Expert paths with ticks for finished tours; a `tours` test suite.
 - **18 Nov 2026 — Stuart's list** (`starlane-v26`). Decisions (Stuart, 18 Nov): tour prize 100 Cr, once per
   profile; all five new races; abandoned missions go back on the board; no docking advice after launch.
-  **Adventures by level — next (not started):** each of the 135 adventure puzzles gets a genuinely different
+  **Adventures by level — batch 1 (adventures 1–10) done in `starlane-v27`; batches 2–5 next:** each of the 135 adventure puzzles gets a genuinely different
   question for young / mid / older / **adult** (adult = clever adult, no specialist knowledge), numbers generated so
   replays differ, every answer re-solved and a new `adventures-levels` test. Stuart agreed: 5 batches of 10
   adventures, one release each.

@@ -225,7 +225,7 @@ window.StarAdvLevels = (() => {
     explain: 'You have to read the code and check it BEFORE the door opens.'},
    older: {q: 'Sequence the lock’s algorithm correctly.', items: ['Wake up the lock', 'Read the code', 'Compare it with the stored code', 'Unlock the bolt', 'Open the door', 'Lock it again after use'],
     explain: 'Input (read), process (compare), then output (unlock, open) — and finally make it secure again.'},
-   adult: {q: 'Sequence the lock’s algorithm correctly.', items: ['Wake up the lock', 'Read the code', 'Compare it with the stored code', 'Unlock the bolt', 'Open the door', 'Close the door', 'Lock the bolt again'],
+   adult: {q: 'Put the lock’s full algorithm in order, from waking up to safely locked again.', items: ['Wake up the lock', 'Read the code', 'Compare it with the stored code', 'Unlock the bolt', 'Open the door', 'Close the door', 'Lock the bolt again'],
     explain: 'Input (read), process (compare), output (unlock, open) — and the door must be closed before the bolt can lock it again, returning to a secure state.'}},
   3: {
    young: {q: 'The robot starts facing forwards. “REPEAT 2 times: turn right a quarter turn.” Which way is it facing now?', options: ['Backwards', 'Forwards', 'Left', 'Right'], answer: 0,

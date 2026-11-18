@@ -253,7 +253,7 @@ function makeStarlane(env){
  function themedQ(kind){const h=here(),tg=C.target!==null&&C.target!==undefined&&GAL[C.target]?GAL[C.target]:null,Q=(tp,q,a,u,dp,how)=>({tp,q,a:dp?R1(a):a,u,dp:dp||0,how}),d=tg?SL.dist(GAL[C.sys],tg):R1(RI(15,60)/10),nm=tg?tg.name:'the next system';
   if(kind==='trend'&&trendData){const D=trendData.days,g=GOODS[trendData.i],ps=D.map(x=>x.p),n=ps.length,first=ps[0],last=ps[n-1],hi=Math.max(...ps),lo=Math.min(...ps),G2=(tp,q,a,how,u='Cr',dp=1)=>({tp,q,a:Math.round(a*Math.pow(10,dp))/Math.pow(10,dp),u,dp,graph:D,gname:g[0],how});
    // who is asking: adults get the hardest set, older pilots a mix, younger ones the basics
-   const tier=(window.ADULT_BANK&&window.bank===window.ADULT_BANK)?2:C.opt.advAge==='older'?1:0,r1=v=>Math.round(v*10)/10;
+   const tier=(window.ADULT_BANK&&window.bank===window.ADULT_BANK)||C.opt.advAge==='adult'?2:C.opt.advAge==='older'?1:0,r1=v=>Math.round(v*10)/10;
    const basic=[()=>G2('data',`${g[0]} at ${h.name}: the graph shows its price on each day. By how much did the price change from day ${D[0].d} to today (day ${D[n-1].d})? (Use a minus sign if it fell.)`,last-first,`Change = last price − first price = ${fx1(last)} − ${fx1(first)} = ${fx1(last-first)}.`),
     ()=>{const L=ps.slice(-4);return G2('averages',`What was the mean (average) price of ${g[0]} over the last ${L.length} days on the graph?`,L.reduce((a,b)=>a+b,0)/L.length,`Add the ${L.length} prices: ${L.map(fx1).join(' + ')} = ${fx1(L.reduce((a,b)=>a+b,0))}. Then divide by ${L.length}: ${fx1(L.reduce((a,b)=>a+b,0)/L.length)}.`);},
     ()=>G2('data',`What is the range of the prices on the graph (highest price − lowest price)?`,hi-lo,`Range = highest − lowest = ${fx1(hi)} − ${fx1(lo)} = ${fx1(hi-lo)}.`)];
@@ -411,7 +411,7 @@ function makeStarlane(env){
  const RACE_ORDER=['ring','slalom','targets','maths','rival','mines'];
  const raceKind=m=>m&&RACE_KINDS[m.kind]?m.kind:'ring';
  // a quick sum for the maths gates, at the pilot's level, with two wrong answers close by
- function raceQ(){const lv=window.ADULT_BANK&&window.bank===window.ADULT_BANK?3:({young:0,mid:1,older:2}[C.opt.advAge||'mid']??1),R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));let q,a;const t=R(0,2);
+ function raceQ(){const lv=window.ADULT_BANK&&window.bank===window.ADULT_BANK?3:({young:0,mid:1,older:2,adult:3}[C.opt.advAge||'mid']??1),R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));let q,a;const t=R(0,2);
   if(lv===0){if(t===0){const x=R(2,10),y=R(2,10);q=`${x} + ${y}`;a=x+y;}else if(t===1){const x=R(10,20),y=R(1,9);q=`${x} − ${y}`;a=x-y;}else{const x=R(2,5),y=R(2,10);q=`${x} × ${y}`;a=x*y;}}
   else if(lv===1){if(t===0){const x=R(3,12),y=R(3,12);q=`${x} × ${y}`;a=x*y;}else if(t===1){const y=R(3,12),k=R(2,12);q=`${y*k} ÷ ${y}`;a=k;}else{const x=R(20,90),y=R(11,49);q=`${x} + ${y}`;a=x+y;}}
   else if(lv===2){if(t===0){const x=R(11,19);q=`${x}²`;a=x*x;}else if(t===1){const pc=[10,20,25,50,75][R(0,4)],b=[40,60,80,120,200][R(0,4)];q=`${pc}% of ${b}`;a=pc*b/100;}else{const x=R(-12,-2),y=R(3,15);q=`${x} + ${y}`.replace('-','−');a=x+y;}}
@@ -1850,6 +1850,13 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
  // ---------------- ADVENTURES: offers, puzzles, flight stages, rewards, the Adventure Log ----------------
  let adv=null,advOffer=null,advCalmT=0;
  const AGE=()=>C.opt.advAge||'mid';
+ // the player's level picks each puzzle's version (js/starlane-adv-levels.js) and makes any generated numbers now;
+ // the result is a copy of the adventure, so the rest of the adventure code reads sc.q[AGE()], sc.options, sc.answer as before
+ const ADV_TIERS=['young','mid','older','adult'];
+ function advResolve(d0){if(!d0)return d0;const L=(window.StarAdvLevels||{})[d0.id]||{},lv=AGE(),up=o=>o&&typeof o==='object'&&!Array.isArray(o)&&o.older!==undefined&&o.adult===undefined?{...o,adult:o.older}:o;
+  return{...d0,scenes:d0.scenes.map((s,k)=>{const e=L[k];let v=e?(e[lv]||(lv==='adult'?e.older:null)):null;if(typeof v==='function'){try{v=v();}catch(err){v=null;}}
+   if(!v)return{...s,q:up(s.q),answer:up(s.answer),explain:up(s.explain)};
+   const sc={...s,q:Object.fromEntries(ADV_TIERS.map(t=>[t,v.q])),explain:v.explain};if(v.options)sc.options=v.options;if(v.items)sc.items=v.items;if('answer' in v)sc.answer=v.answer;return sc;})};}
  const advAns=sc=>sc.answer&&typeof sc.answer==='object'&&!Array.isArray(sc.answer)?sc.answer[AGE()]:sc.answer;
  const advRec=id=>{C.adv=C.adv||{};return C.adv[id]||(C.adv[id]={done:false,plays:0,fails:0});};
  const advUnlocked=()=>(C.stats.flightTime||0)>=600||(C.stats.jumps||0)>=2||(C.done||0)>=1;
@@ -1858,7 +1865,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
  function advMaybe(trig){if(show||!advReady()||(overlay&&overlay!=='adv'))return false;const pool=advPool(trig).filter(a=>trig==='hyper'?a.trigger==='hyper':a.trigger!=='hyper');if(!pool.length)return false;advOffer=pool[Math.floor(Math.random()*pool.length)];overlay='advOffer';say('advoffer','Commander, something unusual is happening. An adventure awaits!',5);return true;}
  const advA={hurtHull:x=>{C.hull=Math.min(.9,(C.hull||0)+x);if(P)P.hull=Math.max(P.hull||0,C.hull);},loseCargo:(n,good)=>{const ks=Object.keys(C.cargo).filter(k=>C.cargo[k]>0&&(good===undefined||+k===good));if(!ks.length)return false;const k=ks[Math.floor(Math.random()*ks.length)];C.cargo[k]=Math.max(0,C.cargo[k]-n);if(!C.cargo[k])delete C.cargo[k];return true;},
   fine:cr=>{C.credits=Math.max(0,Math.round((C.credits-cr)*10)/10);},loseDays:n=>{C.day+=n;},useFuel:n=>{C.fuel=Math.max(0,C.fuel-n);}};
- function advStart(id,opts={}){if(typeof StarAdv==='undefined')return;flyStop();const def=StarAdv.find(id);if(!def)return;const needFly=def.scenes.some(s=>s.type==='flight'||s.setup);if(needFly&&mode!=='flight'){if(test)tFly();else{msg('ADVENTURES START IN FLIGHT',2);return;}}if(mode==='flight'&&def.kind==='space')for(const x of ships){if(x!==station&&!x.dead&&!x.adv&&!['cargo','rock'].includes(x.T.role)&&x.type!=='canister')x.dead=true;}if(def.kind==='space'&&mode==='flight'&&!def.scenes.some(x=>x.setup==='earth'||x.setup==='shadow'||x.setup==='moon'||x.setup==='rings'||x.setup==='satellite'||x.setup==='rock'))faceClear();
+ function advStart(id,opts={}){if(typeof StarAdv==='undefined')return;flyStop();const def=advResolve(StarAdv.find(id));if(!def)return;const needFly=def.scenes.some(s=>s.type==='flight'||s.setup);if(needFly&&mode!=='flight'){if(test)tFly();else{msg('ADVENTURES START IN FLIGHT',2);return;}}if(mode==='flight'&&def.kind==='space')for(const x of ships){if(x!==station&&!x.dead&&!x.adv&&!['cargo','rock'].includes(x.T.role)&&x.type!=='canister')x.dead=true;}if(def.kind==='space'&&mode==='flight'&&!def.scenes.some(x=>x.setup==='earth'||x.setup==='shadow'||x.setup==='moon'||x.setup==='rings'||x.setup==='satellite'||x.setup==='rock'))faceClear();
   advOffer=null;adv={def,si:-1,lives:3,replay:!!opts.replay||advRec(id).done,st:{},spawned:[]};C.advLast=Date.now();advNext();}
  function advNext(){adv.si++;adv.ui={picks:new Set(),seq:[],code:'',answered:false,right:false};const sc=adv.def.scenes[adv.si];if(!sc){advFinish(true);return;}
   if(sc.type==='order')adv.ui.shuf=sc.items.map((x,i)=>i).sort(()=>Math.random()-.5);if(sc.setup)try{advSetup(sc.setup);}catch(e){}
@@ -2349,7 +2356,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
  // the Adventure Log (pause menu) — replay anything you have completed
  function renderAdvLog(ctx){text(ctx,'🗺 ADVENTURE LOG',CX,96,'#ffe45e',20,'center');const L=typeof StarAdv!=='undefined'?StarAdv.LIST:[],cnt=k=>`${L.filter(a=>a.kind===k&&C.adv&&C.adv[a.id]&&C.adv[a.id].done).length}/${L.filter(a=>a.kind===k).length}`;
   text(ctx,advUnlocked()||Object.keys(C.adv||{}).length?'Adventures pop up while you play. Completed ones can be replayed here as often as you like.':'Fly a little more (10 minutes, 2 jumps or 1 mission) and adventures will start to appear!',CX,122,'#9aa3c7',11,'center');
-  text(ctx,'Puzzle level:',40,148,'#3fe0ff',12);[['young','Younger (7–9)'],['mid','Middle (10–12)'],['older','Older (13+)']].forEach(([k,l],i)=>button(ctx,B(140+i*150,143,144,24,l,()=>{C.opt.advAge=k;persist();},{fs:10}),AGE()===k));
+  text(ctx,'Puzzle level:',40,148,'#3fe0ff',12);[['young','Younger (7–9)'],['mid','Middle (10–12)'],['older','Older (13–14)'],['adult','Adult']].forEach(([k,l],i)=>button(ctx,B(140+i*150,143,144,24,l,()=>{C.opt.advAge=k;persist();},{fs:10}),AGE()===k));
   G._advPg=G._advPg||{ship:0,space:0};[['ship','🚀 IN-SHIP',40],['space','🌌 SPACE',410]].forEach(([k,l,x])=>{text(ctx,`${l}  ${cnt(k)}`,x,182,'#b45bd6',13);const all=L.filter(a=>a.kind===k),PER=7,pages=Math.max(1,Math.ceil(all.length/PER));if(G._advPg[k]>=pages)G._advPg[k]=0;pager(ctx,x+214,178,G._advPg[k],pages,pp=>{G._advPg[k]=pp;});all.slice(G._advPg[k]*PER,(G._advPg[k]+1)*PER).forEach((a,i)=>{const y=204+i*38,r=C.adv&&C.adv[a.id];ctx.fillStyle='rgba(255,255,255,.04)';ctx.fillRect(x-4,y-4,354,34);
    if(r&&r.done){text(ctx,`✓ ${a.icon} ${a.title}`,x,y,'#3cff6a',12);text(ctx,a.subject,x,y+16,'#9aa3c7',10,'left',false);button(ctx,B(x+262,y,84,26,'▶ REPLAY',()=>{if(mode!=='flight'&&a.scenes.some(s=>s.type==='flight'||s.setup)){msg('LAUNCH FIRST — THIS ADVENTURE HAPPENS IN SPACE',2.5);return;}overlay=null;advStart(a.id,{replay:true});},{fs:10}));}
    else if(r&&r.plays){text(ctx,`${a.icon} ${a.title}`,x,y,'#ffb020',12);text(ctx,'Tried — it will come back',x,y+16,'#9aa3c7',10,'left',false);}else{text(ctx,'❔ ??? — not found yet',x,y+6,'#6c7a9c',12);}});});

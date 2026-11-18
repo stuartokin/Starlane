@@ -1,3 +1,3 @@
 /* Starlane Trader version: shown in Pause (GAME tab), on the launch page and on the cheat page.
    Bump it with CACHE in sw.js on every release; tests/test_static.py checks they match. */
-window.STARLANE_VERSION = {v: 'v26', cache: 'starlane-v26', date: '18 Nov 2026'};
+window.STARLANE_VERSION = {v: 'v27', cache: 'starlane-v27', date: '18 Nov 2026'};

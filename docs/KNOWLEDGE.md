@@ -212,6 +212,18 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v27` (adventures by level):**
+- `js/starlane-adv-levels.js` (loaded after `starlane-adventures.js`, in `sw.js` FILES) defines
+  `window.StarAdvLevels[advId][sceneIndex] = {young, mid, older, adult}`; each level is `{q, options, answer,
+  explain}` / `{q, answer, explain}` (code) / `{q, items, explain}` (order), or a function returning one (numbers
+  made when the adventure starts). Missing levels fall back to the original scene; adult falls back to older.
+- `advStart` uses `advResolve(def)`: a copy of the adventure with each puzzle resolved for `AGE()`, so the rest
+  of the adventure code is unchanged. `C.opt.advAge` can now be `adult` (the site's adult band sets it; the
+  Adventure Log has an Adult button). `raceQ` and the TREND tiers treat `adult` as adult.
+- Batches (Stuart, 18 Nov): 1 = adventures 1–10 (done, v27); 2 = 11–20; 3 = 21–30; 4 = 31–40; 5 = 41–50.
+  Process per batch: write all four levels (generated numbers where it suits), export the questions without
+  answers, have an independent agent solve them, compare, fix anything ambiguous, run `advlevels`.
+
 **Since `starlane-v26`:**
 - **Races.** `RACE_KINDS` / `RACE_ORDER` (`ring`, `slalom`, `targets`, `maths`, `rival`, `mines`); a race mission
   has `kind` (old saves: `ring`). `setupRace()` builds the ring of gates (6 checkpoints for maths) and the extras:

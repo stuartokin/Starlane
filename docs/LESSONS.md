@@ -161,6 +161,9 @@ time once. Read before making changes.
 21w10. **A flaky check can be the game working as designed.** "Switch to Modern in flight" failed now and then on the
     phone: under test load Modern 3D ran slowly for 8 s, so the game's own fallback switched back to Retro
     ("MODERN 3D WAS TOO SLOW HERE"). The test now sets `G._autoRetro` first.
+21w11. **An independent solve catches what the author can't see.** In adventure batch 1 the checker agreed on 79
+    of 81 answers; the two it disagreed on were orderings that could fairly go either way (test the wires before
+    or after opening the panel). The fix is to reword the puzzle, not to argue about the key.
 21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
     `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest
