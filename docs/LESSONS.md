@@ -164,6 +164,11 @@ time once. Read before making changes.
 21w11. **An independent solve catches what the author can't see.** In adventure batch 1 the checker agreed on 79
     of 81 answers; the two it disagreed on were orderings that could fairly go either way (test the wires before
     or after opening the panel). The fix is to reword the puzzle, not to argue about the key.
+21w12. **Put a feature's data where the game already listens.** Banks reach every maths moment through the existing
+    `StarlaneQuestions.get` socket (the one ApolloMaths uses), so the fallback to built-in questions came for free:
+    when the bank returns nothing, the old path runs.
+21w13. **Simple story-link guesses misfire.** Detecting story-bound adventure answers by "first word of the answer
+    appears later" picked "Your" and "Make". A short hand-checked list (8 slots) is better than a clever heuristic.
 21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
     `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest

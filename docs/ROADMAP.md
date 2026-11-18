@@ -209,7 +209,15 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   question for young / mid / older / **adult** (adult = clever adult, no specialist knowledge), numbers generated so
   replays differ, every answer re-solved and a new `adventures-levels` test. Stuart agreed: 5 batches of 10
   adventures, one release each.
-- **Idea (18 Nov 2026, Stuart asked for an opinion; not started): a question engine with swappable banks.**
+- **v29 — FINISH IN A NEW SESSION (18 Nov 2026): question banks.** Built and tested (29 checks) with a made-up
+  admin password; `js/admin-lock.js` holds the placeholder `__ADMIN__`, so `test_static` fails until it is set.
+  Stuart added `STARLANE_ADMIN_CODE` to Default after this session started. In a new session on Default:
+  1. `python3 tools/set_admin_code.py`; 2. run the full rig (banks checks use the real password); 3. publish to
+  `main`; 4. tell Stuart the page is live and to give out the starter password himself.
+  Decisions (Stuart, 18 Nov): grown-ups only, behind a separate admin password he gives out, which families may
+  change per device; modes Built-in / Mixed / Only imported with built-in fallback; Gemini for in-game generation;
+  parental review optional; ApolloMaths always uses its own plan's questions.
+- **Idea (18 Nov 2026) — now being built as v29: a question engine with swappable banks.**
   Questions become JSON bank files loaded at start; the game is tested once against any valid bank, and a new
   bank only needs a fast validator (shape, one right answer, explanation, on-screen length limits, no “Apollo”
   outside Moon history, a child-safety word list, generated questions as safe templates re-solved thousands of

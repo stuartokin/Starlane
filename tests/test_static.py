@@ -29,13 +29,25 @@ async def main(p):
         sys.path.insert(0, str(STARLANE / 'tools')); import set_code
         R.check(m and set_code.keys(code)[2] == m.group(1), 'the lock matches STARLANE_CODE')
     else: R.skip('the lock matches STARLANE_CODE', 'set STARLANE_CODE')
+    # 2c. the admin lock (js/admin-lock.js) holds the starter password's check value, and matches STARLANE_ADMIN_CODE
+    al = (STARLANE / 'js' / 'admin-lock.js').read_text(encoding='utf-8'); m2 = re.search(r"CHECK = '([^']*)'", al)
+    R.check(bool(m2) and re.fullmatch(r'[0-9a-f]{64}', m2.group(1) or ''), 'the admin (question-bank) lock is set (js/admin-lock.js has a check value)', '' if (m2 and re.fullmatch(r'[0-9a-f]{64}', m2.group(1) or '')) else 'run tools/set_admin_code.py')
+    acode = os.environ.get('STARLANE_ADMIN_CODE', '')
+    if acode:
+        sys.path.insert(0, str(STARLANE / 'tools')); import set_admin_code
+        R.check(m2 and set_admin_code.keys(acode)[2] == m2.group(1), 'the admin lock matches STARLANE_ADMIN_CODE')
+    else: R.skip('the admin lock matches STARLANE_ADMIN_CODE', 'set STARLANE_ADMIN_CODE')
+    # admin password never written into the repo
+    if acode:
+        leaks = [f.name for f in list((STARLANE / 'js').glob('*.js')) + list(STARLANE.glob('*.html')) + list((STARLANE / 'docs').glob('*.md')) if acode in f.read_text(encoding='utf-8', errors='ignore')]
+        R.check(not leaks, 'the admin password is not written anywhere in the repo', leaks)
     # 3. "Apollo" only as history (Apollo 11 / Apollo astronaut) in what players see
     apollo = []
     for f in list((STARLANE / 'js').glob('*.js')) + [STARLANE / 'index.html']:
         t = re.sub(r'/\*[\s\S]*?\*/', '', f.read_text(encoding='utf-8', errors='ignore'))
         t = re.sub(r'(^|[^:"\'`])//[^\n]*', r'\1', t)          # comments are not shown to players
         for m in re.finditer(r'.{0,30}Apollo.{0,30}', t):
-            if not re.search(r'Apollo (11|astronaut)|/ApolloMaths/', m.group(0)): apollo.append(f'{f.name}: {m.group(0).strip()}')
+            if not re.search(r'Apollo (11|astronaut)|/ApolloMaths/|“Apollo” may only appear|mention "Apollo" when', m.group(0)): apollo.append(f'{f.name}: {m.group(0).strip()}')   # allowed: the question-bank rule's own wording (grown-ups only)
     R.check(not apollo, 'no "Apollo" shown to players (except Moon-landing history)', apollo[:3])
     # 3a. the version shown to players matches the offline cache name
     vj = (STARLANE / 'js/version.js').read_text(encoding='utf-8'); sw = (STARLANE / 'sw.js').read_text(encoding='utf-8')

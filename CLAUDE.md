@@ -28,6 +28,9 @@ Before changing anything, read in this order:
   (PBKDF2 → SHA-256) is in `js/lock.js`. Never print the code.
   - To set or change it: `python3 tools/set_code.py`, then run the tests and publish.
   - If `js/lock.js` still says `__CHECK__`, the lock isn't set: `test_static` fails, so don't publish.
+  - The grown-ups' question-bank page has its own **admin (starter) password**, `STARLANE_ADMIN_CODE` on Default;
+    only its check value is in `js/admin-lock.js` (set with `python3 tools/set_admin_code.py`). Same rules: never
+    print it; `__ADMIN__` means not set and `test_static` fails. Guide: `docs/QUESTION-BANKS.md`.
   - API keys live only in GitHub secrets.
 - **Bump `CACHE` in `sw.js`** (`starlane-vN`) **and `js/version.js`** on every release, or players' devices keep the old files. The version shows in Pause, on the launch page and on the cheat page (`test_static` checks the two match).
 - **Keep the debug hooks** on `Arcade._game()._dbg` working — tests and the automated workflows use them.

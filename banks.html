@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#03050f">
+<meta name="robots" content="noindex">
+<title>Starlane Trader — question banks</title>
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="stylesheet" href="css/cheats.css">
+<style>
+ .tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;border:1px solid #3b4a8f;color:#c8d0ff;margin-left:6px;vertical-align:2px}
+ .tag.new{border-color:#ffb020;color:#ffb020}.tag.ok{border-color:#3cff6a;color:#3cff6a}
+ .bank{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid #1d2650;flex-wrap:wrap}.bank:first-child{border-top:0}
+ .bank b{color:#fff}.meta{color:#9aa6cc;font-size:13px}.grow{flex:1;min-width:220px}
+ .acts{display:flex;gap:6px;flex-wrap:wrap}.acts button{padding:7px 10px;font-size:13px}
+ .pilot{display:grid;grid-template-columns:1.1fr 1.4fr 1.7fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #1d2650}.pilot:first-child{border-top:0}
+ select,textarea,.in{font:inherit;padding:8px;border-radius:8px;border:1px solid #3b4a8f;background:#050a1c;color:#fff;width:100%}
+ textarea{min-height:180px;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+ .seg{display:flex;border:1px solid #3b4a8f;border-radius:10px;overflow:hidden}.seg button{flex:1;border:0;border-radius:0;padding:8px 4px;font-size:13px;background:transparent;color:#c8d0ff}
+ .seg button.on{background:#123a55;color:#fff;font-weight:700}
+ .note{color:#9aa6cc;font-size:13px;margin:6px 0 0}
+ .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.grid3 label,.lab{font-size:13px;color:#9aa6cc;display:grid;gap:4px}
+ .row2{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+ .report{font-size:13px;color:#c8d0ff;background:#050a1c;border:1px solid #1d2650;border-radius:10px;padding:8px 10px;margin-top:10px}
+ .report .g{color:#3cff6a}.report .r{color:#ff8a8a}.report li{margin:2px 0}
+ .chips{display:flex;gap:6px;flex-wrap:wrap}.chips label{display:flex;gap:4px;align-items:center;font-size:13px;color:#c8d0ff;border:1px solid #3b4a8f;border-radius:20px;padding:4px 10px}
+ dialog{background:#070d22;color:#e8ecfa;border:1px solid #3b4a8f;border-radius:14px;max-width:760px;width:calc(100% - 24px);padding:16px}
+ dialog::backdrop{background:rgba(0,0,0,.7)}
+ .q{border-top:1px solid #1d2650;padding:8px 0}.q .lv{font-size:12px;color:#7fd8ff}.q .ans{color:#3cff6a}.q .x{float:right}
+ .kit{white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px;background:#050a1c;border:1px solid #1d2650;border-radius:10px;padding:10px;max-height:300px;overflow:auto}
+ .msg{min-height:1.2em;font-size:13px}.msg.bad{color:#ff8a8a}.msg.good{color:#3cff6a}
+ @media(max-width:640px){.pilot,.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="ch-body">
+<header class="ch-head">
+ <a class="ch-back" href="./" id="bkBackTop">← Back to Starlane</a>
+ <h1>📚 Starlane question banks</h1>
+ <p>For grown-ups: choose which questions each pilot on this device gets. <span id="bkVer" class="ch-ver"></span></p>
+</header>
+
+<section id="bkLock" class="ch-card ch-lock" aria-label="Unlock">
+ <h2>🔒 Enter the admin password</h2>
+ <p id="bkLockHelp">This is not the game’s test code. To get an admin password, ask the Starlane team.</p>
+ <form id="bkLockForm"><input id="bkCode" type="password" autocomplete="off" maxlength="64" aria-label="Admin password"><button type="submit">Unlock</button></form>
+ <p id="bkLockMsg" class="ch-err" role="alert"></p>
+ <p class="ch-small" id="bkForgotP" hidden><a href="#" id="bkForgot">Forgot your password?</a></p>
+ <p class="ch-small"><a href="./">← Back to Starlane Trader</a></p>
+</section>
+
+<main id="bkMain" hidden>
+ <section class="ch-card" id="bkPw">
+  <h2>🔑 Your password</h2>
+  <p id="bkPwText" class="note"></p>
+  <div class="row2"><input id="bkPw1" class="in" type="password" placeholder="New password (6+ characters)" style="max-width:240px"><input id="bkPw2" class="in" type="password" placeholder="Type it again" style="max-width:240px"><button id="bkPwSet" type="button">Set my own password</button></div>
+  <p id="bkPwMsg" class="msg"></p>
+ </section>
+
+ <section class="ch-card">
+  <h2>👤 Pilots on this device</h2>
+  <div id="bkPilots"></div>
+  <p class="note">If a bank runs short for a level or a kind of question, the built-in questions fill the gap. You can change this at any time. In ApolloMaths, Starlane always uses the questions for the child’s plan.</p>
+ </section>
+
+ <section class="ch-card">
+  <h2>📚 Banks on this device</h2>
+  <div id="bkList"></div>
+ </section>
+
+ <section class="ch-card">
+  <h2>➕ Add a bank</h2>
+  <div class="row2"><button id="bkPaste" class="ch-go" type="button">📋 Paste text</button><button id="bkFileBtn" type="button">📁 Upload a file</button><input id="bkFile" type="file" accept=".json,application/json,text/plain" hidden><button id="bkKitBtn" type="button">📖 The bank kit (prompt and examples)</button></div>
+  <div id="bkReport"></div>
+ </section>
+
+ <section class="ch-card">
+  <h2>✨ Make a bank with Gemini</h2>
+  <div class="grid3">
+   <label>Topic <input id="gTopic" class="in" maxlength="80" placeholder="e.g. Fractions and decimals"></label>
+   <label>Ages <select id="gLevel"><option value="young">Younger (7–9)</option><option value="mid" selected>Middle (10–12)</option><option value="older">Older (13–14)</option><option value="adult">Adult</option></select></label>
+   <label>How many <select id="gCount"><option>10</option><option selected>20</option><option>40</option></select></label>
+  </div>
+  <div class="row2 chips" id="gMoments"><span class="meta">Use for:</span><label><input type="checkbox" value="quick" checked> quick puzzles</label><label><input type="checkbox" value="academy" checked> Academy and Cup</label><label><input type="checkbox" value="gates"> race maths gates</label></div>
+  <div class="row2"><label class="lab" style="flex:1;min-width:220px">Your Gemini API key (kept on this device only) <input id="gKey" class="in" type="password" autocomplete="off" placeholder="Paste your key"></label>
+   <label class="lab" style="width:220px">Model <input id="gModel" class="in" value="gemini-2.5-flash"></label></div>
+  <div class="row2"><label class="chips"><label><input id="gSecond" type="checkbox" checked> ✔ Second opinion (recommended)</label></label><button id="gGo" class="ch-go" type="button">✨ Generate</button><button id="gForget" type="button">Forget my key</button></div>
+  <p id="gMsg" class="msg"></p>
+ </section>
+</main>
+
+<dialog id="dlgPaste"><h2>📋 Paste a bank</h2><p class="note">Paste the whole answer from the AI (from { to }).</p><textarea id="pasteText"></textarea><div class="row2"><button id="pasteGo" class="ch-go" type="button">Check and import</button><button type="button" data-close>Cancel</button></div></dialog>
+<dialog id="dlgReview"><h2 id="rvTitle"></h2><p class="note">Remove any question with ✕. Changes are saved straight away.</p><div id="rvList"></div><div class="row2"><button id="rvOk" class="ch-go" type="button">✔ Mark as reviewed</button><button type="button" data-close>Close</button></div></dialog>
+<dialog id="dlgKit"><h2>📖 The bank kit</h2>
+ <p class="note">1. Fill in the blanks. 2. Copy the prompt into Gemini, ChatGPT, Claude or another AI. 3. Paste its answer with “📋 Paste text”. Every question is checked before it is used.</p>
+ <div class="grid3"><label>Topic <input id="kTopic" class="in" value="Times tables"></label><label>Ages <select id="kLevel"><option value="young">Younger (7–9)</option><option value="mid" selected>Middle (10–12)</option><option value="older">Older (13–14)</option><option value="adult">Adult</option></select></label><label>How many <select id="kCount"><option>10</option><option selected>20</option><option>40</option></select></label></div>
+ <div class="row2 chips" id="kMoments"><span class="meta">Use for:</span><label><input type="checkbox" value="quick" checked> quick puzzles</label><label><input type="checkbox" value="academy" checked> Academy and Cup</label><label><input type="checkbox" value="gates"> race maths gates</label><label><input type="checkbox" value="adventure"> adventure puzzles</label></div>
+ <div class="kit" id="kPrompt"></div>
+ <div class="row2"><button id="kCopy" class="ch-go" type="button">📋 Copy the prompt</button><button id="kExample" type="button">⬇ Example bank</button><button id="kSlots" type="button">⬇ Adventure puzzle slots</button><button type="button" data-close>Close</button></div>
+ <p id="kMsg" class="msg"></p>
+</dialog>
+<div id="chToast" role="status" aria-live="polite"></div>
+<script src="js/version.js"></script>
+<script src="js/starlane-adventures.js"></script>
+<script src="js/qbank.js"></script>
+<script src="js/admin-lock.js"></script>
+<script src="js/banks-page.js"></script>
+</body>
+</html>

@@ -26,3 +26,6 @@ body.sl-site{margin:0;min-height:100vh;background:#02040c radial-gradient(ellips
 /* inside ApolloMaths: no launch page, straight into the game */
 body.sl-hosted .sl-launch{display:none}
 body.sl-hosted{background:#000}
+
+/* pilots on this device; the grown-ups' question-bank link (since v29) */
+.sl-pilots{display:flex;gap:8px;align-items:end}.sl-pilots label{flex:1}.sl-banks{justify-self:start;color:#3fe0ff;font-size:13px;text-decoration:none}.sl-banks:hover{text-decoration:underline}

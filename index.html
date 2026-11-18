@@ -21,11 +21,13 @@
  <div class="sl-watch"><button id="trailerBtn" type="button">🎞 Watch the trailer</button><button id="overviewBtn" type="button">🧑‍🚀 2-minute tour with Nova</button></div>
  <section class="sl-pilot" aria-label="Pilot registration">
   <h2>🪪 Pilot registration</h2>
+  <div class="sl-pilots"><label>Pilot on this device <select id="pilotPick"></select></label><button id="pilotNew" type="button" class="ghost">➕ New pilot</button></div>
   <p id="pilotHello" class="sl-hello"></p>
   <label>Commander name <input id="pilotName" maxlength="18" autocomplete="off" placeholder="Commander"></label>
   <label>Training level (maths questions) <select id="pilotBand"></select></label>
   <label>Difficulty (fights) <select id="pilotDiff"><option value="easy">🌱 Easy — fewer, weaker pirates; an emergency escape</option><option value="normal">⚖️ Normal — the game as designed</option><option value="hard">🔥 Hard — more, tougher pirates; missions pay 25% more</option></select></label>
   <button id="pilotSave" type="button" class="ghost">Save</button>
+  <a id="banksLink" class="sl-banks" href="banks.html">📚 Question banks (grown-ups)</a>
  </section>
  <p class="sl-small">Works on laptops, tablets and phones. Keyboard, mouse, gamepad or touch. Your progress is saved in this browser. <span id="slVer"></span></p>
 </main>
@@ -42,6 +44,7 @@
 <script src="js/starlane-modern.js"></script>
 <script src="js/starlane-adventures.js"></script>
 <script src="js/starlane-adv-levels.js"></script>
+<script src="js/qbank.js"></script>
 <script src="js/starlane.js"></script>
 <script src="js/arcade.js"></script>
 <script>try{Arcade.init&&Arcade.init();}catch(e){}</script>

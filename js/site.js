@@ -9,12 +9,26 @@ const KEY='starlane-standalone-v1';
 const HOST=(()=>{try{if(window.parent!==window&&/[?&]host=apollo/.test(location.search)&&window.parent.StarlaneHost&&window.parent.StarlaneHost.version>=1)return window.parent.StarlaneHost;}catch(e){}return null;})();
 window.StarlaneSite={ready:false,hosted:!!HOST,forceExit:()=>{try{if(typeof Arcade!=='undefined'&&get('arcade').open)Arcade.close();}catch(e){}}};
 const fresh=()=>({arcade:{bank:{secs:0,day:''},crt:false,game:'starlane',high:{},lastEnd:0,mute:false,plays:[],saves:{},settings:{carry:0,earnPer:0},tables:{},theme:'player',twoP:{on:false,p:0},used:{}},avatar:{},pilot:null});
-let st;try{st=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){st=null;}
+// ---- pilots on this device (standalone, since v29): each has its own storage; the first keeps the original key ----
+const PKEY='starlane-pilots-v1';
+const pkey=id=>id==='p1'?KEY:KEY+':'+id;
+const PIL=(()=>{if(HOST)return null;let P;try{P=JSON.parse(localStorage.getItem(PKEY)||'null');}catch(e){P=null;}
+ if(!P||!Array.isArray(P.list)||!P.list.length){let name='';try{const o=JSON.parse(localStorage.getItem(KEY)||'null');name=(o&&o.pilot&&o.pilot.name)||'';}catch(e){}P={cur:'p1',n:1,list:[{id:'p1',name}]};}
+ if(!P.list.some(p=>p.id===P.cur))P.cur=P.list[0].id;return P;})();
+const pilSave=()=>{try{localStorage.setItem(PKEY,JSON.stringify(PIL));}catch(e){}};
+const SKEY=PIL?pkey(PIL.cur):KEY;
+window.StarlanePilots=PIL?{get list(){return PIL.list.map(p=>({...p}));},get cur(){return PIL.cur;},key:pkey,
+ read(id){try{return JSON.parse(localStorage.getItem(pkey(id))||'null');}catch(e){return null;}},
+ switchTo(id){if(!PIL.list.some(p=>p.id===id))return;try{window.save();}catch(e){}PIL.cur=id;pilSave();},
+ add(name){PIL.n=Math.max(PIL.n||1,PIL.list.length)+1;while(PIL.list.some(p=>p.id==='p'+PIL.n))PIL.n++;const id='p'+PIL.n;PIL.list.push({id,name:String(name||'').trim().slice(0,18)});pilSave();return id;},
+ remove(id){if(PIL.list.length<2||!PIL.list.some(p=>p.id===id))return false;PIL.list=PIL.list.filter(p=>p.id!==id);try{localStorage.removeItem(pkey(id));}catch(e){}if(PIL.cur===id)PIL.cur=PIL.list[0].id;pilSave();return true;},
+ rename(id,name){const p=PIL.list.find(p=>p.id===id);if(p){p.name=String(name||'').trim().slice(0,18);pilSave();}}}:null;
+let st;try{st=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){st=null;}
 if(!st||!st.arcade)st=fresh();
 const A=st.arcade;for(const[k,v]of Object.entries(fresh().arcade))if(A[k]===undefined)A[k]=v;
 if(HOST){st=fresh();try{st.arcade.saves.starlane=HOST.loadSave()||undefined;st.arcade.high.starlane=HOST.high()||0;const pr=HOST.profile()||{};st.pilot={name:pr.name||'Commander',band:pr.band||'11-12'};if(['easy','normal','hard'].includes(pr.difficulty))st.pilot.diff=pr.difficulty;else if(!st.arcade.saves.starlane)st.pilot.diff='easy';}catch(e){}}
 window.stats=st;
-window.save=function(){if(HOST){try{HOST.saveSave(window.stats.arcade.saves.starlane);}catch(e){}return;}try{localStorage.setItem(KEY,JSON.stringify(window.stats));}catch(e){}};
+window.save=function(){if(HOST){try{HOST.saveSave(window.stats.arcade.saves.starlane);}catch(e){}return;}try{localStorage.setItem(SKEY,JSON.stringify(window.stats));}catch(e){}};
 window.get=id=>document.getElementById(id);
 window.esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 window.toast=function(m){let t=document.getElementById('slToast');if(!t){t=document.createElement('div');t.id='slToast';document.body.appendChild(t);}t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600);};
@@ -34,7 +48,11 @@ const BANDS=[['7-8','Ages 7–8','young'],['9-10','Ages 9–10','young'],['11-12
 const bandIndex=()=>{const b=window.stats.pilot&&window.stats.pilot.band;const i=BANDS.findIndex(x=>x[0]===b);return i<0?2:i;};
 window.STARLANE_LEVEL=()=>{const i=bandIndex();return i<4?i:(/adult|ce13/.test(BANDS[i][0])?3:2);};
 // where the maths comes from: the built-in pack, the adult set, or ApolloMaths' exam engine (in a hidden frame), falling back to the pack
-function questionSource(){if(HOST)return;const b=BANDS[bandIndex()][0],SQ=window.StarlaneQuestions;SQ.get=null;SQ.themedShare=.5;if(window.__packBank)window.bank=window.__packBank;
+// question banks (since v29): the current pilot's bank answers first, by its mode; anything it can't answer falls
+// through to the usual source. Never used inside ApolloMaths.
+function questionSource(){questionSource0();if(HOST||!window.StarlaneBanks||!StarlaneBanks.active())return;const SQ=window.StarlaneQuestions,base=SQ.get,lv=BANDS[bandIndex()][2];
+ SQ.get=(kind,ctx)=>{if(kind!=='trend'){try{const q=StarlaneBanks.forMaths(StarlaneBanks.pick(['academy','cup'].includes(kind)?'academy':'quick',lv));if(q)return q;}catch(e){}}return base?base(kind,ctx):null;};}
+function questionSource0(){if(HOST)return;const b=BANDS[bandIndex()][0],SQ=window.StarlaneQuestions;SQ.get=null;SQ.themedShare=.5;if(window.__packBank)window.bank=window.__packBank;
  if(b==='adult'&&window.ADULT_BANK){window.__packBank=window.__packBank||window.bank;window.bank=window.ADULT_BANK;SQ.themedShare=.35;return;}
  if(b.startsWith('x-')){const exam=b.slice(2);let f=document.getElementById('slEngine');if(!f){f=document.createElement('iframe');f.id='slEngine';f.title='Question engine';f.style.cssText='position:absolute;width:1px;height:1px;left:-9999px;border:0';f.src=new URL('../ApolloMaths/engine.html',location.href).href;document.body.appendChild(f);}
   SQ.get=(kind)=>{try{const E=f.contentWindow&&f.contentWindow.Engine;return E&&E.ready?E.ask(kind,exam,playerName()):null;}catch(e){return null;}};}}
@@ -56,9 +74,14 @@ if(/[?&]cheats=/.test(location.search)){try{history.replaceState(null,'',locatio
 window.StarlaneSite.probe=n=>{const SQ=window.StarlaneQuestions,out=[],kinds=['fuel','trade','hyper','repair','dock'];for(let i=0;i<n*20&&out.length<n;i++){const q=SQ&&typeof SQ.get==='function'?SQ.get(kinds[i%kinds.length],{}):null;if(q)out.push({q:q.q,ans:q.ans,u:q.u||'',exam:q.exam||null,topic:q.topic||null});}return{hosted:!!HOST,socket:!!(SQ&&typeof SQ.get==='function'),questions:out};};
 
 /* ---------- the launch screen ---------- */
-function launchUI(){try{const v=window.STARLANE_VERSION;if(v&&get('slVer'))get('slVer').textContent=`· Version ${v.v} (${v.date})`;}catch(e){}const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';get('pilotDiff').value=diffOf();
+function launchUI(){pilotPicker();try{const v=window.STARLANE_VERSION;if(v&&get('slVer'))get('slVer').textContent=`· Version ${v.v} (${v.date})`;}catch(e){}const p=window.stats.pilot;get('pilotName').value=p?p.name:'';const sel=get('pilotBand');sel.innerHTML=BANDS.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');sel.value=p?p.band:'11-12';get('pilotDiff').value=diffOf();
  get('pilotHello').textContent=p?`Welcome back, Commander ${p.name}.`:'New pilot — register below, then launch.';}
-function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value,diff:get('pilotDiff').value};window.save();launchUI();}
+function savePilot(){const n=(get('pilotName').value||'').trim().slice(0,18)||'Commander';window.stats.pilot={name:n,band:get('pilotBand').value,diff:get('pilotDiff').value};window.save();if(PIL){const p=PIL.list.find(p=>p.id===PIL.cur);if(p&&p.name!==n){p.name=n;pilSave();}}launchUI();}
+// the pilot picker: switching pilots reloads the page with that pilot's own storage
+function pilotPicker(){const sel=get('pilotPick'),nb=get('pilotNew');if(!sel)return;if(!PIL){sel.closest('.sl-pilots').hidden=true;return;}
+ sel.innerHTML=PIL.list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||'New pilot')}</option>`).join('');sel.value=PIL.cur;
+ sel.onchange=()=>{if(sel.value===PIL.cur)return;StarlanePilots.switchTo(sel.value);location.reload();};
+ nb.onclick=()=>{const n=(window.prompt('Name of the new pilot?')||'').trim();if(!n)return;try{window.save();}catch(e){}const id=StarlanePilots.add(n);PIL.cur=id;pilSave();try{localStorage.setItem(pkey(id),JSON.stringify(Object.assign(fresh(),{pilot:{name:n.slice(0,18),band:'11-12',diff:'normal'}})));}catch(e){}location.reload();};}
 let watching=0;
 function backToLaunch(){clearInterval(watching);const d=get('arcade');if(HOST){let sc=0;try{sc=(Arcade.status&&Arcade.status().score)||0;}catch(e){}try{if(d.open)Arcade.close();}catch(e){}try{HOST.exit({score:sc});}catch(e){}return;}try{if(d.open)Arcade.close();}catch(e){}d.classList.remove('sl-booting');launchUI();}
 window.StarlaneSite.questionSource=questionSource;

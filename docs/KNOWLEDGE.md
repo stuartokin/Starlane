@@ -212,6 +212,30 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v29` (question banks — guide in `docs/QUESTION-BANKS.md`):**
+- **Files:** `js/qbank.js` (`StarlaneBanks`: contract v1, validator, safe template formulas, storage, `pick`,
+  `forMaths`, `slots`), `js/admin-lock.js` (`StarlaneAdmin`), `banks.html` + `js/banks-page.js` (the grown-ups'
+  page), `tools/set_admin_code.py`. `index.html` loads `qbank.js`; `banks.html` loads the adventures (for slots),
+  `qbank.js`, `admin-lock.js` and `banks-page.js`.
+- **Pilots on a device** (`site.js`): `starlane-pilots-v1` = `{cur, n, list:[{id,name}]}`; pilot `p1` keeps
+  `starlane-standalone-v1`, others use `starlane-standalone-v1:<id>`. `StarlanePilots` (list, cur, add, switchTo,
+  remove, rename, read). Switching reloads the page. Not used inside ApolloMaths.
+- **Admin lock:** starter CHECK = SHA-256(PBKDF2(password, `starlane-admin-v1`, 200,000)); a device's own password
+  is stored as `{salt, check}` in `starlane-admin-device`, and once set the starter no longer opens the page there.
+  `forgot(starter)` removes it and calls `StarlaneBanks.resetAllToBuiltIn()`. The tab stays unlocked with the derived
+  key (`starlane-admin-ok`), checked against the current CHECK.
+- **Storage:** `starlane-banks-v1` = `{banks:{id:bank+{id,added,source,reviewed,second}}, pilots:{pid:{bank,mode}}}`;
+  the Gemini key in `starlane-gemini-key` (device only, sent only to Google in the `x-goog-api-key` header).
+- **Game hooks:** `site.js` `questionSource()` wraps `StarlaneQuestions.get` so the pilot's bank answers first
+  (`academy`/`cup` → moment `academy`, other kinds except `trend` → `quick`), falling through to the usual source.
+  `raceQ()` asks for moment `gates`; `advResolve` asks for moment `adventure` with `slot = id/sceneIndex`. Mixed
+  mode skips the bank half the time; `active()` returns null when `StarlaneSite.hosted`.
+- **"Pick several"** in the maths screen: `mathQ.multi`, `ansSet`, `sel` (a Set); options toggle; ✔ CHECK calls
+  `pickMath` with the sorted picks joined by “ + ” (`ans` is built the same way). `mathQ.src` shows the bank name.
+- **Story-bound adventure slots** (`STORY` in `qbank.js`, checked by hand): lights/2 parallel, frozen/3 heat,
+  storm/2 shadow, medbay/3 tissue, shadows/3 reflect, rust/2 paint, junk/3 recycl(e), timewarp/6 gravity.
+- `button()` wraps two-line labels for bank answers too (`wrap:true`).
+
 **Since `starlane-v27` (adventures by level):**
 - `js/starlane-adv-levels.js` (loaded after `starlane-adventures.js`, in `sw.js` FILES) defines
   `window.StarAdvLevels[advId][sceneIndex] = {young, mid, older, adult}`; each level is `{q, options, answer,

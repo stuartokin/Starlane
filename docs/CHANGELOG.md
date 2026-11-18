@@ -2,6 +2,28 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v29 — prepared 18 November 2026 (publish once the admin password is set)
+**Question banks** (Stuart’s design, 18 Nov). Guide: `docs/QUESTION-BANKS.md`.
+- **📚 Question banks (grown-ups)** on the launch page opens a separate page, locked by an **admin password**:
+  a starter password Stuart gives out (only a scrambled check is in the repo), which a family can replace with their
+  own on each device. “Forgot your password?” takes the starter password and puts every pilot back on built-in
+  questions.
+- **Pilots on this device:** the launch page can hold several pilots (➕ New pilot), each with their own name,
+  level and saved game. The first pilot keeps the existing save.
+- **Banks:** paste, upload or open a 🔗 link; or **✨ make one with Gemini** using your own key (kept on the device;
+  a **second opinion** drops any question where Gemini disagrees with itself). The **bank kit** builds a prompt for
+  any AI, with an example bank and the list of adventure puzzle slots.
+- **Every question is checked** (one right answer among different options, an explanation, lengths that fit,
+  suitable words, “Apollo” only in Moon history, templates re-solved 200 times); bad ones are dropped one by one
+  with a reason. **👀 Review** (optional) lets a grown-up remove questions.
+- **Per pilot:** a bank and a mode — Built-in, Mixed (about half) or Only this bank — with the built-in questions
+  always filling any gap. Bank questions reach the quick puzzles, the Academy and Navigator’s Cup (including new
+  **“pick several”** questions with ✔ CHECK), race maths gates and adventure puzzle slots (8 story-bound slots must
+  keep the answer the story needs). Questions from a bank show “📚 Custom question set”.
+- **Inside ApolloMaths, banks are never used** — the child’s plan decides the questions, as before.
+- Tests: new `banks` suite (29 checks: validator, lock and passwords, pilots, import/review/link/delete, every mode
+  and the fallback, “pick several”, gates, adventure slots, ApolloMaths, Gemini through a stand-in server).
+
 ## starlane-v28 — 18 November 2026
 Adventures by level, batches 2–5: **all 50 adventures done.**
 - Every one of the 135 adventure puzzles now has its own question at each level: younger (7–9), middle
