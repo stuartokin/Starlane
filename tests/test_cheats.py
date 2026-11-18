@@ -87,9 +87,9 @@ async def main(p):
     await pg.evaluate(f"{D}.btns.find(b=>b.label&&b.label.startsWith('🚀 Emergency escape')).fn()"); await pg.wait_for_timeout(200)
     R.check(await pg.evaluate(f"{D}.CH('escape')") is True, 'test mode ✨ CHEATS: the escape switch turns it on')
     await pg.evaluate(f"{D}.set('overlay',null)"); await pg.wait_for_timeout(300)
-    # nobody about: clear the sky and keep new arrivals away while the 10 s "recently hit" window runs out
-    await pg.evaluate(f"(()=>{{const d={D};d.test.ch.peace=true;d.ships.forEach(s=>{{s.dead=true;}});}})()"); await pg.wait_for_timeout(11000)
-    R.check(await pg.evaluate(f"!{D}.underAttack()&&!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button is hidden when nobody is attacking')
+    # nobody about (ship stopped and invincible: after the escape burst it could fly into something): clear the sky and keep new arrivals away while the 10 s "recently hit" window runs out
+    await pg.evaluate(f"(()=>{{const d={D};d.test.ch.peace=true;d.test.god=true;d.P.speed=0;d.P.throttle=0;d.ships.forEach(s=>{{s.dead=true;}});}})()"); await pg.wait_for_timeout(11000)
+    R.check(await pg.evaluate(f"!{D}.underAttack()&&!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button is hidden when nobody is attacking', await pg.evaluate(f"[{D}.underAttack(),{D}.allBtns.filter(b=>b.label&&b.label.startsWith('🚀')).map(b=>b.label),{D}.ships.filter(s=>!s.dead&&s.target==='player').map(s=>s.type),{D}.overlay,{D}.mode]"))
     await pg.evaluate(f"{D}.hurtDbg(1)"); await pg.wait_for_timeout(400)
     R.check(await pg.evaluate(f"!!{D}.allBtns.find(b=>b.label&&b.label.startsWith('🚀'))"), 'the 🚀 ESCAPE button shows when you are attacked')
     # leave test mode: normal rules again
