@@ -39,6 +39,8 @@ time once. Read before making changes.
   …chromium_headless_shell-NNNN"). Install the version the global Node Playwright reports
   (`node -e "console.log(require('playwright/package.json').version)"`), e.g. `pip install playwright==1.63.0`.
 
+- **Known flake (18 Nov 2026, v30):** cockpit "Simple: FAST opens the throttle; SLOW brings it down to docking
+  speed" failed once in a full run ([0.91, 130]) and passed on two reruns. If it recurs, give SLOW longer to settle.
 - **Tests must click buttons by what they are, not by position.** Adding a 👁 button inside the admin lock form
   made `#bkLockForm button` hit the eye instead of Unlock. Use `button[type=submit]` or an id.
 
