@@ -158,7 +158,7 @@ async def walk(p, R, dev, style, full=True):
         # --- switching display style mid-flight and back ---
         if full:
             for s2 in [x for x in STYLES if x != style] + [style]:
-                await W.pause(); await W.ev(f"{D}.set('menuTab','display');{D}.C.opt.style={s2!r}"); await W.wait(500)
+                await W.pause(); await W.ev(f"Arcade._game()._autoRetro=true;{D}.set('menuTab','display');{D}.C.opt.style={s2!r}"); await W.wait(500)   # _autoRetro: under test load the slow-3D fallback could switch back to Retro
                 await W.key('Escape', 700); await W.expect(f'switch to {s2} in flight: still flying, nothing else changed', mode='flight', ov=None, style=s2, cam='cockpit')
         # battle display on and off
         await W.key('F3', 300); await W.key('F3', 300); await W.expect('battle display on/off (F3) leaves you flying', mode='flight', ov=None)

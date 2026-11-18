@@ -158,6 +158,9 @@ time once. Read before making changes.
 21w9. **Never put `//` comments in the middle of a long one-line function.** The game code is written as long
     lines; a `// note` added mid-line silently commented out the rest (`manualTurn is not defined`). Put notes at
     the very end of a line, or on their own line.
+21w10. **A flaky check can be the game working as designed.** "Switch to Modern in flight" failed now and then on the
+    phone: under test load Modern 3D ran slowly for 8 s, so the game's own fallback switched back to Retro
+    ("MODERN 3D WAS TOO SLOW HERE"). The test now sets `G._autoRetro` first.
 21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
     `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest
