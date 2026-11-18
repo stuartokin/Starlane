@@ -2,6 +2,28 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v26 — 18 November 2026
+From Stuart's list (18 Nov).
+- **Five new kinds of station race**, on the MISSIONS board alongside the gate race:
+  - 🪨 **Asteroid slalom**: weave between rocks; each rock hit adds 3 s.
+  - 🎯 **Target run**: each target shot on the way takes 2 s off.
+  - 🔢 **Maths gates**: at each of 6 checkpoints, fly through the gate showing the right answer (questions at the
+    pilot's level, from 7 + 5 to 15% of 240); a wrong gate adds 5 s.
+  - 🤖 **Rival race**: a rival pilot flies the course; get round first.
+  - 💣 **Minefield dash**: each mine hit adds 3 s; the E.C.M. now clears race mines nearby.
+
+  Best times for each kind are in the Career record (🏁 RACES), and winning all six earns a new medal. There is a
+  new 🏁 **Races** tour in the Pilot path.
+- **Tours pay 100 Cr the first time** you finish each one, into your own game (not again, and not for a new
+  commander, who keeps the record of finished tours).
+- **Abandoning a mission** you have just taken puts it back on the station's board (same station, same day).
+- **No more docking advice just after launch:** "match the station's spin", "slow down to dock" and station
+  control's "Approach granted" now wait until you are heading back towards the station. On touch screens the tip
+  says "tap MATCH SPIN".
+- Tests: new `races` suite (all six kinds flown, penalties, bonuses, rival, E.C.M., best times, medal, board,
+  1,200 maths-gate questions re-solved); gameplay checks for abandon and the launch tips; tours checks for the
+  prize. The transitions test no longer trips the game's slow-3D fallback.
+
 ## starlane-v25 — 18 November 2026
 Training, part 3: **new tours and three paths.**
 - **7 new tours** (24 in all): 🕹️ Your controls (touch layouts or keys, flight assists), 🧮 Maths puzzles (answer

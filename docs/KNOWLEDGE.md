@@ -212,6 +212,23 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v26`:**
+- **Races.** `RACE_KINDS` / `RACE_ORDER` (`ring`, `slalom`, `targets`, `maths`, `rival`, `mines`); a race mission
+  has `kind` (old saves: `ring`). `setupRace()` builds the ring of gates (6 checkpoints for maths) and the extras:
+  slalom rocks and target asteroids (`raceTgt`) are still asteroids, mines are `mine` with `raceMine`, the rival
+  is a `quicksilver` (`raceRival`) moved along the gates at course length / par (at least 10 s). `race={m,kind,
+  gates,next,t0,pen,bonus,objs,rival}`; `raceTime()` = elapsed + pen − bonus (never below 0). Hooks:
+  `raceHurt(collision)` from `hurt` (slalom rocks), `raceKill(sh,byPlayer)` from `kill` (targets; mines shot or
+  cleared don't count), `ecm()` clears race mines within 2.5 km. A loss or "too slow" calls `setupRace()` again.
+  Wins store `C.raceBest[kind]`, `C.raceWon[kind]`; all six → medal `allraces`. `raceQ()` makes the maths-gate
+  questions (young / mid / older / adult from `advAge` and `ADULT_BANK`).
+- **Tour prize:** `TOUR_PRIZE` (100 Cr) added to `tour.real.C` the first time a tour is finished (not in test
+  mode). `freshC()` makes a new commander keeping difficulty and `toursDone`.
+- **Abandon:** `accept` stores `from:{sys,day,offer}` for board missions; `abandonMission(m)` puts the offer back
+  on `C.board` when docked at that station on the same day.
+- **Launch tips:** the spin / slow-down tips and station control's approach call need `!departing()` and the
+  ship facing the station.
+
 **Since `starlane-v25` (new tours and paths):**
 - 24 tours. `TOUR_PATHS` (Beginner / Pilot / Expert) sets the order; `TOURS` is sorted to match, so ▶ NEXT TOUR
   follows the paths. `renderTours` draws three columns, ✓ from `C.toursDone` (written into `tour.real.C` when a

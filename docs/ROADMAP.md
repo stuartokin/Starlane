@@ -203,6 +203,12 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   Proposal: hands-on "your turn" steps reusing each step's `until` check; device-aware wording and a touch-button
   display in place of the keyboard; fix guided flight for Simple; new tours for the gaps, grouped into
   Beginner / Pilot / Expert paths with ticks for finished tours; a `tours` test suite.
+- **18 Nov 2026 — Stuart's list** (`starlane-v26`). Decisions (Stuart, 18 Nov): tour prize 100 Cr, once per
+  profile; all five new races; abandoned missions go back on the board; no docking advice after launch.
+  **Adventures by level — next (not started):** each of the 135 adventure puzzles gets a genuinely different
+  question for young / mid / older / **adult** (adult = clever adult, no specialist knowledge), numbers generated so
+  replays differ, every answer re-solved and a new `adventures-levels` test. Stuart agreed: 5 batches of 10
+  adventures, one release each.
 - **Cut-scene ideas for Stuart (not built):**
   - an escape-capsule scene (it reuses "DOCKING…" today);
   - a galactic-jump scene (none today);
