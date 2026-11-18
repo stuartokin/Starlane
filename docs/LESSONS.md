@@ -148,6 +148,10 @@ time once. Read before making changes.
 21w6. **A tutorial step that can't finish stalls silently.** The lasers tour aimed with the mouse to 2–3°, but
     "aimed" needed under 2.9°, so the ship rammed the pirate and the step waited for an aim that could never come.
     Give steps a way out (target gone ⇒ done) and test every tour to the end.
+21w7. **Re-run a lone failure before chasing it, but chase it if it repeats.** On 18 Nov, single checks in display,
+    cockpit and transitions failed once in a full run and passed alone (timing under load). The cheats escape-button
+    check failed every time: the ship, flung by the emergency escape, crashed during an 11 s wait, which reopened
+    the test screen. The fix was in the test (stop the ship, invincible), found by printing overlay and mode.
 21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
     `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest
