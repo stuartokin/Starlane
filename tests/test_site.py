@@ -10,7 +10,7 @@ async def main(p):
     R.check(await pg.evaluate("playerName()") == 'Rig Tester', 'pilot name reaches the game')
     R.check(await pg.evaluate("window.STARLANE_LEVEL()") == 2, 'pilot level 11–12 → question band 2')
     keys = await pg.evaluate("Object.keys(localStorage)")
-    R.check(keys == ['starlane-standalone-v1'], 'saves only under starlane-standalone-v1', keys)
+    R.check(keys in (['starlane-standalone-v1'], ['starlane-pilots-v1', 'starlane-standalone-v1']), 'saves only under starlane-standalone-v1 (and, since v29, the list of pilots on this device)', keys)
     ver = await pg.evaluate("(document.getElementById('slVer')||{}).textContent||''")
     R.check(ver.startswith('· Version v'), 'the launch page shows the version', ver)
     q = await pg.evaluate("Arcade._game()._dbg.makeMathQDbg('trade')")
