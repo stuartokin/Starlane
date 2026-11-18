@@ -212,6 +212,19 @@ the right stick to pitch and roll.
 **Defaults for phones:** `battle:'on'` (also by the `optVer` 5 migration) and Simple. Tablets get Simple, with
 the Twin-sticks tip once (`C.opt.twinTip`).
 
+**Since `starlane-v23` (tours and guided flight on touch):**
+- `tctl()` describes the touch controls in use: side controls (`TD.on`, or `G._tdSeen` once they have shown on this
+  device) by layout (`simple` auto speed, `twin`, `classic`), otherwise the in-picture joystick and SPEED slider.
+  `CT()` (touch branch), the intro slide and `TUTF` (guided flight) use it.
+- `kx(id)`: the key name, or on touch the console button (`TNAME`; on phones "⋯ MORE, then …" for keys not in
+  `PHONE_KEYS`). `TOUCHT()` = `SCHEME()==='touch'`. Tour `say` can be a function, evaluated at the step's start.
+- On touch, `simKey` records `tour.tapAt` from `tourTapRect(k)`: docked tabs and market/shipyard/missions buttons
+  by label, flight console buttons from `G._conR` (filled by `consoleKeys`) or `phone <id>` / `more <id>` labels.
+  `drawTourUI` draws the 👆 finger, and `drawTouchPad` (joystick, SPEED, FIRE) in place of `drawKeyboard`.
+- Steps can `skip:()=>TOUCHT()` (radar range, sub-system aiming, right-drag look-around).
+- `tour.said` lists what Nova said. Test hooks: `tourQuick(true)` (don't wait for speech), `tutTexts()`,
+  `setTdSeen(v)`. `aimed()` (tours only) allows 0.07 rad.
+
 **Since `starlane-v22` (test mode and the cheat page):**
 - `testRow` items are `[label, fn, on, go]`. `go` buttons start play and close the test screen; `button()` draws a
   green ▶ for `b.go`, and `B()` records `go:true` in `btns` (the `testmenu` suite checks every button against it).

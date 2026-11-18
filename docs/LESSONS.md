@@ -142,6 +142,12 @@ time once. Read before making changes.
     and records where it leaves you (`testmenu`) found all of them in one run. Mark buttons that leave a screen.
 21w3. **Shared CSS classes leak into overlays.** The code box's Cancel used `.ghost`, which the arcade styles as white,
     so it rendered white on white. Scope overlay buttons with an ID selector, and test computed colours.
+21w5. **Teach with the controls the player has.** The tours and guided flight were written for a keyboard and the
+    old touch slider; after v17 changed touch controls, nothing caught the stale wording. When controls change,
+    grep the tutorials, help and intro text, and the `tours` suite now checks touch wording.
+21w6. **A tutorial step that can't finish stalls silently.** The lasers tour aimed with the mouse to 2–3°, but
+    "aimed" needed under 2.9°, so the ship rammed the pirate and the step waited for an aim that could never come.
+    Give steps a way out (target gone ⇒ done) and test every tour to the end.
 21w4. **`const` globals aren't on `window`.** `Arcade` is `const Arcade=…`, so another tab can't reach it through
     `opener.Arcade`. Expose what other windows need explicitly (`window.StarlaneGame`).
 21z. **A fresh cloud session has no Python Playwright.** `pip install -r tests/requirements.txt` pulls the newest

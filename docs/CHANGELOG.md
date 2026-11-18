@@ -2,6 +2,20 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## starlane-v23 — 18 November 2026
+Training, part 1 (from the 18 Nov training review): tours and guided flight speak touch.
+- **Guided flight on touch screens** now matches the controls you have: 🕹 Simple ("tap FAST", "the joystick on
+  the left side"), 🎮 Twin sticks ("push the left stick up") or ✈️ Classic and the in-picture controls ("slide
+  SPEED up", "drag on the left of the picture"). It used to describe the old speed slider for everyone. The intro
+  and help pages use the same wording.
+- **Tours on touch screens** talk about taps and buttons (LAUNCH, BUY 1, JUMP, MAP, HYPER, ECM, MATCH SPIN…),
+  never keys or the mouse. A 👆 finger shows which button Nova taps, and a joystick / SPEED / FIRE panel replaces
+  the keyboard picture (👆 CONTROLS: ON/OFF). Steps that only make sense with a keyboard or mouse are skipped.
+- **Steadier tours:** "aimed" allows about 4° (mouse steering settled 2–3° off), aim steps end if the target is
+  already gone, and the ship slows while lining up a pirate, so "Lasers and targets" no longer stalls.
+- Tests: new `tours` suite — every tour played to the end on a laptop and a Fold-sized touch screen, no step may
+  time out, Nova never mentions keys on touch, the finger and panel show, guided flight wording per layout.
+
 ## starlane-v22 — 18 November 2026
 From Stuart's review of test mode and the cheat page ("buttons that drop you out to the game").
 - **Test-mode code box:** the Cancel button was white on white (the arcade's `.ghost` style); it is now readable.
