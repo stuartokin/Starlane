@@ -5,7 +5,8 @@
 // numbers change every time it is played. A level left out falls back to the original scene in
 // starlane-adventures.js (young/mid/older wording, shared options); adult falls back to older.
 // Levels: young 7–9, mid 10–12, older 13–14, adult = a clever adult, no specialist knowledge (any rule needed is
-// given in the question). Every answer here was solved twice (see tests/test_advlevels.py).
+// given in the question). Every answer here was solved twice: by its author and by an independent checker who did not see the answers
+// (orderings that could fairly go two ways were rewritten); generated puzzles are re-solved in tests/test_advlevels.py.
 'use strict';
 window.StarAdvLevels = (() => {
  const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1)), pick = a => a[R(0, a.length - 1)];
@@ -50,10 +51,10 @@ window.StarAdvLevels = (() => {
   2: {
    young: {q: 'Put the repair steps in a SAFE order.', items: ['Switch the power off', 'Join the wire', 'Close the panel', 'Switch the power on'],
     explain: 'Power off first, so nobody gets a shock. Only switch it back on when the panel is closed.'},
-   older: {q: 'Order the repair steps safely.', items: ['Switch the power off', 'Check it is off with the tester', 'Open the radio panel', 'Join the wire with copper', 'Wrap the join in insulating tape', 'Close the panel', 'Switch the power on'],
-    explain: 'Switch off, then CHECK it is really off before touching anything. Insulate the join so no bare metal shows, and only switch on when everything is closed up.'},
-   adult: {q: 'Order the repair steps safely and properly.', items: ['Switch the power off', 'Check it is off with the tester', 'Open the radio panel', 'Join the wire with copper', 'Wrap the join in insulating tape', 'Close the panel', 'Switch the power on', 'Test the radio'],
-    explain: 'Isolate, prove it is dead, repair, insulate, close up, re-energise — and finally test that the repair works.'}},
+   older: {q: 'Order the repair steps safely.', items: ['Switch the power off', 'Open the radio panel', 'Test the wires are dead with the tester', 'Join the wire with copper', 'Wrap the join in insulating tape', 'Close the panel', 'Switch the power on'],
+    explain: 'Switch off, open up, then TEST that the wires really are dead before touching them. Insulate the join so no bare metal shows, and only switch on when everything is closed up.'},
+   adult: {q: 'Order the repair steps safely and properly.', items: ['Switch the power off', 'Open the radio panel', 'Test the wires are dead with the tester', 'Join the wire with copper', 'Wrap the join in insulating tape', 'Close the panel', 'Switch the power on', 'Test the radio'],
+    explain: 'Isolate, open up, prove it is dead, repair, insulate, close up, re-energise — and finally test that the repair works.'}},
   3: {
    mid: {q: 'The circuit is a complete loop again. What pushes the current round it?', options: ['The battery', 'The bulb', 'The plastic coat', 'The panel'], answer: 0,
     explain: 'The battery is the power source: it pushes the current round the loop. The bulb uses the energy.'},
@@ -224,8 +225,8 @@ window.StarAdvLevels = (() => {
     explain: 'You have to read the code and check it BEFORE the door opens.'},
    older: {q: 'Sequence the lock’s algorithm correctly.', items: ['Wake up the lock', 'Read the code', 'Compare it with the stored code', 'Unlock the bolt', 'Open the door', 'Lock it again after use'],
     explain: 'Input (read), process (compare), then output (unlock, open) — and finally make it secure again.'},
-   adult: {q: 'Sequence the lock’s algorithm correctly.', items: ['Wake up the lock', 'Read the code', 'Compare it with the stored code', 'Write the attempt in the log', 'Unlock the bolt', 'Open the door', 'Lock it again after use'],
-    explain: 'Read and check the input, record the attempt (so break-in attempts can be spotted), act on it, then return to a secure state.'}},
+   adult: {q: 'Sequence the lock’s algorithm correctly.', items: ['Wake up the lock', 'Read the code', 'Compare it with the stored code', 'Unlock the bolt', 'Open the door', 'Close the door', 'Lock the bolt again'],
+    explain: 'Input (read), process (compare), output (unlock, open) — and the door must be closed before the bolt can lock it again, returning to a secure state.'}},
   3: {
    young: {q: 'The robot starts facing forwards. “REPEAT 2 times: turn right a quarter turn.” Which way is it facing now?', options: ['Backwards', 'Forwards', 'Left', 'Right'], answer: 0,
     explain: 'Two quarter turns make a half turn, so it faces backwards.'},
