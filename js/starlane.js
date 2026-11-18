@@ -1436,7 +1436,7 @@ function makeStarlane(env){
    {say:'Out of fuel and far from a station? With fuel scoops you can skim a star. Fly close, and fast — watch the FU gauge, your fuel, climb.',do:()=>{const sn=suns[0];if(sn){const d=norm(sub(P.pos,sn.pos));P.pos=add(sn.pos,mul(d,sn.R*1.9));const side=norm(cross(d,Math.abs(d[1])<.9?V(0,1,0):V(1,0,0)));P.o.f=side;P.o.u=d;P.o.r=cross(side,d);ortho(P.o);P.throttle=.7;}},keys:()=>[P.speed<180?thrK():''].filter(Boolean),dur:6},
    {say:'But CT, the cabin temperature, rises too. Stay too long and you start losing energy — so dip in, then get out.',keys:()=>[P.speed<180?thrK():''].filter(Boolean),dur:4},
    {say:'Near a planet, AL — your altitude — shows how high you are. Reach zero and you crash! You cannot land, but you can survey planets by flying past slowly.',do:()=>{if(planet){const d=norm(sub(P.pos,planet.pos));P.pos=add(planet.pos,mul(d,planet.R*1.25));P.o.f=norm(cross(d,V(0,1,0)));P.o.u=d;P.o.r=cross(P.o.f,d);ortho(P.o);P.throttle=.2;}},dur:5}]},
-  {id:'dock',icon:'🛬',title:'Docking',desc:'A real approach, levelling the slot, and the docking computer.',steps:[launchStep(),
+  {id:'dock',icon:'🛬',title:'Docking',desc:'The approach, the slot and the docking computer.',steps:[launchStep(),
    {say:'Docking is the trickiest skill in the game, so let’s take it slowly. We are off to one side of the station — just like when you arrive from hyperspace.',do:()=>{ships.forEach(x=>{if(x!==station)x.dead=true;});const s0=station;P.pos=add(add(add(s0.pos,mul(s0.o.f,2600)),mul(s0.o.r,2800)),mul(s0.o.u,500));const f=norm(sub(s0.pos,P.pos)),side=norm(cross(f,s0.o.u));P.o={f:norm(add(f,mul(side,.9))),u:s0.o.u.slice(),r:V()};P.o.r=norm(cross(P.o.u,P.o.f));ortho(P.o);P.speed=0;P.throttle=0;}},
    {say:'The slot is on the front of the station. First we fly to a point straight out in front of it — the start of the docking corridor.',auto:true,aim:()=>station&&add(station.pos,mul(station.o.f,2300)),keys:()=>P.throttle<.45?[thrK()]:[],until:()=>station&&len(sub(P.pos,add(station.pos,mul(station.o.f,2300))))<420,timeout:80},
    {say:'Good. Now slow right down, and turn to face the slot.',auto:true,aim:()=>station&&station.pos,keys:()=>P.speed>15?[slwK()]:[],until:()=>aimed(station&&station.pos)&&P.speed<25,timeout:40},
@@ -1446,14 +1446,14 @@ function makeStarlane(env){
    {say:'Now the easy way. A docking computer does all of that for you. Let’s launch again and try it.',do:()=>{C.equip.dock=1;},tap:['l'],until:()=>mode==='flight',timeout:45,you:()=>mode==='flight'},
    {say:()=>`${TOUCHT()?'Tap':'Press'} ${kx('dock')} near a station and the computer takes over. ${TOUCHT()?'Tap':'Press'} ${kx('time')} to speed things up while it works.`,tap:['c','t','t'],until:()=>mode!=='flight',timeout:150,you:()=>dockComp||mode!=='flight'},
    {say:'Home again. The docking computer costs fifteen hundred credits, at stations with tech level nine or more.',until:()=>mode==='docked',timeout:40}]},
-  {id:'cockpit',icon:'🎛️',title:'Your cockpit',desc:'The screens, looking around, side windows and the Mission Log.',steps:[launchStep(),
+  {id:'cockpit',icon:'🎛️',title:'Your cockpit',desc:'Screens, looking around, windows, the Mission Log.',steps:[launchStep(),
    {say:'Let’s look around the cockpit. Along the console: ship systems on the left, the radar in the middle, and your flight instruments on the right.'},
    {say:'In the Modern cockpit, hold the right mouse button and drag to look around. Left…',skip:()=>!PIT3D()||TOUCHT(),look:t=>t<5?[1.3,.05]:null,dur:4},
    {say:'…right, and down at the console.',skip:()=>!PIT3D()||TOUCHT(),look:t=>t<2.5?[-1.3,0]:t<5?[0,-.6]:null,dur:5},
    {say:'The mirror at the top shows what is behind you, and the side windows show left and right.'},
    {say:()=>TOUCHT()?`Tap ${kx('missions')} for the Mission Log and ${kx('cargo')} for your hold. With ${kx('tips')} on, tapping any button also tells you what it does.`:`Press ${k1('missions')} for the Mission Log and ${k1('cargo')} for your hold. ${k1('tips')} turns hover help on and off — point at anything to learn what it does.`,tap:['k','k','i','i']},
    {say:()=>`${TOUCHT()?'':k1('mfd')+' shows or hides the small cockpit screens. '}And to make the cockpit your own, the shipyard’s PERSONAL tab sells fuzzy dice, a bobble-head alien, fairy lights and more.`}]},
-  {id:'seat',icon:'🪑',title:'Sitting in the station',desc:'Your cockpit on the pad, the pre-flight check and launching.',steps:[
+  {id:'seat',icon:'🪑',title:'Sitting in the station',desc:'The cockpit on the pad and the pre-flight check.',steps:[
    {say:'You can sit in your cockpit while still docked, and look out over the shuttle bay. On the LAUNCH tab, choose COCKPIT: FLIGHT CONTROLS.',do:()=>{tab='launch';},click:'FLIGHT CONTROLS'},
    {say:'Everything is where it is in flight. Your weapons are safe while you are docked, so nothing can fire. Let’s look around…',tap:['ArrowLeft','ArrowLeft','ArrowLeft','ArrowRight','ArrowRight','ArrowRight'],you:()=>Math.abs(headYaw-tour.y0.yaw)>.3},
    {say:'The PRE-FLIGHT view gives you a checklist: fuel, mission, damage and missiles. If anything is amber, it warns you before you launch.',click:'PRE-FLIGHT'},
@@ -1475,14 +1475,66 @@ function makeStarlane(env){
    {say:()=>'Type a name in the box and '+(TOUCHT()?'tap SAVE.':'press Enter.')+' In this practice game nothing is really saved, but in your own game it is.'},
    {say:'Your saves are listed below, with the day, the place and your credits. Opening one keeps your current game as “Where I was”, so you can never lose your place.',click:'BACK'},
    {say:'The tabs along the top hold the settings: DISPLAY for the style and graphics, SOUND for music and Nova’s voice, and CONTROLS to change any key.',click:'DISPLAY'},
-   {say:()=>TOUCHT()?'That’s it! Tap RESUME to carry on playing.':'That’s it! Press RESUME, or P again, to carry on playing.',do:()=>{overlay=null;}}]}];
+   {say:()=>TOUCHT()?'That’s it! Tap RESUME to carry on playing.':'That’s it! Press RESUME, or P again, to carry on playing.',do:()=>{overlay=null;}}]},
+  // ---- added 18 Nov 2026 (training review): the parts of the game that had no tour ----
+  {id:'controls',icon:'🕹️',title:'Your controls',desc:'Touch layouts, keys and the flight assists.',steps:[
+   {say:()=>TOUCHT()?'On a touch screen there are three ways to fly. Let’s look in the pause menu: tap MENU.':'You fly with the keyboard and mouse, and you can change any key. Let’s look in the pause menu: click MENU.',click:'MENU$',you:()=>overlay==='menu'},
+   {say:()=>`${TOUCHT()?'Tap':'Click'} CONTROLS.`,click:'^CONTROLS$',until:()=>menuTab==='controls'},
+   {skip:()=>!TOUCHT(),say:'TOUCH CONTROLS is where you choose how to fly.',click:'TOUCH CONTROLS',until:()=>menuTab==='touch'},
+   {skip:()=>!TOUCHT(),say:'Simple: one joystick steers and the ship picks its own speed — perfect to start with. Twin sticks: like flying a drone. Classic: a joystick, and a SPEED slider you set yourself.',dur:4},
+   {skip:()=>!TOUCHT(),say:'Twin sticks need a bigger screen, held sideways in full screen. You can change layout whenever you like.',do:()=>{menuTab='controls';}},
+   {skip:()=>TOUCHT(),say:'Every action is listed with its keys. Choose one, then press a new key to change it. RESET ALL KEYS puts them all back.',dur:3},
+   {say:()=>`FLIGHT ASSISTS are helpers: levelling the ship, aiming, turning to a target, docking help and more. ${TOUCHT()?'Tap':'Click'} it to have a look.`,click:'FLIGHT ASSISTS',until:()=>menuTab==='assist'},
+   {say:'Switch on the ones you like. They are kept separately for touch screens and for the mouse.',dur:2},
+   {say:()=>`That’s it. ${TOUCHT()?'Tap':'Press'} RESUME to carry on.`,do:()=>{overlay=null;}}]},
+  {id:'maths',icon:'🧮',title:'Maths puzzles',desc:'Puzzles pop up as you play: answer, learn, earn.',steps:[
+   {say:'Starlane is full of maths puzzles. They pop up when you buy fuel, trade, jump to another system, repair your ship and more. Get one right and you earn a bonus.'},
+   {say:()=>`Here is one. Read the question carefully, then ${TOUCHT()?'tap':'click'} the answer you think is right.`,do:()=>{openMath('fuel',()=>{});},
+    clickAt:()=>{const b=mathQ&&mathQ.picked==null&&(G._lastBtns||[]).find(x=>x.label&&x.label.replace(/^\d\)\s+/,'').startsWith(String(mathQ.ans)));return b?[b.x+b.w/2,b.y+b.h/2]:null;},until:()=>!!mathQ&&mathQ.picked!=null,you:()=>!!mathQ&&mathQ.picked!=null,timeout:40},
+   {say:()=>`Right or wrong, every answer is explained, so you learn how it works. ${TOUCHT()?'Tap':'Click'} CONTINUE when you are ready.`,click:'CONTINUE',until:()=>overlay!=='maths',you:()=>overlay!=='maths'},
+   {say:'The puzzles match your level, and get harder as you improve. Your Navigator rank shows how well you are doing.'},
+   {say:'Want more? The MISSIONS board has the Academy for practice, and the Navigator’s Cup: six questions on your trickiest topics in three minutes.',click:'^MISSIONS$'}]},
+  {id:'flyto',icon:'➡️',title:'Fly there',desc:'Tap a radar icon and the ship flies you there.',fly:true,setup:()=>{C.opt.assist.touch.fly=true;C.opt.assist.mouse.fly=true;},steps:[launchStep(),
+   {say:()=>`Everything on the radar is somewhere you can go. ${TOUCHT()?'Tap':'Click'} an icon on the radar to see what it is. Here, the planet.`,demo:()=>{if(planet)G._rinfo={o:planet,t:clock};},until:()=>!!G._rinfo||!!radarTgt,you:()=>!!G._rinfo||!!radarTgt,timeout:30},
+   {say:()=>`The card says what it is. TURN TO points you at it; FLY THERE flies you all the way. ${TOUCHT()?'Tap':'Click'} FLY THERE.`,click:'FLY THERE',until:()=>!!fly,you:()=>!!fly,timeout:30},
+   {say:'The ship turns, speeds up, uses the jump drive for long trips, and slows down and stops when it arrives. It even steers round rocks and moons.',dur:6},
+   {say:()=>`To take over at any time, ${TOUCHT()?'tap':'click'} STOP, or just steer.`,click:'STOP',until:()=>!fly,you:()=>!fly,timeout:25},
+   {say:()=>`A shortcut: ${TOUCHT()?'tap':'click'} the same radar icon twice to fly straight there. FLY THERE can be switched off in the flight assists.`}]},
+  {id:'view',icon:'🎛️',title:'Cockpit displays',desc:'VIEW: the 3D cockpit, the console or the clear view.',steps:[launchStep(),
+   {say:()=>`${kx('display')} changes the display. ${TOUCHT()?'Tap':'Press'} it to step through them: the 3D cockpit, the console cockpit and the clear view.`,tap:['F4','F4','F4'],you:()=>tour.yVw.size>=2},
+   {say:'The clear view is the battle display: big readouts round the edge and nothing in the way. Great for fights.',dur:3},
+   {skip:()=>TOUCHT(),say:'F3 switches the battle display on and off in any view.',tap:['F3','F3']},
+   {say:'Pick the one you like best. The game remembers it on each device.'}]},
+  {id:'adv',icon:'🗺️',title:'Adventures',desc:'Short stories with puzzles to solve.',steps:[
+   {say:'Adventures are short stories with puzzles to solve: a stowaway, frozen pipes, a comet chase and many more. When things are calm, Nova may offer you one.'},
+   {say:'You can say yes, or not now. The puzzles are at your level, and every answer is explained. Finish one for a reward.'},
+   {say:()=>`All your adventures are in the Adventure Log. ${TOUCHT()?'Tap':'Click'} MENU…`,click:'MENU$',you:()=>overlay==='menu'},
+   {say:'…then ADVENTURES.',click:'ADVENTURES',until:()=>menuTab==='adv'},
+   {say:'It shows every adventure you have met, and which ones you have finished.',dur:3},
+   {say:()=>`${TOUCHT()?'Tap':'Press'} RESUME to carry on.`,do:()=>{overlay=null;}}]},
+  {id:'ship',icon:'🎨',title:'Your ship and your record',desc:'Paint your ship, see your medals, choose difficulty.',steps:[
+   {say:'Make your ship your own! Go to the SHIPYARD…',click:'^SHIPYARD$'},
+   {say:'…where EXTERIOR lets you choose colours and paint your ship’s name on the hull.',click:'EXTERIOR',until:()=>yardMode==='paint'},
+   {say:'Back on STATUS, the CAREER RECORD shows everything you have done.',click:'^STATUS$'},
+   {say:()=>`${TOUCHT()?'Tap':'Click'} CAREER RECORD.`,click:'CAREER RECORD',until:()=>overlay==='career'},
+   {say:'Trades, surveys, rescues, battles — and medals for all sorts of things, like crossing to another galaxy or surveying ten planets.',dur:3},
+   {say:'And if fights feel too hard or too easy, the pause menu has DIFFICULTY: Easy, Normal or Hard. The maths stays the same.',do:()=>{overlay=null;}}]},
+  {id:'hazards',icon:'⚠️',title:'Hazards and other galaxies',desc:'Black holes, mines, rock fields and new galaxies.',setup:()=>{const g=GAL.find(g=>g.i!==C.sys&&SL.features(g).obstacle==='blackhole');if(g){C.sys=g.i;C.visited[g.i]=1;}},steps:[
+   {say:'Some systems are dangerous. The DATA tab warns you before you go.',click:'^DATA$'},
+   launchStep(),
+   {say:'This system has a black hole. Its gravity pulls you in — the closer you get, the harder it pulls. Keep well away!',auto:true,do:()=>{if(bh&&P){P.pos=add(bh.pos,mul(norm(sub(P.pos,bh.pos)),bh.R*14));P.speed=0;P.throttle=0;}},aim:()=>bh&&bh.pos,dur:6},
+   {say:'Other systems have minefields — fly slowly and watch the radar — or asteroid fields, where rocks can hit you. With a mining laser, those rocks are worth money.',do:()=>{if(bh&&P){P.pos=add(bh.pos,mul(norm(sub(P.pos,bh.pos)),bh.R*30));P.speed=0;P.throttle=0;}},dur:3},
+   {say:'When you have explored this galaxy, a galactic hyperdrive from the shipyard (tech level ten) takes you to the next one. There are eight galaxies to explore.'}]}];
+ // the order tours are suggested in, in three paths
+ const TOUR_PATHS=[['🟢 BEGINNER',['station','controls','trade','fly','maths','mission','dock','saving']],['🟡 PILOT',['yard','hyper','jump','lasers','flyto','view','cockpit','seat','adv']],['🔴 EXPERT',['missiles','mining','stars','rescue','law','hazards','ship']]];
+ {const ord=TOUR_PATHS.flatMap(p=>p[1]);TOURS.sort((a,b)=>ord.indexOf(a.id)-ord.indexOf(b.id));}
  function tourStart(id){advAbandon();const def=TOURS.find(t=>t.id===id);if(!def)return;if(mode!=='docked'&&mode!=='flight'){msg('START A TOUR WHEN DOCKED OR FLYING',2.5);return;}
   if(!tour){const realMode=mode;if(mode==='flight'&&P&&planet)C.flight={sys:C.sys,pos:P.pos.slice(),o:{r:P.o.r.slice(),u:P.o.u.slice(),f:P.o.f.slice()},speed:P.speed,throttle:P.throttle,shF:P.shF,shA:P.shA,energy:P.energy};
    tour={real:{C:JSON.stringify(C),mode:realMode,tab,menu:overlay==='menu'?menuTab:null}};}
   const opt=JSON.parse(JSON.stringify(C.opt));C=newCommander();C.opt=opt;C.opt.assist={touch:{joy:true,level:false,aim:false,autofire:false,face:false,dock:false,ctx:false},mouse:{level:false,aim:false,autofire:false,face:false,dock:false}};C.opt.maths=false;C.introSeen=true;C.gx=0;GAL=SL.makeGalaxy(GSEED,COUNT);nbr=null;sandboxBase();if(def.setup)def.setup();
   Object.assign(tour,{said:[],lastA:undefined,rs:1,yDone:false,log:[],def,i:-1,t:0,paused:false,done:false,mouse:tour.mouse||{x:CX,y:CY+100,fx:CX,fy:CY+100,tx:null,ty:null,t:1,click:-9},flash:{},held:new Set(),dest:null,foe:null,rock:null,made:false});
   stopMusic();scene=null;dockComp=false;jump=false;timeScale=1;seat=null;overlay=null;ships=[];mode='docked';tab='status';hover=null;tourNext();}
- function tourNext(){if(!tour)return;tourRelease();tour.i++;tour.t=0;tour.tapI=0;tour.clicked=false;const st=tour.def.steps[tour.i];if(!st){tour.done=true;say('tourdone'+tour.def.id,`That is the end of “${tour.def.title}”. Well done, Commander!`,1);return;}
+ function tourNext(){if(!tour)return;tourRelease();tour.i++;tour.t=0;tour.tapI=0;tour.clicked=false;const st=tour.def.steps[tour.i];if(!st){tour.done=true;try{const rc=JSON.parse(tour.real.C);rc.toursDone=Object.assign({},rc.toursDone,{[tour.def.id]:1});tour.real.C=JSON.stringify(rc);}catch(e){}say('tourdone'+tour.def.id,`That is the end of “${tour.def.title}”. Well done, Commander!`,1);return;}
   if(st.skip&&st.skip()){tourNext();return;}if(st.do)try{st.do();}catch(e){}tour.taps=st.tapFn?st.tapFn():(st.tap||[]);const txt=typeof st.say==='function'?st.say():st.say;tour.text=txt;if(txt)tour.said.push(txt);tour.spoken=!txt;tour.spokenT=0;tour.est=txt?txt.split(' ').length/2.5+.8:0;const idx=tour.i;
   if(txt){aiGap['tour-'+tour.def.id+'-'+idx]=0;say('tour-'+tour.def.id+'-'+idx,txt,0,undefined,'tour',()=>{if(tour&&tour.i===idx&&!tour.spoken){tour.spoken=true;tour.spokenT=Math.max(tour.t,tour.t<tour.est*.5?tour.est*.85:0);}});}
   tour.minDur=Math.max(st.dur||1.5,tour.taps.length?.9+tour.taps.length*.8+.6:0,(st.click||st.clickAt)?2.4:0);youStart(st);}
@@ -1490,10 +1542,10 @@ function makeStarlane(env){
  const tryOn=()=>C.opt.tourTry!==false;
  const yardSel=id=>EQUIP[selEq]&&EQUIP[selEq].id===id;
  function youable(st){if(!st||st.auto||(st.noYou&&st.noYou()))return false;return !!(st.you||(st.tap&&st.tap.length)||st.tapFn||st.click||st.clickAt||st.hold||st.steer||st.aim);}
- function youStart(st){Object.assign(tour,{showMe:false,youNow:tryOn()&&youable(st),youKeys:new Set(),youClicks:[],youHeldT:{},hinted:false,yv:new Set(),yCam:false,yBoost:false,yChart:new Set(),
+ function youStart(st){Object.assign(tour,{showMe:false,demoDone:false,yVw:new Set(),youNow:tryOn()&&youable(st),youKeys:new Set(),youClicks:[],youHeldT:{},hinted:false,yv:new Set(),yCam:false,yBoost:false,yChart:new Set(),
   y0:{clock,f:P&&mode==='flight'?P.o.f.slice():null,u:P&&mode==='flight'?P.o.u.slice():null,thr:P?P.throttle:0,speed:P?P.speed:0,sel,selMis,cargo:cargoT(),fuel:C.fuel,missiles:C.missiles||0,cam:camMode,view,target:C.target,yaw:headYaw,missions:C.missions.length,front:C.front}});
   tour.youTaps=st.tapFn?[]:[...new Set(st.tap||[])];}
- function showMe(){if(!tour||!tour.youNow)return;tour.youNow=false;tour.showMe=true;tour.t=0;tour.tapI=0;tour.clicked=false;}
+ function showMe(){if(!tour||!tour.youNow)return;tour.youNow=false;tour.showMe=true;tour.demoDone=false;tour.t=0;tour.tapI=0;tour.clicked=false;}
  const actOf=k=>Object.keys(C.opt.keys).find(a=>(C.opt.keys[a]||[]).includes(k));
  function youPressed(k){const kk=k.length===1?k.toLowerCase():k;if(tour.youKeys.has(kk))return true;const id=actOf(k);if(id&&G._flash&&G._flash[id]>tour.y0.clock)return true;const r=tourTapRect(k);return !!(r&&r.label&&tour.youClicks.includes(r.label));}
  const youClicked=re=>tour.youClicks.some(l=>new RegExp(re,'i').test(l));
@@ -1501,14 +1553,14 @@ function makeStarlane(env){
  const turned=(r=.17)=>!!(P&&tour.y0.f&&angTo(P.o.f,tour.y0.f)>r);
  function youDone(st){if(st.you)return !!st.you();if(tour.youTaps.some(k=>!youPressed(k)))return false;if(st.click&&!youClicked(st.click))return false;
   if(st.hold&&!st.hold.k().some(k=>(tour.youHeldT[k]||0)>.4))return false;if(st.steer&&!turned())return false;return st.until?!!st.until():true;}
- function youTick(st,dt){if(!tour.y0.f&&P&&mode==='flight')Object.assign(tour.y0,{f:P.o.f.slice(),u:P.o.u.slice(),thr:P.throttle,speed:P.speed});if(st.hold)for(const k of st.hold.k())if(k&&K[k])tour.youHeldT[k]=(tour.youHeldT[k]||0)+dt;tour.yv.add(view);if(camMode!==tour.y0.cam)tour.yCam=true;if(K.Shift||TD.boost)tour.yBoost=true;tour.yChart.add(chartMode);
+ function youTick(st,dt){if(!tour.y0.f&&P&&mode==='flight')Object.assign(tour.y0,{f:P.o.f.slice(),u:P.o.u.slice(),thr:P.throttle,speed:P.speed});if(st.hold)for(const k of st.hold.k())if(k&&K[k])tour.youHeldT[k]=(tour.youHeldT[k]||0)+dt;tour.yv.add(view);try{tour.yVw.add(viewNow());}catch(e){}if(camMode!==tour.y0.cam)tour.yCam=true;if(K.Shift||TD.boost)tour.yBoost=true;tour.yChart.add(chartMode);
   if(!tour.hinted&&tour.t>12){tour.hinted=true;const h=`Need a hand? ${TOUCHT()?'Tap':'Click'} SHOW ME and I will do it for you.`,id='tourhint-'+tour.def.id+'-'+tour.i;tour.text=(tour.text||'')+' 💡 '+h;aiGap[id]=0;say(id,h,0,undefined,'tour');}
   if(tour.t>=1&&youDone(st)){(tour.log=tour.log||[]).push('you');msg('✔ WELL DONE',1.4,'#3cff6a');env.beep(1200,.08,'triangle',.05,1.5);tourNext();}}
  // what the player should press or tap next, for the glow
  function youWant(st){if(!tour||!tour.youNow||!st)return[];return (st.tapFn?[]:tour.youTaps.filter(k=>!youPressed(k))).concat(st.hold?st.hold.k().filter(Boolean):[]);}
  function tourRelease(){if(!tour||!tour.held)return;for(const k of tour.held)K[k]=false;tour.held.clear();if(tour.fireMouse){fireTouch=false;tour.fireMouse=false;}headDrag=false;}
  function tourEnd(){if(!tour)return;advAbandon();tourRelease();const r=tour.real;tour=null;C=JSON.parse(r.C);fixOpt();GAL=SL.makeGalaxy(GSEED+(C.gx||0)*1009,COUNT);nbr=null;pregenFor=null;stopMusic();scene=null;dockComp=false;jump=false;timeScale=1;overlay=null;seat=null;ships=[];
-  if(r.mode==='flight'&&C.flight&&C.flight.sys===C.sys)restoreFlight();else{mode='docked';tab=r.tab||'status';}if(r.mode!=='flight')C.flight=null;syncScore();if(r.menu){overlay='menu';menuTab=r.menu;}msg('BACK TO YOUR OWN GAME',3,'#3cff6a');}
+  if(r.mode==='flight'&&C.flight&&C.flight.sys===C.sys)restoreFlight();else{mode='docked';tab=r.tab||'status';}if(r.mode!=='flight')C.flight=null;syncScore();if(r.menu){overlay='menu';menuTab=r.menu;}msg('BACK TO YOUR OWN GAME',3,'#3cff6a');if(!test)persist();}
  function simKey(k){if(!k)return;const r=TOUCHT()?tourTapRect(k):null;tour.sim=true;try{G.onKey('down',k);G.onKey('up',k);}finally{tour.sim=false;}tour.flash[k]=clock;tour.last=k;if(r)tour.tapAt={x:r.x,y:r.y,w:r.w,h:r.h,t:clock};}
  // touch screens: the on-screen button that does what key k does, so the tour can show a finger tapping it
  function tourTapRect(k){const L=G._lastBtns||[],lab=re=>L.find(b=>b.label&&re.test(b.label))||null;
@@ -1528,7 +1580,7 @@ function makeStarlane(env){
   const fx=x+250,fy=y+56,fire=on(' ')||!!tour.fireMouse;ctx.fillStyle=fire?'rgba(255,45,85,.9)':'rgba(120,20,40,.6)';ctx.strokeStyle=fire?'#ffd0d8':'#ff2d55';ctx.lineWidth=2;ctx.beginPath();ctx.arc(fx,fy,34,0,7);ctx.fill();ctx.stroke();text(ctx,'FIRE',fx,fy-6,'#fff',12,'center');
   const cap=[jx>0?'Steer right':jx<0?'Steer left':'',jy<0?'nose up':jy>0?'nose down':'',fast?(t.auto?'FAST':'faster'):slow?(t.auto?'SLOW':'slower'):'',fire?'FIRE':''].filter(Boolean).join(' · ');
   if(cap)text(ctx,cap,x+10,y+PH-12,'#ffe45e',10,'left');ctx.restore();}
- function tourTick(dt){if(!tour||tour.done||tour.paused)return;const st=tour.def.steps[tour.i];if(!st)return;tour.t+=dt;if(tour.youNow){tourRelease();youTick(st,dt);return;}hover=null;
+ function tourTick(dt){if(!tour||tour.done||tour.paused)return;const st=tour.def.steps[tour.i];if(!st)return;tour.t+=dt;if(tour.youNow){tourRelease();youTick(st,dt);return;}if(st.demo&&!tour.demoDone&&tour.t>1.2){tour.demoDone=true;try{st.demo();}catch(e){}}hover=null;
   if(tour.tapI<tour.taps.length&&tour.t>=.9+tour.tapI*.8){simKey(tour.taps[tour.tapI]);tour.tapI++;}
   tourRelease();const want=[];if(st.hold&&tour.t>=(st.hold.from||.6)&&tour.t<=(st.hold.to||st.dur))want.push(...st.hold.k());
   const mouseOK=MODN()&&!touchSeen&&mode==='flight';let mx=null,my=null;
@@ -1599,7 +1651,12 @@ function renderTouchModes(ctx){text(ctx,'📱 TOUCH CONTROLS',CX,96,'#ffe45e',20
  text(ctx,'Simple and Twin sticks use the side margins in full screen, held sideways. Auto speed docks for you on Easy only.',CX,420,'#9aa3c7',11,'center');
  button(ctx,B(CX-80,488,160,30,'◀ BACK',()=>{menuTab='controls';},{fs:12}));}
 function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'center');text(ctx,tryOn()?'Nova explains each step, then it is your turn (👀 SHOW ME if you get stuck). Tours use a practice game, so your own game is never changed.':'Watch Nova fly — the controls light up as they are used. Tours use a practice game, so your own game is never changed.',CX,124,'#9aa3c7',11,'center');
-  TOURS.forEach((t,i)=>{const x=24+(i%3)*252,y=142+Math.floor(i/3)*56;ctx.fillStyle='rgba(255,255,255,.045)';ctx.fillRect(x,y-3,244,50);button(ctx,B(x+3,y,238,22,`${t.icon} ${i+1}. ${t.title}`,()=>tourStart(t.id),{fs:11}));ctx.save();ctx.beginPath();ctx.rect(x,y+24,244,24);ctx.clip();wrap(ctx,t.desc,x+8,y+26,230,11,'#9aa3c7',9);ctx.restore();});
+  // three paths (TOUR_PATHS); ✓ = finished (C.toursDone); the first unfinished tour is suggested
+  const done=C.toursDone||{},nextId=(TOURS.find(t=>!done[t.id])||{}).id;
+  TOUR_PATHS.forEach(([head,ids],col)=>{const x=24+col*252;text(ctx,`${head} · ${ids.filter(id=>done[id]).length}/${ids.length}`,x+4,140,col===0?'#3cff6a':col===1?'#ffe45e':'#ff6b81',12,'left');
+   ids.map(id=>TOURS.find(t=>t.id===id)).filter(Boolean).forEach((t,i)=>{const y=158+i*36,nx=t.id===nextId;ctx.fillStyle=nx?'rgba(60,255,106,.10)':'rgba(255,255,255,.045)';ctx.fillRect(x,y-2,244,34);
+    button(ctx,B(x+3,y,238,20,`${done[t.id]?'✓ ':nx?'▶ ':''}${t.icon} ${t.title}`,()=>tourStart(t.id),{fs:10,bg:done[t.id]?'rgba(30,80,50,.85)':undefined}),nx);
+    ctx.save();ctx.beginPath();ctx.rect(x,y+21,244,12);ctx.clip();text(ctx,t.desc,x+8,y+21,'#9aa3c7',9,'left',false);ctx.restore();});});
   button(ctx,B(40,488,220,30,`${TOUCHT()?'👆 CONTROLS':'⌨ KEYS'} DISPLAY: ${C.opt.tourKeys!==false?'ON':'OFF'}`,()=>{C.opt.tourKeys=C.opt.tourKeys===false;persist();},{fs:11}),C.opt.tourKeys!==false);button(ctx,B(W-260,488,220,30,`🙋 HAVE A GO: ${tryOn()?'ON':'OFF'}`,()=>{C.opt.tourTry=!tryOn();persist();},{fs:11}),tryOn());button(ctx,B(CX-80,488,160,30,'◀ BACK',()=>{menuTab='main';},{fs:12}));}
  // ---------------- TEST MODE (grown-ups: Ctrl+Shift+G + passphrase) — a practice copy where anything goes ----------------
  let testTab='scen',testMsg='';
@@ -1924,7 +1981,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
   // ➡️ FLY THERE: turn, fly, slow down and stop near the object. At the station it lines up with the slot; on Easy it takes you in.
  // Not during adventures or races (they are the puzzle). Steering, 🛑 STOP or coming under attack hands control back.
  let fly=null;
- const flyAllowed=()=>AS('fly')&&mode==='flight'&&!!P&&!adv&&!race&&!tour&&!show&&!seat;
+ const flyAllowed=()=>AS('fly')&&mode==='flight'&&!!P&&!adv&&!race&&(!tour||!!(tour.def&&tour.def.fly))&&!show&&!seat;
  const flyName=o=>o===station?'THE STATION':(o.name||(o.T&&o.T.name)||(radarInfo(o)||{}).t||'TARGET').toString().toUpperCase();
  function flyTo(o){if(!o||!o.pos||!flyAllowed())return false;dockComp=false;faceT=null;fly={o,ph:'go',t:clock};msg(`➡️ FLYING TO ${flyName(o)}`,2.5,'#3fe0ff');if(!C.opt.flyTip){C.opt.flyTip=true;persist();say('flytip','Flying there for you. Steer, or tap stop, to take over. Next time you can just tap the same icon twice.',1);}return true;}
  const canFly=o=>flyAllowed()&&!!o&&!!o.pos&&o!==bh&&o.type!=='missile';
