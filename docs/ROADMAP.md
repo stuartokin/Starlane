@@ -181,6 +181,23 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   - Noted, not changed: Pause → ⚙ BACK TO THE CHEAT PAGE (in a practice copy started from the cheat page) still
     ends test mode and goes to the cheat page in the same tab. The site also runs at `horizonqltd.com/Starlane/`,
     which keeps its own saves and cheat settings, separate from `stuartokin.github.io`.
+- **18 Nov 2026 — training review (proposed, waiting for Stuart's go-ahead).** All 17 tours were played to the
+  end on a laptop and at Fold size (touch): all finish, no errors; facts and prices are current. Findings:
+  - Tours are watch-only: Nova does every step, the player never has a go.
+  - On touch screens they still show the keyboard and say "Hold R", "press J"; touch players need the buttons
+    they actually have (⚡ JUMP, 🌌 HYPER, the joystick, auto speed in 🕹 Simple).
+  - Guided flight (the new-pilot tutorial) on touch says "slide the speed slider" and "drag on the left": wrong
+    for the default 🕹 Simple layout since v17.
+  - A step that times out moves on as if it worked ("Got it!" when the pirate survived).
+  - Tours replay keys literally (`tap:['j']`), so a player who rebinds keys sees steps that do nothing.
+  - Not covered at all: touch layouts and auto speed; FLY THERE and radar taps; 🎛 VIEW and the battle display;
+    the phone console; maths puzzles and the Academy; adventures and the Adventure Log; races and the
+    Navigator's Cup; story missions; galactic jump and hazards (black holes, mines, fields); ship exterior and
+    paint; Career record and medals; difficulty.
+  - No test runs the tours (they were checked by hand on 18 Nov with a throwaway script).
+  Proposal: hands-on "your turn" steps reusing each step's `until` check; device-aware wording and a touch-button
+  display in place of the keyboard; fix guided flight for Simple; new tours for the gaps, grouped into
+  Beginner / Pilot / Expert paths with ticks for finished tours; a `tours` test suite.
 - **Cut-scene ideas for Stuart (not built):**
   - an escape-capsule scene (it reuses "DOCKING…" today);
   - a galactic-jump scene (none today);
