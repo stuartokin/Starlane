@@ -67,6 +67,28 @@ def solve(q):
     if m: return (int(m[1]) + int(m[2])) % 24
     m = re.search(r'We leave at (\d+):00 local time\. The flight takes (\d+) hours, and the destination’s clocks are (\d+) hours ahead', q)
     if m: return (int(m[1]) + int(m[2]) + int(m[3])) % 24
+    m = re.search(r'You count (\d+) beats in 15 seconds', q)
+    if m: return 4 * int(m[1])
+    m = re.search(r'You count (\d+) beats in 10 seconds', q)
+    if m: return 6 * int(m[1])
+    m = re.search(r'A pulse of (\d+) beats every (\d+) seconds', q)
+    if m: return int(m[1]) * 60 / int(m[2])
+    m = re.search(r'beats (\d+) times a minute\. How many times does it beat in a whole day', q)
+    if m: return int(m[1]) * 60 * 24
+    m = re.search(r'flashes (\d+) times every second\. How many flashes in (\d+) seconds', q)
+    if m: return int(m[1]) * int(m[2])
+    m = re.search(r'flashes (\d+) times per second\. How many flashes in one minute', q)
+    if m: return int(m[1]) * 60
+    m = re.search(r'spins (\d+) times per second\. How many times does it spin in one hour', q)
+    if m: return int(m[1]) * 3600
+    m = re.search(r'flashes are (\d+) milliseconds apart', q)
+    if m: return 1000 / int(m[1])
+    m = re.search(r'The long way is (\d+) light years\. The wormhole is (\d+) light year', q) or re.search(r'The normal route is (\d+) light years; the wormhole route is (\d+)\. How many light years', q)
+    if m: return int(m[1]) - int(m[2])
+    m = re.search(r'The long route is (\d+) light years; the wormhole route is ([\d.]+)\. What percentage', q)
+    if m: return (int(m[1]) - float(m[2])) / int(m[1]) * 100
+    m = re.search(r'covers (\d+) light years a day\. The normal route is (\d+) light years; through the wormhole it is (\d+)', q)
+    if m: return (int(m[2]) - int(m[3])) / int(m[1])
     m = re.search(r'The ice in the pipe is at −(\d+) °C\. The heater warms it by (\d+) °C every minute', q)
     if m: return int(m[1]) / int(m[2])
     m = re.search(r'sensor reads (−?\d+) °C.*What is that in °F', q)
