@@ -1259,7 +1259,7 @@ function makeStarlane(env){
  function pager(ctx,x,y,page,pages,set){if(pages<2)return;button(ctx,B(x,y,30,22,'◀',()=>set(Math.max(0,page-1)),{fs:11}));text(ctx,`PAGE ${page+1}/${pages}`,x+68,y+4,'#c8d0ff',11,'center');button(ctx,B(x+106,y,30,22,'▶',()=>set(Math.min(pages-1,page+1)),{fs:11}));}
  // ---------------- station screens ----------------
  const TABS=[['status','STATUS'],['market','MARKET'],['shipyard','SHIPYARD'],['missions','MISSIONS'],['data','DATA'],['chart','CHART'],['launch','LAUNCH']];
- function frame(ctx,title){btns.push({x:W-118,y:8,w:106,h:26,fn:()=>openMenu()});ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#3b4a8f';ctx.lineWidth=2;ctx.strokeRect(4,4,W-8,H-8);text(ctx,title,CX,14,'#3fe0ff',20,'center');text(ctx,`💰 ${C.credits.toFixed(1)} Cr`,16,16,'#ffe45e',15);ctx.strokeStyle='#3b4a8f';ctx.beginPath();ctx.moveTo(10,42);ctx.lineTo(W-10,42);ctx.stroke();button(ctx,{x:W-118,y:8,w:106,h:26,label:'⏸ MENU',fs:12});}
+ function frame(ctx,title){btns.push({x:W-118,y:8,w:106,h:26,label:'⏸ MENU',fn:()=>openMenu()});ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#3b4a8f';ctx.lineWidth=2;ctx.strokeRect(4,4,W-8,H-8);text(ctx,title,CX,14,'#3fe0ff',20,'center');text(ctx,`💰 ${C.credits.toFixed(1)} Cr`,16,16,'#ffe45e',15);ctx.strokeStyle='#3b4a8f';ctx.beginPath();ctx.moveTo(10,42);ctx.lineTo(W-10,42);ctx.stroke();button(ctx,{x:W-118,y:8,w:106,h:26,label:'⏸ MENU',fs:12});}
  function tabsBar(ctx){const w=(W-20)/TABS.length;TABS.forEach(([k,l],i)=>button(ctx,B(10+i*w+2,H-52,w-4,42,l,()=>{tab=k;sel=0;},{fs:13,bg:k==='launch'?'rgba(255,45,85,.7)':undefined}),tab===k));}
  // ---------------- sit in the cockpit, on the pad inside the station ----------------
  let seat=null,seatDash=null;
@@ -1485,7 +1485,7 @@ function makeStarlane(env){
    {skip:()=>!TOUCHT(),say:'Twin sticks need a bigger screen, held sideways in full screen. You can change layout whenever you like.',do:()=>{menuTab='controls';}},
    {skip:()=>TOUCHT(),say:'Every action is listed with its keys. Choose one, then press a new key to change it. RESET ALL KEYS puts them all back.',dur:3},
    {say:()=>`FLIGHT ASSISTS are helpers: levelling the ship, aiming, turning to a target, docking help and more. ${TOUCHT()?'Tap':'Click'} it to have a look.`,click:'FLIGHT ASSISTS',until:()=>menuTab==='assist'},
-   {say:'Switch on the ones you like. They are kept separately for touch screens and for the mouse.',dur:2},
+   {say:'Switch on the ones you like. They are kept separately for touch screens and for a computer.',dur:2},
    {say:()=>`That’s it. ${TOUCHT()?'Tap':'Press'} RESUME to carry on.`,do:()=>{overlay=null;}}]},
   {id:'maths',icon:'🧮',title:'Maths puzzles',desc:'Puzzles pop up as you play: answer, learn, earn.',steps:[
    {say:'Starlane is full of maths puzzles. They pop up when you buy fuel, trade, jump to another system, repair your ship and more. Get one right and you earn a bonus.'},
@@ -1496,7 +1496,7 @@ function makeStarlane(env){
    {say:'Want more? The MISSIONS board has the Academy for practice, and the Navigator’s Cup: six questions on your trickiest topics in three minutes.',click:'^MISSIONS$'}]},
   {id:'flyto',icon:'➡️',title:'Fly there',desc:'Tap a radar icon and the ship flies you there.',fly:true,setup:()=>{C.opt.assist.touch.fly=true;C.opt.assist.mouse.fly=true;},steps:[launchStep(),
    {say:()=>`Everything on the radar is somewhere you can go. ${TOUCHT()?'Tap':'Click'} an icon on the radar to see what it is. Here, the planet.`,demo:()=>{if(planet)G._rinfo={o:planet,t:clock};},until:()=>!!G._rinfo||!!radarTgt,you:()=>!!G._rinfo||!!radarTgt,timeout:30},
-   {say:()=>`The card says what it is. TURN TO points you at it; FLY THERE flies you all the way. ${TOUCHT()?'Tap':'Click'} FLY THERE.`,click:'FLY THERE',until:()=>!!fly,you:()=>!!fly,timeout:30},
+   {say:()=>`The card says what it is. TURN TO points you at it; FLY THERE flies you all the way. ${TOUCHT()?'Tap':'Click'} FLY THERE.`,do:()=>{if(G._rinfo&&G._rinfo.o)G._rinfo.t=clock;else if(planet&&!radarTgt)G._rinfo={o:planet,t:clock};},click:'FLY THERE',until:()=>!!fly,you:()=>!!fly,timeout:30},
    {say:'The ship turns, speeds up, uses the jump drive for long trips, and slows down and stops when it arrives. It even steers round rocks and moons.',dur:6},
    {say:()=>`To take over at any time, ${TOUCHT()?'tap':'click'} STOP, or just steer.`,click:'STOP',until:()=>!fly,you:()=>!fly,timeout:25},
    {say:()=>`A shortcut: ${TOUCHT()?'tap':'click'} the same radar icon twice to fly straight there. FLY THERE can be switched off in the flight assists.`}]},
@@ -1597,7 +1597,7 @@ function makeStarlane(env){
   const m=tour.mouse;let tgt=null,fnArgs=null;if(st.click&&!tour.clicked){const b=(G._lastBtns||[]).find(x=>x.label&&new RegExp(st.click,'i').test(x.label));if(b){tgt=[b.x+b.w/2,b.y+b.h/2];fnArgs=()=>b.fn();}}
   if(st.clickAt&&!tour.clicked){const p=st.clickAt();if(p){tgt=p;fnArgs=()=>{const b=(G._lastBtns||[]).slice().reverse().find(x=>p[0]>=x.x&&p[0]<=x.x+x.w&&p[1]>=x.y&&p[1]<=x.y+x.h);if(b)b.fn(p[0],p[1]);};}}
   if(tgt){if(m.tx!==tgt[0]||m.ty!==tgt[1]){m.fx=m.x;m.fy=m.y;m.tx=tgt[0];m.ty=tgt[1];m.t=0;}m.t=Math.min(1,m.t+dt/.7);const e=1-Math.pow(1-m.t,3);m.x=m.fx+(m.tx-m.fx)*e;m.y=m.fy+(m.ty-m.fy)*e;if(m.t>=1&&tour.t>1.3){tour.clicked=true;m.click=clock;tour.flash.mouseL=clock;fnArgs();}}
-  if(G._tourQuick&&!tour.spoken&&tour.t>1){tour.spoken=true;tour.spokenT=tour.t;}if(!tour.spoken&&tour.t>tour.est+5){tour.spoken=true;tour.spokenT=tour.t;}const ready=tour.t>=(tour.minDur||1.5)&&tour.spoken&&tour.t>=tour.spokenT+.6&&(!st.until||st.until());if(ready||tour.t>(st.timeout||tour.est+(st.dur||2)+25)){(tour.log=tour.log||[]).push(ready?'ok':'TIMEOUT@'+tour.i);tourNext();}}
+  if(G._tourQuick&&!tour.spoken&&tour.t>1){tour.spoken=true;tour.spokenT=tour.t;}if(!tour.spoken&&tour.t>tour.est+5){tour.spoken=true;tour.spokenT=tour.t;}const ready=tour.t>=(tour.minDur||1.5)&&tour.spoken&&tour.t>=tour.spokenT+.6&&(!st.until||st.until());if(ready||tour.t>(st.timeout||tour.est+(st.dur||2)+25)){(tour.log=tour.log||[]).push(!ready?'TIMEOUT@'+tour.i:(st.click||st.clickAt)&&!tour.clicked?'NOCLICK@'+tour.i:'ok');tourNext();}}
  function tourKey(k){if(k==='Escape'){tourEnd();return;}if(k===' '||k==='p'){tour.paused=!tour.paused;if(tour.paused)tourRelease();return;}if(k==='ArrowRight'||k==='n'){if(tour.done)return;tourNext();return;}if(k==='k'){C.opt.tourKeys=!C.opt.tourKeys;return;}}
  function drawKeyboard(ctx,x,y){const U=19,G2=3,PW=404,PH=150,wantK=new Set(youWant(tour.def.steps[tour.i])),state=k=>{if(wantK.has(k)&&Math.floor(clock*3)%2)return 1;const t=tour.flash[k];return tour.held.has(k)?2:t!==undefined&&clock-t<.7?1:0;};
   ctx.save();ctx.fillStyle='rgba(10,14,24,.94)';ctx.strokeStyle='rgba(127,216,255,.55)';ctx.lineWidth=1.2;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,PW,PH,10);else ctx.rect(x,y,PW,PH);ctx.fill();ctx.stroke();
@@ -2018,7 +2018,7 @@ function renderTours(ctx){text(ctx,'🎓 TRAINING TOURS',CX,96,'#ffe45e',20,'cen
  const projOnto=(t,f)=>{const d=dot(t,f);return sub(t,mul(f,d));};
  function rollToward(t){const tp=projOnto(t,P.o.f),l=len(tp);if(l<.2)return 0;const tn=mul(tp,1/l),ang=v=>Math.acos(Math.max(-1,Math.min(1,dot(v,tn)))),a=ang(P.o.u);if(a<.01)return 0;const tryPos=ang(rot(P.o.u,P.o.f,-.02));return Math.max(-1,Math.min(1,a*2.2))*(tryPos<a?1:-1);}
  function inCorridor(){if(!station||!P)return false;const rel=sub(P.pos,station.pos),d=len(rel);if(d>4200||d<200)return false;return dot(mul(rel,1/d),station.o.f)>Math.cos(.55);}
- function assistTick(I,dt){if(show){if(P&&show.aim&&!show.aim.dead&&show.aim.pos)steer(P.o,norm(sub(show.aim.pos,P.pos)),2.6*dt);if(show.fire)I.fire=true;return;}if(!P||mode!=='flight'||tour){if(fly)fly=null;return;}const manualTurn=Math.abs(I.yaw)+Math.abs(I.pitch)>.25,manualRoll=Math.abs(I.roll)>.05;
+ function assistTick(I,dt){if(show){if(P&&show.aim&&!show.aim.dead&&show.aim.pos)steer(P.o,norm(sub(show.aim.pos,P.pos)),2.6*dt);if(show.fire)I.fire=true;return;}if(!P||mode!=='flight'||(tour&&!(tour.def&&tour.def.fly))){if(fly)fly=null;return;}const manualTurn=Math.abs(I.yaw)+Math.abs(I.pitch)>.25,manualRoll=Math.abs(I.roll)>.05;
   if(fly){if(manualTurn||I.thr)flyStop('YOU HAVE CONTROL');else if(flyThreat())flyStop('⚠ UNDER ATTACK — YOU HAVE CONTROL','#ff2d55');else if(!flyAllowed()||!fly.o||fly.o.dead||(fly.o!==station&&fly.o.max&&!ships.includes(fly.o)))flyStop(adv?'':'TARGET LOST');else{flyTick(I,dt);return;}}
   // turn to target
   if(faceT&&(faceT.dead||!faceT.pos||manualTurn))faceT=null;if(faceT){const want=norm(sub(faceT.pos,P.pos));steer(P.o,want,1.6*dt);if(dot(P.o.f,want)>Math.cos(.02))faceT=null;}

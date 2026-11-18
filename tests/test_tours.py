@@ -68,6 +68,14 @@ async def player(p, R):
     R.check(await step_is(pg, 2), 'have a go: holding W speeds up and completes the step')
     await pg.wait_for_timeout(800); await pg.keyboard.down('ArrowRight'); await pg.wait_for_timeout(2500); await pg.keyboard.up('ArrowRight')
     R.check(await step_is(pg, 3), 'have a go: turning the ship completes the steering step')
+    # a finished tour is ticked on the player's own commander, and the tours page shows it
+    await pg.evaluate(f"(()=>{{const d={D};d.C.opt.tourTry=false;d.tourStart('mission');}})()")
+    await until(pg, f"{D}.tour&&{D}.tour.done", 60000, 300); await pg.evaluate(f"{D}.tourEnd()"); await pg.wait_for_timeout(500)
+    R.check(await pg.evaluate(f"!!({D}.C.toursDone||{{}}).mission"), 'a finished tour is ticked on your own commander')
+    await pg.evaluate(f"{D}.set('overlay','menu');{D}.set('menuTab','tours')"); await pg.wait_for_timeout(400)
+    labs = await pg.evaluate(f"{D}.btns.map(b=>b.label||'')")
+    R.check(any(l.startswith('✓ ') and 'Taking a mission' in l for l in labs) and any(l.startswith('▶ ') for l in labs), 'the tours page ticks it and suggests the next tour', [l for l in labs if l[:2] in ('✓ ', '▶ ')])
+    R.check(await pg.evaluate("JSON.stringify(localStorage).includes('toursDone')"), 'the tick is saved on the device')
     R.check(not pg.errors, 'have a go, laptop: no page errors', pg.errors[:3]); await pg.close_all()
     # Fold, touch: tap BUY 1 in the market, tap JUMP on the console
     pg = await browser(p, 1000, 700, True); await open_site(pg); await register(pg); await launch_game(pg)
@@ -85,7 +93,7 @@ async def main(p):
     R = Result('tours')
     pg = await browser(p); await open_site(pg); await register(pg); await launch_game(pg)
     ids = await pg.evaluate(f"{D}.TOURS?{D}.TOURS.map(t=>t.id):[]"); await pg.close_all()
-    R.check(len(ids) >= 17, 'the tours list loads', len(ids))
+    R.check(len(ids) >= 24, 'the tours list loads (24 tours in three paths)', len(ids))
     res, sem = {}, asyncio.Semaphore(int(os.environ.get('TOURS_PAR', '6')))
     await asyncio.gather(*[one(p, t, d, sem, res) for d in DEV for t in ids])
     for dev in DEV:
