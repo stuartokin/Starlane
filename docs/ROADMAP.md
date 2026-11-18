@@ -209,6 +209,15 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
   question for young / mid / older / **adult** (adult = clever adult, no specialist knowledge), numbers generated so
   replays differ, every answer re-solved and a new `adventures-levels` test. Stuart agreed: 5 batches of 10
   adventures, one release each.
+- **Idea (18 Nov 2026, Stuart asked for an opinion; not started): a question engine with swappable banks.**
+  Questions become JSON bank files loaded at start; the game is tested once against any valid bank, and a new
+  bank only needs a fast validator (shape, one right answer, explanation, on-screen length limits, no “Apollo”
+  outside Moon history, a child-safety word list, generated questions as safe templates re-solved thousands of
+  times) plus an automatic independent solve (a GitHub workflow with the kill-switch; reports only). Swappable:
+  maths puzzles, Academy, Navigator’s Cup, maths gates, and adventure puzzles through per-slot contracts (topic,
+  sometimes a fixed answer for story/picture-bound slots). Not swappable: flight tasks, TREND graphs, charts.
+  Estimate: three sessions (format + loader + validator; slot contracts + fallback; workflow + authoring guide).
+  Waiting for Stuart’s go-ahead and a plan.
 - **Cut-scene ideas for Stuart (not built):**
   - an escape-capsule scene (it reuses "DOCKING…" today);
   - a galactic-jump scene (none today);
