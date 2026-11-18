@@ -46,7 +46,7 @@ def solve(q):
     if m: return int(m[3]) / int(m[1]) * int(m[2])
     m = re.search(r'We need (\d+) litres of fuel mixed blue : green = (\d+) : (\d+)\. How many litres of green', q)
     if m: return int(m[1]) / (int(m[2]) + int(m[3])) * int(m[3])
-    m = re.search(r'The tank holds (\d+) litres of fuel mixed blue : green = 1 : 3\. How many litres of blue must we add to make it 1 : 1', q)
+    m = re.search(r'The tank contains (\d+) litres of fuel mixed blue : green = 1 : 3 \(and it has plenty of room\)\. How many litres of blue must we add to make it 1 : 1', q)
     if m: t = int(m[1]); return t * 3 / 4 - t / 4
     m = re.search(r'We pour in (\d+) cups of blue and (\d+) cups of green', q) or re.search(r'holds (\d+) litres of blue and (\d+) litres of green', q)
     if m: return int(m[1]) + int(m[2])
