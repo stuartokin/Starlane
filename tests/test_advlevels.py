@@ -34,7 +34,17 @@ def solve(q):
     if m: return int(m[1]) * int(m[2])
     m = re.search(r'(\d+) new bulbs, each using (\d+) W, stay on for (\d+) hours', q)
     if m: return int(m[1]) * int(m[2]) * int(m[3])
+    m = re.search(r'The ice in the pipe is at −(\d+) °C\. The heater warms it by (\d+) °C every minute', q)
+    if m: return int(m[1]) / int(m[2])
+    m = re.search(r'sensor reads (−?\d+) °C.*What is that in °F', q)
+    if m: return int(m[1].replace('−', '-')) * 1.8 + 32
     return None
+
+def decode(q):
+    """Caesar puzzles: undo the stated shift."""
+    m = re.search(r'The message is ([A-Z]+)\. Each letter has been moved (\d+) place', q)
+    if not m: return None
+    n = int(m[2]); return ''.join(chr((ord(c) - 65 - n) % 26 + 65) for c in m[1])
 
 async def main(p):
     R = Result('advlevels')
@@ -55,6 +65,10 @@ async def main(p):
             if d['many'] != isinstance(a, list): shape.append((ref, 'one answer vs several does not match the scene'))
             idx = a if isinstance(a, list) else [a]
             if not all(isinstance(i, int) and 0 <= i < len(o) for i in idx): shape.append((ref, 'answer not among the options'))
+            elif d['gen']:
+                w = decode(v['q'])
+                if w is None: unknown.add(ref)
+                elif o[a] != w: sums.append((ref, v['q'], o[a], w))
         elif d['type'] == 'order':
             it = v.get('items') or []
             if len(it) < 3 or len(set(it)) != len(it): shape.append((ref, 'order needs 3+ different items'))
