@@ -205,3 +205,9 @@ time once. Read before making changes.
     the test rig) before merging; otherwise leave the PR open for a person.
 27. **Sandbox generated code** (`node:vm`, no `require`, time limit) before trusting it.
 28. **Scheduled workflows pause after 60 days of repo inactivity**; merges count as activity.
+
+## Working across repos
+
+29. **Fetch the latest of every repo before planning.** On 19 Nov 2026 a session planned "bring your own question
+    bank" from a stale clone of Starlane — v29–30 had already built it the day before. Clone or pull fresh, read the
+    CHANGELOG top entry, then plan.

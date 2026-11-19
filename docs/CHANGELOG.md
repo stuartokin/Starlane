@@ -2,6 +2,12 @@
 
 The release number is the offline cache name `CACHE` in `sw.js` (bump it on every release).
 
+## Docs — 19 November 2026 (no game change, still starlane-v30)
+- Roadmap: Stuart's decisions on question banks (built-in content is his; people may send him questions to
+  incorporate; adults load their own — already built in v29–30; ApolloMaths keeps its own questions), and two new
+  requirements: **R6** a workflow for more systems, missions, adventures and question packs, and **R7** story arcs
+  with different endings. Stale ApolloMaths housekeeping item removed (done there).
+
 ## starlane-v30 — 18 November 2026
 Question banks, Stuart's follow-ups (18 Nov).
 - **👁 Show password:** every password and key box on the question-bank page (admin password, your own password,

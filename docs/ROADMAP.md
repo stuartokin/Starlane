@@ -2,7 +2,8 @@
 
 *Stuart Okin — personal project, written in a personal capacity.*
 *Requirements as stated by Stuart on 13 November 2026, written up as specifications. R1–R5 not yet built.*
-*Status 17 November 2026 (`starlane-v19`): see **Done** below for what was built since, and the open questions for Stuart there.*
+*Status 19 November 2026 (`starlane-v30`): question banks are built (v29–30). New requirements R6 (content workflow) and
+R7 (story arcs) added 19 Nov. See **Done** below for what was built since, and the open questions for Stuart there.*
 
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.
 
@@ -248,11 +249,45 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 - **Backup tags:** pushing tags (`backup/…`) was refused from the cloud session (HTTP 403); `main` pushes work.
   To undo, reset to an earlier commit (e.g. `eb4ab83` is the version before the cheat page).
 
+## R6. Workflow: more systems, missions, adventures and question packs (stated 19 Nov 2026)
+
+**Stuart's intent:** over time **he will add a workflow** that builds more content for the game: **more star
+systems, more missions, more adventures and additional question packs**. Not designed yet — plan it with Stuart
+first. Notes for that plan:
+- It extends R3 (science questions) and R4 (adventure forge) into one content pipeline, or several small ones,
+  copying ApolloMaths' exam-watch pattern: draft → gates → PR labelled 🤖 AI-maintained → auto-merge only if every
+  gate passes. Kill-switch `switch` job first (automation.json here + the master in stuartokin.github.io).
+- **Systems**: the galaxy is generated from seed 20261108 (160 systems). New systems need a data format that adds
+  named, hand-checked systems without moving existing ones (saves and missions refer to them).
+- **Missions / adventures**: need R4's prerequisites (data-driven adventure files, a data-only `cutscene` type).
+- **Question packs**: the built-in packs Stuart controls (see "Question banks — decisions 19 Nov" below). A pack
+  from the workflow must pass `js/qbank.js`'s validator plus an independent solve before merging.
+- Say what it costs (API spend per run), what it can change and how to switch it off before adding it.
+
+## R7. Story arcs with different endings (stated 19 Nov 2026)
+
+**Stuart's intent:** add **story arcs** — linked adventures/missions that run across several sessions, where the
+player's choices lead to **different endings**. Not designed yet. Notes for that plan:
+- Arc state saved in the commander (and so in ApolloMaths' `stats.arcade.saves.starlane` when hosted); arcs must
+  survive save/load and the cheat/test-mode snapshot (`snapReal`).
+- Branching built from data (chapters, choices, flags, endings), so the R6 workflow can later write arcs too.
+- Each chapter keeps the game's rules: questions at every age level, explained answers, kind tone.
+- Open questions for Stuart: how many chapters and endings; can a player replay for another ending; do endings
+  change the galaxy (prices, factions) or only the story and rewards.
+
+## Question banks — decisions 19 Nov 2026 (Stuart)
+
+- **Built-in content is Stuart's.** Everything shipped in the game (built-in questions and packs) is chosen by
+  Stuart. Over time people may **send him their questions**; he decides what to incorporate. Route today: they
+  export a bank file from 📚 Question banks and send it; a session validates it (`qbank.js` validator +
+  independent solve), checks wording and level, and adds it as built-in content. Open question for Stuart: add
+  accepted banks to the built-in questions, or ship them as named "official packs" a pilot can choose.
+- **Adults can load their own** — already built (v29–30): 📚 Question banks behind the admin password.
+- Fixed questions first (templates also supported); packs at every level; multiple choice and number answers.
+- **Launched from ApolloMaths, nothing changes**: questions follow the child's ApolloMaths exam; banks are ignored.
+
 ## R5. Smaller open items
 
-- **ApolloMaths housekeeping:** delete `js/starlane.js`, `js/starlane-modern.js`, `js/starlane-adventures.js`,
-  `js/starlane-audio.js`, `js/vendor/three-bundle.js`, `js/vendor/three-LICENSE.txt` and
-  `QA-report-questions-hints-lessons.md` from the ApolloMaths repo (nothing uses them since 2.79).
 - **Run the rig in CI** on every push to `main` (`.github/workflows/tests.yml`), so Stuart's uploads are checked.
 - Check Nova's voice on Stuart's devices (device speech varies); trailer length (~46 s) is accepted.
 - The cockpit sticky notes now sit beside the mirror (Stuart, 15 Nov 2026).
@@ -265,5 +300,6 @@ into the build** without his involvement, clearly AI-maintained (as ApolloMaths'
 3. R2 Pause → Questions page.
 4. R3 science-watch workflow (copy ApolloMaths' `exam-watch` structure: report, PR, gates, auto-merge).
 5. R4 prerequisites (data-driven adventures, `cutscene` type), then the adventure-forge workflow.
+6. R6 content workflow (systems, missions, adventures, question packs) and R7 story arcs — plan with Stuart first.
 
-Each step: plan to Stuart first, then build, extend the rig, run it, deliver changed files only.
+Each step: plan to Stuart first, then build, extend the rig, run it, push to `main`.
