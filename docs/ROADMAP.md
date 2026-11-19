@@ -5,6 +5,16 @@
 *Status 19 November 2026 (`starlane-v30`): question banks are built (v29–30). New requirements R6 (content workflow) and
 R7 (story arcs) added 19 Nov. See **Done** below for what was built since, and the open questions for Stuart there.*
 
+## Stuart's to-do list (added 19 Nov 2026)
+
+1. **Try the question banks with your Gemini questions** (standalone site → 📚 Question banks → 📋 Paste text →
+   👀 Review → set a test pilot to "Only this bank" and play).
+2. **Decide: questions people send you** — add accepted ones to the built-in questions, or ship them as named
+   "official packs" a pilot can choose? (See "Question banks — decisions 19 Nov 2026".)
+3. **Answer the R7 story-arc questions** — how many chapters and endings; replay for another ending; do endings
+   change the galaxy (prices, factions) or only story and rewards.
+4. **Say when to plan R6** (the content workflow: systems, missions, adventures, question packs) **and R7**.
+
 Read `KNOWLEDGE.md` and `LESSONS.md` first. Build in the order in §5 — later items depend on earlier ones.
 
 ---

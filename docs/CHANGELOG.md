@@ -7,6 +7,8 @@ The release number is the offline cache name `CACHE` in `sw.js` (bump it on ever
   incorporate; adults load their own — already built in v29–30; ApolloMaths keeps its own questions), and two new
   requirements: **R6** a workflow for more systems, missions, adventures and question packs, and **R7** story arcs
   with different endings. Stale ApolloMaths housekeeping item removed (done there).
+- Roadmap: "Stuart's to-do list" at the top (try banks with Gemini questions; official packs decision; R7
+  questions; when to plan R6/R7).
 
 ## starlane-v30 — 18 November 2026
 Question banks, Stuart's follow-ups (18 Nov).
